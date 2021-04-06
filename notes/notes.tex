@@ -1,0 +1,39 @@
+\documentclass[]{article}
+\usepackage[raggedright]{titlesec}
+\usepackage{braket}
+
+%opening
+\title{}
+\author{}
+
+\begin{document}
+
+\maketitle
+
+\section{Papers}
+\subsection{Cost function dependent barren plateaus in shallow parametrized quantum circuits}
+
+\begin{itemize}
+	\item Advantage of VQA are three-fold:
+	
+	\item 1: Allows for easy implementation of task specific algorithms, black box. Tailored quantum algorithms are intuitively hard to construct. 
+	
+	\item 2: Makes up for small qubit count by leveraging classical computer power. Many subroutines are outsourced to a classical computer, such as weight update, keeping the number of qubits low. 
+	
+	\item 3: For much the same reason, it keeps the circuits shallow as well, so it better handles low decoherence times. 
+	
+	\item There are few rigorous scaling results for VQA's. Must use heuristics, numerical experiments.
+
+	\item Exponentially vanishing gradient for global cost function, that is const functions evaluating operators living in exponentially large Hilbert spaces, for example measuring zero state for  $\braket{0|U^{\dagger} U(\theta)|0}$. Speculation: Parity and last qubit are local and not global operators.
+	
+	
+\end{itemize}
+
+
+\section{Own Notes}
+\subsection{Vanishing Gradient}
+"Cost function dependent barren plateaus in shallow parametrized quantum circuits" established that VQAs with local cost function(like parity or last qubit) have gradients that only vanish polynomially rather than exponentially with number of qubits $n$, given that the depth is $\log(n)$. Our Quantum Kernal Network allows for circuits of this scope. To add complexity, rather than making the circuits deeper and possible untrainable when entering the exponential vanishing regime, multiple shallow(and trainable) circuits can be stacked to provide a more flexible model. Since each circuit is shallow, its local gradiant may be estimated in a small number of shots, unlike the number of shots required for deep circuits. When applying the chain-rule to derive the total gradiant using the local gradiants, it may turn out tu be vanishing still, but the burden of precision is at any rate moved from the number of shots to the floating point precision of the classical computation.  
+
+No exploding gradient. Even if the gradient would become big, the parameters represent rotations, and large values would behave identically to small values. 
+
+\end{document}

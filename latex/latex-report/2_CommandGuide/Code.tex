@@ -1,0 +1,42 @@
+%=================================================
+%------------------- code ------------------------
+%=================================================
+
+%---- lstlisting -----
+\begin{lstlisting}[language=python]
+print("Hello, World!)
+\end{lstlisting}
+
+%------ minted --------
+\begin{minted}
+[
+frame=lines, % possible values are lines, leftline, topline, bottomlines and single
+framesep=2mm,
+baselinestretch=1.2,
+bgcolor=LightGray,    
+fontsize=\footnotesize,
+linenos,    % enables line numbers
+mathscape,  % enables math mode in code comments
+rulecolor=LightGray,  % changes the colour of the frame
+showspaces, % enables a special character to make spaces visible
+]
+{python}
+print("Hello, World!")
+\end{minted}
+
+% including code from a file
+\inputminted{cpp}{main.cpp}
+% import only part of the file
+\inputminted[firstline=2, lastline=12]{cpp}{main.cpp}
+% one-line code
+\mint{html}|<h2>Something <b>here</b></h2>|
+
+% captions, labels and the list of listings
+\begin{listing}[H]
+\inputminted{cpp}{main.cpp}
+\caption{Example from external file}
+\label{listing:1}
+\end{listing}
+% to print the list with all listing elements use \listoflistings
+\renewcommand\listoflistingscaption{List of source codes}
+\listoflistings

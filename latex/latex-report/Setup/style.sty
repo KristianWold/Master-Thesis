@@ -1,0 +1,178 @@
+%-------------------- begin style -------------------------
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{Setup/style}[Custom LaTeX style]
+
+%----------------- packages ------------------------
+
+%-------- standalone ---------
+\RequirePackage{standalone} %[subpreambles=true]
+
+%--------- encoding ----------
+\usepackage[utf8]{inputenc}        % Source file encoding
+%\usepackage[norsk, english]{babel} % typographic rules
+\usepackage[american]{babel} % typographic rules
+
+
+%--------- color ------------
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor} 
+
+%----- document formatting ---- 
+% Begin paragraphs with an empty line rather than an indent:
+\usepackage[parfill]{parskip} 
+%Set document margin (1 inch = 2.54cm):
+\usepackage[left=1.5in,right=1.2in,top=1in,bottom=1in]{geometry}
+% prevent orphan and widow lines
+\clubpenalty = 10000
+\widowpenalty = 10000
+
+%---- fonts and typography ------
+\usepackage{lmodern}           % Latin Modern
+\usepackage[final]{microtype}  % Improved typography
+\usepackage{enumitem}          % Format lists
+\setlist[itemize]{font = \upshape, before = \leavevmode}
+\setlist[enumerate]{font = \upshape, before = \leavevmode}
+\setlist[description]{font = \bfseries\sffamily, before = \leavevmode}
+\usepackage{siunitx}
+\usepackage{calrsfs}
+\usepackage{fontawesome} % Github icon, etc. \faGithub
+\usepackage{hologo}      % Logos, such as BibTeX
+
+%------ header and foot --------
+%\usepackage{fancyhdr}
+
+%------ sections layout --------
+\usepackage{appendix}
+%\usepackage{sectsty}
+%\sectionfont{\fontsize{12}{15}\selectfont}
+%\subsectionfont{\fontsize{10}{15}\selectfont}
+%\sectionfont{\centering \color{purple}} %centering and color
+%\subsectionfont{\color{purple}}  % sets color of subsections
+%\subsubsectionfont{\color{purple}}
+
+%---------- figure & tables ---------------
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{caption} % figure & table caption
+\captionsetup{labelfont={normal, bf}, font={sl}}  
+\usepackage{chngcntr}
+\usepackage{booktabs} % top- & midrule
+\usepackage{longtable} % tables that can span several pages
+
+%---------- math environment --------------
+\usepackage{mathtools}  % also loads amsmath
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage{xfrac}      % provides \sfrac
+\usepackage{bm} 
+\usepackage{bbm} 
+
+%---------- tikz environment --------------
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
+%------------- physics++ -----------------
+\usepackage{xparse}
+\usepackage{physics}
+\usepackage{chemformula} % Formula subscripts using \ch{}
+\usepackage{chemfig}
+
+%------------ frames -------------------
+\usepackage[framemethod=TikZ]{mdframed}
+\mdfsetup{skipabove=4pt,skipbelow=1pt}
+\mdfdefinestyle{MyFrame}{%
+    linecolor=black,
+    outerlinewidth=1pt,
+    roundcorner=10pt,
+    innertopmargin=\baselineskip,
+    innerbottommargin=\baselineskip,
+    innerrightmargin=10pt,
+    innerleftmargin=10pt,
+    backgroundcolor=gray!10!white}
+
+\usepackage{tikz}
+\usepackage[listings,theorems,skins,breakable]{tcolorbox}
+\tcbset{highlight math style={enhanced,
+  colframe=red,colback=white,arc=0pt,boxrule=2pt}} 
+  
+
+%--------- referencing ----------------
+\usepackage[obeyspaces, spaces, hyphens]{url} % typesetting URLs
+\urlstyle{sf}
+\usepackage{hyperref} % create hyperlinks within the document
+\hypersetup{          % set color of referenced items
+    colorlinks=true,
+    linkcolor=blue, % black
+    citecolor=red,  % black
+    filecolor=blue, % black     
+    urlcolor=blue,} % black 
+    
+\usepackage[nameinlink,capitalize]{cleveref} % must be loaded after hyperref  
+
+\crefname{equation}{Equation}{}
+
+\def\algorithmautorefname{Algorithm}
+
+\addto\extrasenglish{%
+  \renewcommand{\sectionautorefname}{Section}%
+  \renewcommand{\subsectionautorefname}{Section}%
+  \renewcommand{\subsubsectionautorefname}{Section}%
+}
+    
+%---------------- algorithm -------------------
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{algpascal}
+
+%------------------ code  ----------------------
+\usepackage{minted}     %Source Code Highlighting
+\usepackage{listings}   
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=none,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+
+%------------ TODO --------------
+% Add todo notes in the margin of the document
+\usepackage[
+% disable, %turn off todonotes
+  colorinlistoftodos, %enable a coloured square in the list of todos
+  textwidth=\marginparwidth, %set the width of the todonotes
+  textsize=scriptsize, %size of the text in the todonotes
+  ]{todonotes}
+\setlength{\marginparwidth}{2cm}
+
+%--------- bibliography -----------
+\usepackage{csquotes}
+\usepackage[
+    backend=biber,
+    style=numeric,
+    sorting=none,
+    backref,
+    natbib,
+    hyperref
+]{biblatex}
+
+%-------------------- end style ---------------------------

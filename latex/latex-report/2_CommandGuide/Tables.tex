@@ -1,0 +1,52 @@
+%=====================================================
+%---------------------- tables -----------------------
+%=====================================================
+
+% Table from input 
+%  table 
+\begin{table}[H]
+\caption{Table text}
+\centering
+\rowcolors{2}{gray!25}{white}
+\input{Tables/myTable}
+\label{tab:tab1}
+\end{table}
+
+% simple table 
+\begin{table}[H]
+\caption{Table text}
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+bla & bla & bla
+\\
+\hline 
+bla & bla & bla
+\\
+\hline
+\end{tabular}
+\label{tab:tab1}
+\end{table}
+
+% Alternating row colors
+\begin{table}[H]
+\caption{Table text}
+\centering
+\rowcolors{2}{gray!25}{white}
+\begin{tabular}{ccc}
+\hline
+\hline 
+$\alpha$ & $\beta$ & $\gamma$
+\\
+\hline 
+\hline 
+0.1 & 0.2 & 0.3
+\\
+0.4 & 0.5 & 0.6
+\\
+0.7 & 0.8 & 0.9
+\\
+\hline
+\end{tabular}
+\label{tab:tab1}
+\end{table}

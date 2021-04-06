@@ -1,0 +1,169 @@
+%==========================================================
+%-------------------- BEGIN PREAMBLE ----------------------
+%==========================================================
+%\documentclass[12pt]{scrbook}
+%\documentclass[12pt, twoside=true]{scrbook} % sidetall nede
+%\documentclass[12pt, openany]{book} % brukt
+
+\documentclass[12pt, oneside]{book}
+
+%\documentclass[12pt, twoside]{book}
+
+
+%\setkomafont{disposition}{\normalfont\bfseries}
+\usepackage{Setup/style}
+\usepackage{siunitx}
+\input{Setup/macros}
+\addbibresource{bibliography.bib}   % Bibliography
+
+% Set graphics path
+\graphicspath{{latex/figures/}}
+
+%\usepackage[titles]{tocloft}   % fix spacing in \listoffigures
+%\cftsetindents{figure}{0em}{3.5em}
+
+\usepackage[T1]{fontenc}
+\usepackage[newcentury]{quotchap}
+\usepackage{blindtext}
+
+\usepackage[nouppercase]{scrlayer-scrpage} % header no upper case
+\pagestyle{scrheadings}
+
+% no page numbering on begin part and chapter pages 
+\usepackage{etoolbox}
+\patchcmd{\part}{plain}{empty}{}{}
+\patchcmd{\chapter}{plain}{empty}{}{}
+
+
+\usepackage{biblatex}
+\addbibresource{bibliography.bib}
+\raggedbottom
+
+%==========================================================
+%-------------------- END PREAMBLE ------------------------
+%==========================================================
+
+
+
+%==========================================================
+%-------------------- MAIN CONTENT ------------------------
+%==========================================================
+\begin{document}
+
+%==========================================================
+%------------------------ preface -------------------------
+%==========================================================
+
+%------------------ front page -----------------------
+\input{4_Preface/1_Frontpage}
+\pagenumbering{gobble}
+
+%------------------ first page -----------------------
+\input{4_Preface/2_Firstpage}
+\pagenumbering{gobble}
+\clearpage 
+
+%------------------ abstract -------------------------
+\frontmatter      % Folios in Roman numerals
+\input{4_Preface/3_Abstract}
+\newpage 
+
+%--------------- acknowledgements --------------------
+\input{4_Preface/4_Acknowledgements}
+\newpage
+
+%----------------- abbreviations ---------------------
+\input{4_Preface/5_Abbreviations}
+\newpage
+
+%-------------------- glossary -----------------------
+\input{4_Preface/6_Glossary}
+\newpage 
+
+%------------------ nomenclature ---------------------
+\input{4_Preface/7_Nomenclature}
+\newpage 
+
+%--------------- table of contents --------------------
+\tableofcontents    
+\newpage 
+\mainmatter       % Folios in Arabic numerals for rest of document
+
+
+%==========================================================
+%------------- introduction and objective -----------------
+%==========================================================
+
+%------------------ introduction ---------------------
+\input{5_Chapters/Part0/1_Introduction}
+%------------------- objective -----------------------
+\input{5_Chapters/Part0/2_Objective}
+%------------------- structure -----------------------
+\input{5_Chapters/Part0/3_Structure}
+
+
+%==========================================================
+%----------- part 1: theoretical background ---------------
+%==========================================================
+\part{Theoretical Background}
+%-------------------- examples -----------------------
+\input{5_Chapters/Part1/0_Examples} 
+%-------------- bayesian inference -------------------
+\input{5_Chapters/Part1/1_Bayesian} 
+\input{5_Chapters/Part1/2_LFI}
+\input{5_Chapters/Part1/3_Density_Estimation} 
+
+
+%==========================================================
+%------- part 2: methodology & computational approach -----
+%==========================================================
+\part{Methodology \& Computational Approach}
+%-------------------- placeholder --------------------
+\input{5_Chapters/Part2/0_Methodology}
+
+
+%==========================================================
+%-------------- part 3: results & discussion --------------
+%==========================================================
+
+\part{Results \& Discussion}
+%-------------------- placeholder --------------------
+\input{5_Chapters/Part3/0_Results_discussion}
+
+
+%==========================================================
+%------------ part 4: conclusion & future -----------------
+%==========================================================
+
+\part{Conclusion \& Future Research}
+%-------------------- placeholder --------------------
+\input{5_Chapters/Part4/0_Conclusion}
+
+%==========================================================
+%--------------------- appendices -------------------------
+%==========================================================
+
+\appendix           % "Chapter" is renamed "Appendix"
+\part*{Appendices}
+\addcontentsline{toc}{part}{Appendices}
+
+
+%\appendixpage       % Similar to \part*{Appendices}, but appears in TOC
+
+%--------------------- appendix A --------------------
+\input{6_Appendix/A_Appendix}
+%--------------------- appendix B --------------------
+\input{6_Appendix/B_Appendix} 
+
+
+%==========================================================
+%-------------------- bibliography-------------------------
+%==========================================================
+\newpage 
+\printbibliography[heading=bibintoc, title={References}]
+
+
+\end{document}
+%==========================================================
+% ------------------- END OF MAIN CONTENT -----------------
+%==========================================================

@@ -1,0 +1,75 @@
+%==========================================================
+%------------------------- misc ---------------------------
+%==========================================================
+
+%-------- useful ----------
+“ ”       
+“”
+
+%--------- misc -----------
+
+% Chemformula
+\ch{3 H2O}
+
+%----------------- TODO -------------------
+% beside text
+\todo{Is it possible to add a subsubparagraph?}
+% inline of text
+\todo[inline,color=green]{I think that a summary of this exciting chapter should be added.}
+
+%-------------- framed environment ---------------
+% mdframed
+\begin{mdframed}[style=MyFrame]
+    $E = m c^2$
+\end{mdframed}
+
+% tcolorbox
+% default: red frame
+\begin{equation*}
+\tcbhighmath[drop fuzzy shadow=blue]
+{
+    \begin{aligned}
+        E = m c^2
+    \end{aligned}
+}
+\end{equation*} 
+
+% with blue frame
+\begin{equation*}
+\tcbhighmath[colframe=blue,drop fuzzy shadow=black]
+{
+    \begin{aligned}
+        E = m c^2
+    \end{aligned}
+}
+\end{equation*}
+
+%------------- cross-referencing -----------------
+You can redefine the prefix for the autoref command. For instance for the sections use
+\def\sectionautorefname{New prefix for the sections}
+More generally
+\def\<type>autorefname{<new name>}
+Followed by
+\addto\extrasenglish{%
+  \renewcommand{\sectionautorefname}{Section}%
+}
+
+%href problem:
+%\section{blabla $x$}
+%gives error msg:
+%token not allowed in a pdf string
+%solution:
+%\section{blabla \texorpdfstring{$x$}{Lg}}
+
+
+
+%------------------ algorithm ---------------------
+
+\alglanguage{pseudocode}  % or \alglanguage{pascal}
+\begin{algorithm}[H]
+\caption{<your caption for this algorithm>}
+\label{<your label for references later in your document>}
+\begin{algorithmic}[1]  %[1] no. each line, [5] each 5th etc
+<algorithmic environment>
+\end{algorithmic}
+\end{algorithm}

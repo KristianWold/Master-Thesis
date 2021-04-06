@@ -1,0 +1,65 @@
+%---------------- custom style -----------------------
+%----- equation numbering -------
+\numberwithin{equation}{chapter}     % number within chapter
+%\numberwithin{equation}{section}     % number within section
+%\numberwithin{equation}{subsection} % number within subsection
+
+\renewcommand\thepart{\Roman{part}}
+
+%----- fig & table numbering -----
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+
+% Easily insert sources in images
+\newcommand{\source}[1]{\vspace{-4pt} \caption*{\hfill \footnotesize{Source: {#1}} } } 
+
+%--------- list of abbreviations ---------
+\newcommand{\abbrlabel}[1]{\makebox[3cm][l]{\textbf{#1}}}
+\newenvironment{abbreviations}{\begin{list}{}{\renewcommand{\makelabel}{\abbrlabel}}}{\end{list}}
+
+%----------------- tikz ---------------------------
+% Define block styles
+\tikzstyle{startstop} = [rectangle, rounded corners,
+    minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, 
+    trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm,
+    minimum height=1cm, text centered, text width=3cm, 
+    draw=black, fill=orange!30] 
+\tikzstyle{decision} = [diamond, minimum width=3cm, 
+    minimum height=1cm, text centered,text width=2cm, 
+    draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
+
+
+%---------- insert custom LaTeX commands ----------
+\newcommand*{\QED}{\hfill\ensuremath{\square}}
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\rss}{\mathrm{RSS}}
+\newcommand{\MSE}{\mathrm{MSE}}
+\newcommand{\Err}{\mathrm{Err}}
+\newcommand{\err}{\mathrm{err}}
+\newcommand{\bias}{\mathrm{Bias}}
+\newcommand{\Var}{\mathrm{Var}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\cv}{CV}
+\DeclareMathOperator*{\df}{df}
+\newcommand{\T}{\mathcal{T}}
+\newcommand{\e}[1]{\times 10^{#1}}  % Powers of 10 notation
+\newcommand{\ie}{\leavevmode\unskip, i.e.,\xspace}
+\newcommand{\eg}{\leavevmode\unskip, e.g.,\xspace}
+\newcommand{\dash}{\textthreequartersemdash\xspace}
+
+\NewDocumentCommand{\cw}{v}{%
+\textbf{\texttt{\textcolor{Blue}{#1}}}%
+}
+
