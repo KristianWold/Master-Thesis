@@ -21,6 +21,24 @@ class Ansatz():
         return circuit
 
 
+class Regularizer():
+    def __call__(self, circuit, data_register, weight):
+        n_qubits = data_register.size
+        n_weights = weight.shape[0]
+
+        for i, w in enumerate(weight[:n_weights / 2]):
+            circuit.cx(data_register[2 * i], data_register[2 * i + 1])
+            circuit.ry(w, data_register[2 * i])
+            circuit.cx(data_register[2 * i], data_register[2 * i + 1])
+
+        for i, w in enumerate(weight[n_weights / 2:]):
+            circuit.cx(data_register[2 * i + 1], data_register[2 * i + 2])
+            circuit.ry(w, data_register[2 * i + 1])
+            circuit.cx(data_register[2 * i + 1], data_register[2 * i + 2])
+
+        return circuit
+
+
 class SwapTest():
     def __call__(self, circuit, register_a, register_b, ancilla_swap):
         circuit.h(ancilla_swap)
@@ -155,7 +173,7 @@ class ParallelModel():
 
 
 class RegularizedModel():
-    def __init__(self, n_features=None, n_targets=None, reps=1, alpha=None, train_map=True,  backend=None, shots=1000, optimizer=None):
+    def __init__(self, n_features=None, n_targets=None, reps=1, alpha=None, reverse=False, train_map=True,  backend=None, shots=1000, optimizer=None):
         self.encoder = RegularizedEncoder()
         self.ansatz = Ansatz()
         self.sampler = Parity()
@@ -203,7 +221,6 @@ class RegularizedModel():
                     circuit, data_register, self.theta[start:end])
 
             circuit.measure(data_register, classical)
-
             circuit_list.append(circuit)
 
         transpiled_list = qk.transpile(circuit_list, backend=self.backend)

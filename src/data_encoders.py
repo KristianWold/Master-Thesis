@@ -20,14 +20,41 @@ class Encoder():
 
 
 class RegularizedEncoder():
-    def __call__(self, circuit, data_register, data, theta):
+    def __init__(self, reg=True):
+        self.reg = reg
+
+    def __call__(self, circuit, data_register, data, params):
+        n_qubits = data_register.size
+        n_features = data.shape[0]
+        n_params = params.shape[0]
 
         for i, x in enumerate(data):
-            circuit.ry(x, data_register[i + 1])
-            circuit.cx(data_register[i], data_register[i + 1])
-            circuit.ry(theta[i], data_register[i])
-            circuit.cx(data_register[i], data_register[i + 1])
-            circuit.ry(-x, data_register[i + 1])
+            circuit.ry(x, data_register[i])
+
+        if n_qubits > n_features:
+            for i in range(n_features, n_qubits):
+                circuit.h(data_register[i])
+
+        for i, w in enumerate(params[:n_params // 2]):
+            circuit.cx(data_register[2 * i], data_register[2 * i + 1])
+            circuit.ry(w, data_register[2 * i])
+            circuit.cx(data_register[2 * i], data_register[2 * i + 1])
+
+        for i, w in enumerate(params[n_params // 2:]):
+            circuit.cx(data_register[2 * i + 1], data_register[2 * i + 2])
+            circuit.ry(w, data_register[2 * i + 1])
+            circuit.cx(data_register[2 * i + 1], data_register[2 * i + 2])
+
+        if self.reg:
+            for i, x in enumerate(data):
+                circuit.ry(-x, data_register[i])
+        else:
+            for i, x in enumerate(data):
+                circuit.ry(x, data_register[i])
+
+        if n_qubits > n_features:
+            for i in range(n_features, n_qubits):
+                circuit.h(data_register[i])
 
         return circuit
 

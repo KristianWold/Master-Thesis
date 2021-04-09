@@ -25,7 +25,7 @@ class FIM():
 
         self.fim = 1 / n_samples * gradient_flattened.T @ gradient_flattened
 
-    def eigen(self, sort=False):
+    def eigen(self, sort=True):
         self.eigen = np.linalg.eig(self.fim)[0]
         if sort:
             self.eigen[::-1].sort()
