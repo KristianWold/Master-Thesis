@@ -51,7 +51,7 @@ class NeuralNetwork():
         y_pred = self.a[-1]
 
         if include_loss:
-            delta = (y_pred - y)
+            delta = (y_pred - y) / (y_pred * (1 - y_pred))
         else:
             delta = np.ones((n_samples, 1))
 

@@ -5,12 +5,22 @@ from math import floor
 
 
 class Encoder():
+
+    def __init__(self, mode="y"):
+        self.mode = mode
+
     def __call__(self, circuit, data_register, data):
         n_qubits = data_register.size
         n_features = data.shape[0]
 
         for i, x in enumerate(data):
-            circuit.ry(x, data_register[i])
+            if self.mode == "x":
+                circuit.rx(x, data_register[i])
+            if self.mode == "y":
+                circuit.ry(x, data_register[i])
+            if self.mode == "z":
+                circuit.h(data_register[i])
+                circuit.rz(x, data_register[i])
 
         if n_qubits > n_features:
             for i in range(n_features, n_qubits):

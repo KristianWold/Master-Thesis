@@ -43,7 +43,7 @@ class LastBit():
         shots = sum(counts.values())
         output = 0
         for bitstring, samples in counts.items():
-            if bitstring[-1] == "1":
+            if bitstring[0] == "1":
                 output += samples
 
         output = output / shots
