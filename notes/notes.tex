@@ -1,7 +1,23 @@
 \documentclass[]{article}
 \usepackage[raggedright]{titlesec}
 \usepackage{braket}
+\usepackage{amsfonts}
 
+%--------- bibliography -----------
+\usepackage{csquotes}
+\usepackage[
+    backend=biber,
+    style=numeric,
+    sorting=none,
+    backref,
+    natbib,
+    hyperref
+]{biblatex}
+
+%-------------------- end style ---------------------------
+
+
+\addbibresource{bibliography.bib}
 %opening
 \title{}
 \author{}
@@ -11,7 +27,7 @@
 \maketitle
 
 \section{Papers}
-\subsection{Cost function dependent barren plateaus in shallow parametrized quantum circuits}
+\subsection{Cost Function Dependent Barren Plateaus in Shallow Parameterized Quantum Circuits \cite{Sakurai}}
 
 \begin{itemize}
 	\item Advantage of VQA are three-fold:
@@ -24,16 +40,34 @@
 	
 	\item There are few rigorous scaling results for VQA's. Must use heuristics, numerical experiments.
 
-	\item Exponentially vanishing gradient for global cost function, that is const functions evaluating operators living in exponentially large Hilbert spaces, for example measuring zero state for  $\braket{0|U^{\dagger} U(\theta)|0}$. Speculation: Parity and last qubit are local and not global operators.
+	\item Exponentially vanishing gradient for global cost function, that is, cost functions evaluating operators living in exponentially large Hilbert spaces, for example measuring zero state for  $\braket{0|U^{\dagger} U(\theta)|0}$. Speculation: Parity(is it tho?) and last bit are local and not global operators.
 	
 	
 \end{itemize}
 
 
 \section{Own Notes}
-\subsection{Vanishing Gradient}
-"Cost function dependent barren plateaus in shallow parametrized quantum circuits" established that VQAs with local cost function(like parity or last qubit) have gradients that only vanish polynomially rather than exponentially with number of qubits $n$, given that the depth is $\log(n)$. Our Quantum Kernal Network allows for circuits of this scope. To add complexity, rather than making the circuits deeper and possible untrainable when entering the exponential vanishing regime, multiple shallow(and trainable) circuits can be stacked to provide a more flexible model. Since each circuit is shallow, its local gradiant may be estimated in a small number of shots, unlike the number of shots required for deep circuits. When applying the chain-rule to derive the total gradiant using the local gradiants, it may turn out tu be vanishing still, but the burden of precision is at any rate moved from the number of shots to the floating point precision of the classical computation.  
+\subsection{Why Quantum Machine Learning?}
+Why Quantum Machine Learning, or Quantum Computing at all? A common observation that motivates quantum computing, although not the whole story at all, is the stricking fact than quantum information of a system made of quantum entities is in a sense "bigger" than the classical information of a comparable classical system. In the case of bits versus qubits, $n$ classical bits allows you to store the value of $n$ boolean variables $a \in [0,1]$, whereas you need $2^n$ amplitudes $\alpha \in \mathbb{C}$ to describe the state of $n$ quantum bits, or qubits. In other words, the (Hilbert )space in which the qubit lives in exponentially bigger than that of the classical counterpart. In the context of parameterized quantum circuits, one may prepare a state in the exponentially large Hilbert space by applying some simple quantum operations to a set qubits that are all initialized in the zero-state.
 
-No exploding gradient. Even if the gradient would become big, the parameters represent rotations, and large values would behave identically to small values. 
+(Figure to come)
+
+By varying $\theta_i \in [0, 2\pi]$, one can attain different states. A crucial thing to note is that we are not able to prepare an arbitrary state using this ansatz as it much too constrained and simple: The exponentially large space is not available too us. One might try to remedy this by introducins a more complex ansatz:
+
+(Figure to come)
+
+We now have an ansatz whose number of operations scales polynomially in the number of qubits, and the added complexity enables us to reach a greater part of Hilbert space, but only a polynomially large part of it, which is vanishingly small compared to its full size. To have access to the whole space, one would in fact need to perform exponentially many operations, which practically intractable to do (Nielsen, 4.5.4). 
+
+Does this mean that the supposed power of quantum computation is practically inaccessible to us? No. Even though we only reach a very small part of Hilbert space using "cheap" ansatzes, these states we do reach might be very useful for solving a particular problem. Moreover, these states might be classically intractable to compute (source to come), meaning the information they represent is not practical to determine using classical computers. They are however efficiently prepared using quantum computers, as the number of quantum operations needed to be applied is by construction only polynomial.
+
+How can one leverage this in a machine learning setting? A common approach is to use variants of the previous ansatzes to encode features to qubits by performing rotations, thus embedding the data in a high dimensional quantum state. Subsequent parameterized operations on the qubits then applies powerful transformations to the embedded data in a high dimensional space. Such methods are often described as quantum kernel methods, because of their similarity to classical kernel methods in machine learning.
+
+\subsection{Vanishing Gradient}
+"Cost function dependent barren plateaus in shallow parametrized quantum circuits" established that VQAs with local cost function(like parity or last qubit) have gradients that only vanish polynomially rather than exponentially with number of qubits $n$, given that the depth is $\log(n)$. Our Quantum Kernel Network allows for circuits of this scope. To add complexity, rather than making the circuits deeper and possible untrainable when entering the exponential vanishing regime, multiple shallow(and trainable) circuits can be stacked to provide a more flexible model. Since each circuit is shallow, its local gradiant may be estimated in a small number of shots, unlike the number of shots required for deep circuits. When applying the chain-rule to derive the total gradiant using the local gradiants, it may turn out to be vanishing still, but the burden of precision is at any rate moved from the number of shots to the floating point precision of the classical computation.  
+
+No exploding gradient. Even if the gradient would become big, the parameters represent rotations, and large values would behave identically to small values. Vanishing gradient? No activation to saturate, try to train on step function, and look at derivative of training for QKN and sigmoid network
+
+\newpage
+\printbibliography[heading=bibintoc, title={References}]
 
 \end{document}
