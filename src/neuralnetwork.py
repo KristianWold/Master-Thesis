@@ -51,7 +51,7 @@ class NeuralNetwork():
         y_pred = self.a[-1]
 
         if include_loss:
-            delta = (y_pred - y) / (y_pred * (1 - y_pred))
+            delta = (y_pred - y)
         else:
             delta = np.ones((n_samples, 1))
 
@@ -126,7 +126,7 @@ class NeuralNetwork():
         self = pickle.load(open(filename, "rb"))
 
 
-def sequential_qnn(q_bits=None, dim=None, reps=None, scale=None, backend=None, shots=None, lr=0.01):
+def sequential_qnn(q_bits=None, dim=None, reps=None, scale=None, sampler=LastBit(), backend=None, shots=None, lr=0.01):
     L = len(dim)
     if scale == None:
         scale = (L - 2) * [2 * np.pi]
@@ -137,7 +137,7 @@ def sequential_qnn(q_bits=None, dim=None, reps=None, scale=None, backend=None, s
         in_dim = dim[i]
         out_dim = dim[i + 1]
         layer = QLayer(n_qubits=q_bits[i], n_features=in_dim, n_targets=out_dim, encoder=Encoder(
-        ), ansatz=Ansatz(), sampler=Parity(), reps=reps, scale=scale[i], backend=backend, shots=shots)
+        ), ansatz=Ansatz(), sampler=sampler, reps=reps, scale=scale[i], backend=backend, shots=shots)
         layers.append(layer)
 
     optimizer = Adam(lr=lr)

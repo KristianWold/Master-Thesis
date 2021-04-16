@@ -13,13 +13,13 @@ In other words, the (Hilbert )space in which the qubits live in exponentially bi
 counterpart. In the context of parameterized quantum circuits, one may prepare a state in the exponentially
 large Hilbert space by applying some simple quantum operations to a set qubits that are all initialized in the zero-state.
 
-(Figure to come)
+<img src="simple_ansats.png" width="150" align="center"/>
 
 By varying $\theta_i \in [0, 2\pi]$, one can attain different states. A crucial thing to note is that we are not
 able to prepare an arbitrary state using this ansatz as it much too constrained and simple: The exponentially large
 space is not available to us. One might try to remedy this by introducing a more complex ansatz:
 
-(Figure to come)
+<img src="advanced_ansats.png" width="300" align="center"/>
 
 We now have an ansatz whose number of operations scales polynomially in the number of qubits(in this case quadratic), and the
 added complexity enables us to reach a greater part of Hilbert space. Still, it is only a polynomially large part of it, which
@@ -28,11 +28,29 @@ many operations, which is practically intractable to do (Nielsen, 4.5.4).
 
 Does this mean that the supposed power of quantum computation is practically inaccessible to us? No. Even though we
 only reach a very small part of Hilbert space using "cheap" ansatzes, the states we do reach might be very useful
-for solving a particular problem. Moreover, these states might be classically intractable to compute (source to come),
+for solving a particular problem. Moreover, these states might be classically intractable to compute (Abbas et. al.),
 meaning the information they represent is not practical to determine using classical computers. They are however efficiently
 prepared using quantum computers, as the number of quantum operations needed to be applied is by construction only polynomial.
 
-How can one leverage this in a machine learning setting? A common approach is to use variants of the previous ansatzes to encode features to qubits by performing rotations, thus embedding the data in a high dimensional quantum state. Subsequent parameterized operations on the qubits then applies powerful transformations to the embedded data in a high dimensional space. Such methods are often described as quantum kernel methods, because of their similarity to classical kernel methods in machine learning.
+How can one leverage this in a machine learning setting? A common approach is to use variants of the previous ansatzes to encode features
+to qubits by performing rotations, thus embedding the data in a high dimensional quantum state. Subsequent parameterized operations on the
+qubits then applies powerful transformations to the embedded data in a high dimensional space. Such methods are often described as quantum kernel methods,
+because of their similarity to classical kernel methods in machine learning.
+
+===== Literature =====
+
+To prepare for this project, we recommend looking over chapter 4 of Michael A. Nielsen et. al.
+(http://mmrc.amss.cas.cn/tlb/201702/W020170224608149940643.pdf), with some solutions https://farice.github.io/chapter4/. 4.1-4.4 is highly relevant and gives a
+good overview of the fundamentals of various quantum gates. Feel free to do exercises you find helpful to build intuition.
+
+For a overview of parameterized quantum circuits(PQC) in the machine learning context, we recommend having a look at Benedetti et. al.(https://arxiv.org/pdf/1906.07682.pdf).
+
+For some specific implementations of PQC for machine learning, with some results and benchmarks against classical methods, we recommend Abbas et. al. (https://arxiv.org/pdf/2011.00027.pdf).
+The paper is a bit technical in its presentation of various tools used in its analysis, but this is not important for our project. Focus on "2 Quantum neural networks", "4.3 Trainability", "5 Conclusion" and
+"A Details of the quantum models".
+
+For a good overview of qiskit and practical examples of quantum circuits, we recommend "Getting startet with Qiskit"(https://qiskit.org/documentation/tutorials/circuits/1_getting_started_with_qiskit.html).
+If you want to go further, feel free to check out the excellent book on Qiskit(https://qiskit.org/textbook/ch-states/introduction.html).
 
 For this project, you will perform quantum machine learning on the two first targets of Scikit learn iris data set. The data can be obtained the following way
 
