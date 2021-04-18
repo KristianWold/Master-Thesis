@@ -19,7 +19,7 @@ The [notes folder](https://github.com/KristianWold/Master-Thesis/tree/main/notes
 The [results folder](https://github.com/KristianWold/Master-Thesis/tree/main/results) contains pickled models in 
 [data](https://github.com/KristianWold/Master-Thesis/tree/main/results/data), and generated plots in [figures](https://github.com/KristianWold/Master-Thesis/tree/main/results/figures).
 
-The [src folder] contains the source code. For details, see [src readme]().
+The [src folder](https://github.com/KristianWold/Master-Thesis/tree/main/src) contains the source code. For details, see [src readme]().
 
 
 
