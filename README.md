@@ -2,7 +2,7 @@
 This project is still in development. Bugs are still likely present and numerical results are not final.
 
 ## Overview
-The aim of this thesis is to study parameterized quantum circuits used as machine learning models, optimized using gradient based methods.
+The aim of this thesis is to study parameterized quantum circuits used as machine learning models, optimized using gradient-based methods.
 
 ## Structure
 The [latex folder](https://github.com/KristianWold/Master-Thesis/tree/main/latex) contains the LaTeX source for building the thesis, as well as 
