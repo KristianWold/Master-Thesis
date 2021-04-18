@@ -5,6 +5,14 @@ from math import floor
 
 
 class Encoder():
+    """Quantum circuit for encoding data by Pauli rotations.
+
+    Parameters
+    ----------
+    mode : str
+        Specify what Pauli rotations to use. "x", "y" and "z" corresponds
+        to Rx, Ry and Rz rotation, respectivly.
+    """
 
     def __init__(self, mode="y"):
         self.mode = mode
@@ -22,6 +30,7 @@ class Encoder():
                 circuit.h(data_register[i])
                 circuit.rz(x, data_register[i])
 
+        # apply Hadamard on latent qubits
         if n_qubits > n_features:
             for i in range(n_features, n_qubits):
                 circuit.h(data_register[i])

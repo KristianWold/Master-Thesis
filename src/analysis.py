@@ -7,11 +7,26 @@ from utils import *
 
 
 class FIM():
+    """Empirical Fisher Information Matrix
+
+    Parameters
+    ----------
+    model :
+        Parameterized model
+    """
+
     def __init__(self, model):
         self.model = model
         self.fim = None
 
     def fit(self, x):
+        """Calculate the FIM for the given model over the input data x
+
+        Parameters
+        ----------
+        x : ndarray
+            input data
+        """
         n_samples = x.shape[0]
 
         self.model.backward(x, samplewise=True, include_loss=False)
@@ -26,12 +41,30 @@ class FIM():
         self.fim = 1 / n_samples * gradient_flattened.T @ gradient_flattened
 
     def eigen(self, sort=True):
+        """Calculate the eigenvalue spectrum of the FIM.
+
+        Parameters
+        ----------
+        sort : boolean
+            Will sort the results eigenvalues in decending order if True.
+
+        Notes
+        -----
+        Must be called after self.fit(x).
+        """
+
         self.eigen = np.linalg.eig(self.fim)[0]
         if sort:
             self.eigen[::-1].sort()
         return np.abs(self.eigen)
 
     def fisher_rao(self):
+        """Calculate the Fisher-Rao metric.
+
+        Notes
+        -----
+        Must be called after self.fit(x).
+        """
         weight = self.model.weight
 
         weight_flattened = []
@@ -46,6 +79,14 @@ class FIM():
 
 
 def trajectory_length(x):
+    """Calculate the trajectory length of a discretized curve.
+
+    Parameters
+    ----------
+    x : ndarray
+        Discretized curve.
+    """
+
     diff = (x[1:] - x[:-1])
     diff = np.append(diff, (x[0] - x[-1]).reshape(1, -1), axis=0)
     accum = np.sum(diff**2, axis=1)
@@ -54,6 +95,8 @@ def trajectory_length(x):
 
 
 def trajectory_curvature(x):
+    """Not implemented
+    """
     diff = (x[1:] - x[:-1])
     dot = np.matmul()
     accum = np.sum(diff**2, axis=1)
