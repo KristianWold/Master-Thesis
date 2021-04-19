@@ -9,7 +9,7 @@ from utils import *
 
 
 class Ansatz():
-    def __init__(self, blocks=["ry", "entangle"], reps=2):
+    def __init__(self, blocks=["entangle", "ry"], reps=1):
         self.blocks = blocks
         self.reps = reps
 
@@ -44,7 +44,7 @@ class Ansatz():
 
     def calculate_n_weights(self, n_qubits):
         self.n_qubits = n_qubits
-        self.n_weights_per_target = 2 * self.reps * self.n_qubits
+        self.n_weights_per_target = self.reps * self.n_qubits
 
 
 class Ansatz2():
