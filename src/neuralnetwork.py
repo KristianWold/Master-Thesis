@@ -2,20 +2,24 @@ import numpy as np
 import qiskit as qk
 import pickle
 from tqdm.notebook import tqdm
+from copy import deepcopy
 
 from optimizers import *
 from layers import *
 from utils import *
 from parametrizations import *
 from samplers import *
+from costfunction import *
 
 
 class NeuralNetwork():
-    def __init__(self, layers=None, optimizer=None):
+    def __init__(self, layers=None, cost=MSE(), optimizer=Adam(lr=0.1)):
         self.layers = layers
+        self.cost = cost
+        self.optimizer = optimizer
+
         self.layers[0].last_layer = True
         self.dim = []
-        self.optimizer = optimizer
 
         if not self.layers == None:
             for layer in self.layers:
@@ -43,17 +47,14 @@ class NeuralNetwork():
         self(x, verbose=verbose)
         return self.a[-1]
 
-    def backward(self, x, y=None, samplewise=False, include_loss=True):
+    def backward(self, x, y=None, samplewise=False):
         n_samples = x.shape[0]
         self.weight_gradient_list = []
 
         self(x)
         y_pred = self.a[-1]
 
-        if include_loss:
-            delta = (y_pred - y)
-        else:
-            delta = np.ones((n_samples, 1))
+        delta = self.cost.derivative(y_pred, y)
 
         for i, layer in reversed(list(enumerate(self.layers))):
             weight_gradient, delta = layer.grad(
@@ -126,7 +127,16 @@ class NeuralNetwork():
         self = pickle.load(open(filename, "rb"))
 
 
-def sequential_qnn(q_bits=None, dim=None, reps=None, scale=None, sampler=LastBit(), backend=None, shots=None, lr=0.01):
+def sequential_qnn(n_qubits=None,
+                   dim=None,
+                   encoder=Encoder(),
+                   ansatz=Ansatz(reps=1),
+                   sampler=LastBit(),
+                   scale=None,
+                   cost=MSE(),
+                   optimizer=Adam(lr=0.1),
+                   backend=None,
+                   shots=None):
     L = len(dim)
     if scale == None:
         scale = (L - 2) * [2 * np.pi]
@@ -136,17 +146,30 @@ def sequential_qnn(q_bits=None, dim=None, reps=None, scale=None, sampler=LastBit
     for i in range(L - 1):
         in_dim = dim[i]
         out_dim = dim[i + 1]
-        layer = QLayer(n_qubits=q_bits[i], n_features=in_dim, n_targets=out_dim, encoder=Encoder(
-        ), ansatz=Ansatz(), sampler=sampler, reps=reps, scale=scale[i], backend=backend, shots=shots)
+
+        _encoder = deepcopy(encoder)
+        _ansatz = deepcopy(ansatz)
+        layer = QLayer(n_qubits=n_qubits[i],
+                       n_features=in_dim,
+                       n_targets=out_dim,
+                       encoder=_encoder,
+                       ansatz=_ansatz,
+                       sampler=sampler,
+                       scale=scale[i],
+                       backend=backend,
+                       shots=shots)
         layers.append(layer)
 
-    optimizer = Adam(lr=lr)
-    network = NeuralNetwork(layers, optimizer)
+    network = NeuralNetwork(layers, cost=cost, optimizer=optimizer)
 
     return network
 
 
-def sequential_dnn(dim=None, bias=True, scale=None, lr=0.01):
+def sequential_dnn(dim=None,
+                   bias=True,
+                   scale=None,
+                   cost=MSE(),
+                   optimizer=Adam(lr=0.1)):
     L = len(dim)
 
     if scale == None:
@@ -160,7 +183,6 @@ def sequential_dnn(dim=None, bias=True, scale=None, lr=0.01):
                       activation=Sigmoid(), bias=bias)
         layers.append(layer)
 
-    optimizer = Adam(lr=lr)
-    network = NeuralNetwork(layers, optimizer)
+    network = NeuralNetwork(layers, cost=cost, optimizer=optimizer)
 
     return network

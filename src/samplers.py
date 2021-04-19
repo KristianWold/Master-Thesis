@@ -4,19 +4,31 @@ from math import ceil
 from math import floor
 
 
-def parity_of_bitstring(bitstring):
-    binary = [int(i) for i in bitstring]
-    parity = sum(binary) % 2
-
-    return parity
-
-
 class Parity():
     def __call__(self, counts):
         shots = sum(counts.values())
         output = 0
         for bitstring, samples in counts.items():
-            if parity_of_bitstring(bitstring):
+            if self._parity_of_bitstring(bitstring):
+                output += samples
+
+        output = output / shots
+
+        return output
+
+    def _parity_of_bitstring(self, bitstring):
+        binary = [int(i) for i in bitstring]
+        parity = sum(binary) % 2
+
+        return parity
+
+
+class ZeroBit():
+    def __call__(self, counts):
+        shots = sum(counts.values())
+        output = 0
+        for bitstring, samples in counts.items():
+            if not "1" in bitstring:
                 output += samples
 
         output = output / shots

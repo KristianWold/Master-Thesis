@@ -17,7 +17,7 @@ class Encoder():
     def __init__(self, mode="y"):
         self.mode = mode
 
-    def __call__(self, circuit, data_register, data):
+    def __call__(self, circuit, data_register, weight, data):
         n_qubits = data_register.size
         n_features = data.shape[0]
 
@@ -36,6 +36,10 @@ class Encoder():
                 circuit.h(data_register[i])
 
         return circuit
+
+    def calculate_n_weights(self, n_qubits):
+        self.n_qubits = n_qubits
+        self.n_weights_per_target = 0
 
 
 class RegularizedEncoder():

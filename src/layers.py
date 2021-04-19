@@ -52,23 +52,37 @@ class Dense():
         self.weight = np.random.normal(
             0, 1, (self.n_features + self.bias, self.n_targets))
 
-        #std = 1 / np.sqrt(self.n_targets)
+        # std = 1 / np.sqrt(self.n_targets)
         # self.weight = np.random.uniform(
         #    -std, std, (self.n_features + self.bias, self.n_targets))
 
 
 class QLayer():
-    def __init__(self, n_qubits=None, n_features=None, n_targets=None, reps=1, scale=1, encoder=None, ansatz=None, sampler=None, backend=None, shots=1000):
+    def __init__(self,
+                 n_qubits=None,
+                 n_features=None,
+                 n_targets=None,
+                 scale=1,
+                 encoder=None,
+                 ansatz=None,
+                 sampler=None,
+                 backend=None,
+                 shots=1000):
+
         self.n_qubits = n_qubits
         self.n_features = n_features
         self.n_targets = n_targets
-        self.reps = reps
         self.scale = scale
         self.encoder = encoder
         self.ansatz = ansatz
         self.sampler = sampler
         self.backend = backend
         self.shots = shots
+
+        self.encoder.calculate_n_weights(self.n_qubits)
+        self.ansatz.calculate_n_weights(self.n_qubits)
+        self.n_weights_per_target = self.encoder.n_weights_per_target + \
+            self.ansatz.n_weights_per_target
 
         self.last_layer = False
         self.randomize_weight()
@@ -86,12 +100,12 @@ class QLayer():
                 registers = [data_register, clas_register]
                 circuit = qk.QuantumCircuit(*registers)
 
-                self.encoder(circuit, data_register, x)
-                for j in range(self.reps):
-                    start = j * self.n_qubits
-                    end = (j + 1) * self.n_qubits
-                    self.ansatz(circuit, data_register,
-                                self.weight[start:end, i])
+                idx = self.encoder.n_weights_per_target
+                self.encoder(circuit, data_register,
+                             self.weight[:idx, i], x)
+
+                self.ansatz(circuit, data_register,
+                            self.weight[idx:, i])
 
                 circuit.measure(data_register, clas_register)
                 circuit_list.append(circuit)
@@ -111,7 +125,7 @@ class QLayer():
 
         outputs = np.array(outputs).reshape(n_samples, -1)
 
-        return self.scale * np.array(outputs)
+        return self._scale_output(np.array(outputs))
 
     def grad(self, inputs, delta, samplewise=False):
         inputs = deepcopy(inputs)
@@ -119,7 +133,7 @@ class QLayer():
         weight_partial = np.zeros((n_samples, *self.weight.shape))
         input_partial = np.zeros((n_samples, self.n_features, self.n_targets))
 
-        for i in range(self.reps * self.n_qubits):
+        for i in range(self.n_weights_per_target):
             self.weight[i, :] += np.pi / 2
             weight_partial[:, i, :] = 1 / 2 * self(inputs)
             self.weight[i, :] += -np.pi
@@ -144,7 +158,17 @@ class QLayer():
 
     def randomize_weight(self):
         self.weight = np.random.uniform(
-            0, 2 * np.pi, (self.reps * self.n_qubits, self.n_targets))
+            0, 2 * np.pi, (self.n_weights_per_target, self.n_targets))
+
+    def _scale_output(self, output):
+        if self.scale == None:
+            return output
+        elif type(self.scale) != list:
+            return self.scale * output
+        else:
+            a = self.scale[0]
+            b = self.scale[1]
+            return (b - a) * output + a
 
 
 class Sigmoid():

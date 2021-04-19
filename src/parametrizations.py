@@ -9,16 +9,25 @@ from utils import *
 
 
 class Ansatz():
+    def __init__(self, reps):
+        self.reps = reps
+
     def __call__(self, circuit, data_register, weight):
-        n_qubits = data_register.size
 
-        for i, w in enumerate(weight):
-            circuit.ry(w, data_register[i])
+        for i in range(self.reps):
+            for j in range(self.n_qubits - 1):
+                circuit.cx(data_register[j], data_register[j + 1])
 
-        for i in range(n_qubits - 1):
-            circuit.cx(data_register[i], data_register[i + 1])
+            idx_start = i * self.n_qubits
+            idx_end = (i + 1) * self.n_qubits
+            for j, w in enumerate(weight[idx_start:idx_end]):
+                circuit.ry(w, data_register[j])
 
         return circuit
+
+    def calculate_n_weights(self, n_qubits):
+        self.n_qubits = n_qubits
+        self.n_weights_per_target = self.reps * self.n_qubits
 
 
 class Ansatz2():
