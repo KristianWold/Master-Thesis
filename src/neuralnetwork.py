@@ -7,7 +7,6 @@ from copy import deepcopy
 from optimizers import *
 from layers import *
 from utils import *
-from parametrizations import *
 from samplers import *
 from costfunction import *
 

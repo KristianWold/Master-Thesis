@@ -18,6 +18,15 @@ class Encoder():
         self.mode = mode
 
     def __call__(self, circuit, data_register, weight, data):
+        """Apply gates to circuit for encoding data.
+
+        Parameters
+        ----------
+        mode : str
+            Specify what Pauli rotations to use. "x", "y" and "z" corresponds
+            to Rx, Ry and Rz rotation, respectivly.
+        """
+
         n_qubits = data_register.size
         n_features = data.shape[0]
 

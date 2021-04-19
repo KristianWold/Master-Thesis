@@ -3,7 +3,7 @@ import qiskit as qk
 from copy import deepcopy
 from optimizers import Adam, GD
 from data_encoders import *
-from parametrizations import *
+from ansatzes import *
 
 
 class Dense():
@@ -109,6 +109,8 @@ class QLayer():
 
                 circuit.measure(data_register, clas_register)
                 circuit_list.append(circuit)
+#                print(circuit)
+#                ost()
 
         transpiled_list = qk.transpile(circuit_list, backend=self.backend)
         qobject_list = qk.assemble(transpiled_list,
@@ -130,35 +132,36 @@ class QLayer():
     def grad(self, inputs, delta, samplewise=False):
         inputs = deepcopy(inputs)
         n_samples = inputs.shape[0]
-        weight_partial = np.zeros((n_samples, *self.weight.shape))
-        input_partial = np.zeros((n_samples, self.n_features, self.n_targets))
+        self.weight_partial = np.zeros((n_samples, *self.weight.shape))
+        self.input_partial = np.zeros(
+            (n_samples, self.n_features, self.n_targets))
 
         for i in range(self.n_weights_per_target):
             self.weight[i, :] += np.pi / 2
-            weight_partial[:, i, :] = 1 / 2 * self(inputs)
+            self.weight_partial[:, i, :] = 1 / 2 * self(inputs)
             self.weight[i, :] += -np.pi
-            weight_partial[:, i, :] += -1 / 2 * self(inputs)
+            self.weight_partial[:, i, :] += -1 / 2 * self(inputs)
             self.weight[i, :] += np.pi / 2
 
-        weight_gradient = weight_partial * delta.reshape(n_samples, 1, -1)
+        weight_gradient = self.weight_partial * delta.reshape(n_samples, 1, -1)
         if not samplewise:
             weight_gradient = np.mean(weight_gradient, axis=0)
 
         if not self.last_layer:
             for i in range(self.n_features):
                 inputs[:, i] += np.pi / 2
-                input_partial[:, i, :] = 1 / 2 * self(inputs)
+                self.input_partial[:, i, :] = 1 / 2 * self(inputs)
                 inputs[:, i] += -np.pi
-                input_partial[:, i, :] += -1 / 2 * self(inputs)
+                self.input_partial[:, i, :] += -1 / 2 * self(inputs)
                 inputs[:, i] += np.pi / 2
 
-            delta = np.einsum("ij,ikj->ik", delta, input_partial)
+            delta = np.einsum("ij,ikj->ik", delta, self.input_partial)
 
         return weight_gradient, delta
 
     def randomize_weight(self):
         self.weight = np.random.uniform(
-            0, 2 * np.pi, (self.n_weights_per_target, self.n_targets))
+            -np.pi, np.pi, (self.n_weights_per_target, self.n_targets))
 
     def _scale_output(self, output):
         if self.scale == None:

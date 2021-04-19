@@ -7,7 +7,7 @@ from data_encoders import *
 from samplers import *
 from utils import *
 
-
+"""
 class Ansatz():
     def __init__(self, reps):
         self.reps = reps
@@ -45,6 +45,7 @@ class Ansatz2():
             circuit.cx(data_register[2 * i + 1], data_register[2 * i + 2])
 
         return circuit
+"""
 
 
 class Regularizer():

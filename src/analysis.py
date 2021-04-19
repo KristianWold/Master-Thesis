@@ -46,7 +46,7 @@ class FIM():
         Parameters
         ----------
         sort : boolean
-            Will sort the results eigenvalues in decending order if True.
+            Will sort the resulting eigenvalues in decending order if True.
 
         Notes
         -----
@@ -97,8 +97,4 @@ def trajectory_length(x):
 def trajectory_curvature(x):
     """Not implemented
     """
-    diff = (x[1:] - x[:-1])
-    dot = np.matmul()
-    accum = np.sum(diff**2, axis=1)
-    accum = np.sum(np.sqrt(accum))
-    return accum
+    pass
