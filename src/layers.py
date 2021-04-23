@@ -49,12 +49,12 @@ class Dense():
         return weight_gradient, delta
 
     def randomize_weight(self):
-        self.weight = np.random.normal(
-            0, 1, (self.n_features + self.bias, self.n_targets))
+        # self.weight = np.random.normal(
+        #    0, 1, (self.n_features + self.bias, self.n_targets))
 
-        # std = 1 / np.sqrt(self.n_targets)
-        # self.weight = np.random.uniform(
-        #    -std, std, (self.n_features + self.bias, self.n_targets))
+        std = 1 / np.sqrt(self.n_features)
+        self.weight = np.random.uniform(
+            -std, std, (self.n_features + self.bias, self.n_targets))
 
 
 class QLayer():
