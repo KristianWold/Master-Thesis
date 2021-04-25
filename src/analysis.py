@@ -29,7 +29,7 @@ class FIM():
         """
         n_samples = x.shape[0]
 
-        self.model.backward(x, samplewise=True, include_loss=False)
+        self.model.backward(x, samplewise=True)
         gradient = self.model.weight_gradient_list
 
         gradient_flattened = []

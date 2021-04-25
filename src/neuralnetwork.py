@@ -138,7 +138,7 @@ def sequential_qnn(n_qubits=None,
                    shots=None):
     L = len(dim)
     if scale == None:
-        scale = (L - 2) * [2 * np.pi]
+        scale = (L - 2) * [-np.pi, np.pi]
         scale = scale + [1]
 
     layers = []
