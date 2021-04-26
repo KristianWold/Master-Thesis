@@ -28,12 +28,12 @@ class ZeroBit():
         shots = sum(counts.values())
         output = 0
         for bitstring, samples in counts.items():
-            if not "1" in bitstring:
+            if "1" not in bitstring:
                 output += samples
 
         output = output / shots
 
-        return output
+        return 1 - output
 
 
 class AverageBit():

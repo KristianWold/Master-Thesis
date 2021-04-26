@@ -108,14 +108,12 @@ class QLayer():
 
                 circuit.measure(data_register, clas_register)
                 circuit_list.append(circuit)
-#                print(circuit)
-#                ost()
 
         transpiled_list = qk.transpile(circuit_list, backend=self.backend)
         qobject_list = qk.assemble(transpiled_list,
                                    backend=self.backend,
                                    shots=self.shots,
-                                   max_parallel_shots=1,
+                                   max_parallel_shots=0,
                                    max_parallel_experiments=0
                                    )
         job = self.backend.run(qobject_list)
