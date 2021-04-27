@@ -66,6 +66,8 @@ class RCO:
         self.tol = tol
         self.warm_start = warm_start
 
+        self.error_sampler = ZeroBit()
+
     def fit(self, circuit):
         self.n_qubits = circuit.num_qubits
         self.ansatz.calculate_n_weights(self.n_qubits)
@@ -101,7 +103,7 @@ class RCO:
 
         return circuit_list
 
-    def evaluate(self, target_circuit, params, params_prev=None, return_circuit=False):
+    def evaluate(self, target_circuit, params, params_prev=None, return_circuit=False, use_error_measure=False):
         qreg = target_circuit.qregs[0]
         circuit = qk.QuantumCircuit(qreg)
 
@@ -119,7 +121,11 @@ class RCO:
             job = qk.execute(circuit, backend=qk.Aer.get_backend(
                 'qasm_simulator'), shots=self.shots)
             counts = job.result().get_counts(circuit)
-            output = self.sampler(counts)
+
+            if use_error_measure == True:
+                output = self.error_sampler(counts)
+            else:
+                output = self.sampler(counts)
 
             return output
 
@@ -162,20 +168,20 @@ class RCO:
 
     def optimize(self, target_circuit, params, params_prev=None):
         self.optimizer.initialize([len(params)])
-        prob = self.evaluate(target_circuit, params, params_prev)
+        error = self.evaluate(target_circuit, params,
+                              params_prev, use_error_measure=True)
         counter = 1
-        while prob > self.tol:
+        while error > self.tol:
             grads = self.gradient(target_circuit, params, params_prev)
             grads = self.optimizer([grads])[0]
 
             params[:] = params - self.optimizer.lr * grads
 
-            prob = self.evaluate(target_circuit, params, params_prev)
+            error = self.evaluate(target_circuit, params,
+                                  params_prev, use_error_measure=True)
 
-            print(f"{counter}: {prob}")
+            print(f"{counter}: {error}")
             counter += 1
 
-        print(f"{counter}: {prob}")
-
     def predict(self, target_circuit):
-        return self.evaluate(target_circuit, self.params[-1])
+        return self.evaluate(target_circuit, self.params[-1], use_error_measure=True)
