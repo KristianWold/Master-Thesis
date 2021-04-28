@@ -118,45 +118,28 @@ class ParallelEncoder():
         return circuit
 
 
-def amplitude_encoding(data, circuit, reg, inverse=False):
+def amplitude_encoding(data, circuit, storage, inverse=False):
     N = data.shape[0]
     n = int(np.log2(N))
-    clas_reg, storage, ancillae = reg
 
-    if not inverse:
-        circuit.ry(calculate_rotation(data, 0, 0), storage[0])
-        for i in range(1, n):
-            binary_ref = i * [0]
-            circuit.x(storage[:i])
+    circuit.ry(calculate_rotation(data, 0, 0), storage[0])
+    for i in range(1, n):
+        binary_ref = i * [0]
+        circuit.x(storage[:i])
 
-            for j in range(2**i):
-                binary = interger_to_binary(j, i)
+        for j in range(2**i):
+            binary = interger_to_binary(j, i)
 
-                for k, (b, b_ref) in enumerate(zip(binary, binary_ref)):
-                    if b != b_ref:
-                        circuit.x(storage[k])
+            for k, (b, b_ref) in enumerate(zip(binary, binary_ref)):
+                if b != b_ref:
+                    circuit.x(storage[k])
 
-                circuit.mcry(calculate_rotation(data, i, j),
-                             storage[:i], storage[i], ancillae[:i])
-                binary_ref = binary
+            circuit.mcry(calculate_rotation(data, i, j),
+                         storage[:i], storage[i], q_ancillae=None)
+            binary_ref = binary
 
-    else:
-        for i in range(n - 1, 0, -1):
-            binary_ref = i * [1]
-            for j in range(2**i - 1, -1, -1):
-                binary = interger_to_binary(j, i)
-
-                for k, (b, b_ref) in enumerate(zip(binary, binary_ref)):
-                    if b != b_ref:
-                        circuit.x(storage[k])
-
-                circuit.mcry(-calculate_rotation(data, i, j),
-                             storage[:i], storage[i], ancillae[:i])
-                binary_ref = binary
-
-            circuit.x(storage[:i])
-
-        circuit.ry(-calculate_rotation(data, 0, 0), storage[0])
+    if inverse:
+        circuit = circuit.inverse()
 
     return circuit
 
