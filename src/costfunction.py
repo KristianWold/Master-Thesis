@@ -22,5 +22,5 @@ class NoCost:
         return y_pred
 
     def derivative(self, y_pred, y):
-        n_samples = y_pred.shape[0]
-        return np.ones((n_samples, 1))
+        n_samples, n_targets = y_pred.shape
+        return np.ones((n_samples, n_targets))

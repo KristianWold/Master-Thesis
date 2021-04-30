@@ -52,8 +52,9 @@ class FIM():
         -----
         Must be called after self.fit(x).
         """
+        self.fim = np.array(self.fim, dtype=np.float64)
+        self.eigen = np.linalg.eigh(self.fim)[0]
 
-        self.eigen = np.linalg.eig(self.fim)[0]
         if sort:
             self.eigen[::-1].sort()
         return np.abs(self.eigen)
@@ -98,3 +99,29 @@ def trajectory_curvature(x):
     """Not implemented
     """
     pass
+
+
+def gradient_analysis(network_list):
+    n_models = len(network_list)
+    gradients = np.zeros(
+        (n_models, len(network_list[0].weight_gradient_list)))
+
+    input_partial_avg = np.zeros(len(network_list[0].weight_gradient_list))
+    weight_partial_avg = np.zeros(len(network_list[0].weight_gradient_list))
+
+    for i, network in enumerate(network_list):
+        for j in range(len(network.weight_gradient_list)):
+            grad = network.weight_gradient_list[j]
+            input_partial = network.layers[j].input_partial
+            weight_partial = network.layers[j].weight_partial
+
+            gradients[i, j] += np.mean(np.abs(grad))
+            input_partial_avg[j] += np.mean(np.abs(input_partial))
+            weight_partial_avg[j] += np.mean(np.abs(weight_partial))
+
+    gradient_avg = np.mean(gradients, axis=0)
+    gradient_std = np.std(gradients, axis=0)
+    input_partial_avg /= n_models
+    weight_partial_avg /= n_models
+
+    return gradient_avg, input_partial_avg, weight_partial_avg

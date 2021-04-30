@@ -79,9 +79,10 @@ class RCO:
         params_prev = None
         print(f"{0}/{self.divisor} iterations")
         for i in range(self.divisor):
-            if self.warm_start and i != 0:
-                self.params[i] = np.copy(self.params[i - 1])
+            if i != 0:
                 params_prev = self.params[i - 1]
+                if self.warm_start:
+                    self.params[i] = np.copy(params_prev)
 
             self.optimize(circuit_list[i], self.params[i], params_prev)
 
@@ -151,7 +152,7 @@ class RCO:
         qobject_list = qk.assemble(transpiled_list,
                                    backend=backend,
                                    shots=self.shots,
-                                   max_parallel_shots=1,
+                                   max_parallel_shots=0,
                                    max_parallel_experiments=0)
 
         job = backend.run(qobject_list)
