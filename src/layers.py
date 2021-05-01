@@ -114,12 +114,11 @@ class QLayer():
                                    backend=self.backend,
                                    shots=self.shots,
                                    max_parallel_shots=1,
-                                   max_parallel_experiments=11
+                                   max_parallel_experiments=0
                                    )
         job = self.backend.run(qobject_list)
 
-        for circuit in circuit_list:
-            counts = job.result().get_counts(circuit)
+        for counts in job.result().get_counts():
             outputs.append(self.sampler(counts))
 
         outputs = np.array(outputs).reshape(n_samples, -1)
