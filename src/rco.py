@@ -57,7 +57,7 @@ class Ansatz():
 
 class RCO:
 
-    def __init__(self, ansatz, sampler, optimizer, divisor, shots, tol=1e-3, warm_start=False):
+    def __init__(self, ansatz, n_qubits, sampler, optimizer, divisor, shots, tol=1e-3, warm_start=False):
         self.ansatz = ansatz
         self.sampler = sampler
         self.optimizer = optimizer
@@ -65,16 +65,16 @@ class RCO:
         self.shots = shots
         self.tol = tol
         self.warm_start = warm_start
+        self.n_qubits = n_qubits
 
-        self.error_sampler = ZeroBit()
-
-    def fit(self, circuit):
-        self.n_qubits = circuit.num_qubits
         self.ansatz.calculate_n_weights(self.n_qubits)
         self.n_params = self.ansatz.n_weights_per_target
         self.params = np.random.uniform(-np.pi, np.pi,
                                         (self.divisor, self.n_params))
 
+        self.error_sampler = ZeroBit()
+
+    def fit(self, circuit):
         circuit_list = self.divide_circuit(circuit, self.divisor)
         params_prev = None
         print(f"{0}/{self.divisor} iterations")

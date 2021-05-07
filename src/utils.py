@@ -100,6 +100,16 @@ def generate_meshgrid(x):
     return x
 
 
-def r2(y_pred, y):
+def r2(models, x, y):
     y_avg = np.mean(y)
-    return 1 - np.mean((y_pred - y)**2) / np.mean((y - y_avg)**2)
+
+    if type(models) != list:
+        models = [models]
+
+    r2_scores = []
+    for model in models:
+        y_pred = model.predict(x)
+        r2 = 1 - np.mean((y_pred - y)**2) / np.mean((y - y_avg)**2)
+        r2_scores.append(r2)
+
+    return sum(r2_scores) / len(r2_scores)

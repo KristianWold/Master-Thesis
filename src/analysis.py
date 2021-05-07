@@ -57,7 +57,7 @@ class FIM():
 
         if sort:
             self.eigen[::-1].sort()
-        return np.abs(self.eigen)
+        return np.maximum(self.eigen, 1e-25)
 
     def fisher_rao(self):
         """Calculate the Fisher-Rao metric.
