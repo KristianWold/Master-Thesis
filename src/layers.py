@@ -106,20 +106,40 @@ class QLayer():
                 self.ansatz(circuit, data_register,
                             self.weight[idx:, i])
 
-                circuit.measure(data_register, clas_register)
+                if self.shots == 0:
+                    circuit = self.sampler.observable(circuit, data_register)
+                else:
+                    circuit.measure(data_register, clas_register)
+
                 circuit_list.append(circuit)
 
-        transpiled_list = qk.transpile(circuit_list, backend=self.backend)
-        qobject_list = qk.assemble(transpiled_list,
-                                   backend=self.backend,
-                                   shots=self.shots,
-                                   max_parallel_shots=1,
-                                   max_parallel_experiments=0
-                                   )
-        job = self.backend.run(qobject_list)
+        #transpiled_list = qk.transpile(circuit_list, backend=self.backend)
 
-        for counts in job.result().get_counts():
-            outputs.append(self.sampler(counts))
+        if self.shots == 0:
+            # backend = qk.Aer.get_backend(
+            #    "statevector_simulator")
+
+            backend = qk.providers.aer.StatevectorSimulator(
+                max_parallel_threads=1)
+
+            qobject_list = qk.assemble(circuit_list, backend=backend)
+            job = backend.run(qobject_list)
+
+            for circuit in circuit_list:
+                statevector = job.result().get_statevector(circuit)
+                outputs.append(
+                    np.sum(np.abs(statevector[2**(self.n_qubits - 1):])**2))
+        else:
+            qobject_list = qk.assemble(circuit_list,
+                                       backend=self.backend,
+                                       shots=self.shots,
+                                       max_parallel_shots=1,
+                                       max_parallel_experiments=0
+                                       )
+            job = self.backend.run(qobject_list)
+
+            for counts in job.result().get_counts():
+                outputs.append(self.sampler(counts))
 
         outputs = np.array(outputs).reshape(n_samples, -1)
 
