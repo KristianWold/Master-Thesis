@@ -40,9 +40,16 @@ class Dense():
             weight_gradient = np.array(weight_gradient)
 
         if self.bias:
-            bias_gradient = np.mean(delta, axis=0, keepdims=True)
-            weight_gradient = np.concatenate(
-                (weight_gradient, bias_gradient), axis=0)
+            if not samplewise:
+                bias_gradient = np.mean(delta, axis=0, keepdims=True)
+
+                weight_gradient = np.concatenate(
+                    (weight_gradient, bias_gradient), axis=0)
+            else:
+                bias_gradient = delta
+
+                weight_gradient = np.concatenate(
+                    (weight_gradient, bias_gradient[:, None, :]), axis=1)
 
         delta = delta @ self.weight[:self.n_features].T
 
@@ -116,7 +123,8 @@ class QLayer():
         #transpiled_list = qk.transpile(circuit_list, backend=self.backend)
 
         if self.shots == 0:
-            backend = qk.providers.aer.StatevectorSimulator()
+            backend = qk.providers.aer.StatevectorSimulator(
+                max_parallel_threads=1)
 
             for circuit in circuit_list:
                 job = qk.execute(circuit, backend)
