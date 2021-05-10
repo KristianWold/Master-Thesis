@@ -116,16 +116,10 @@ class QLayer():
         #transpiled_list = qk.transpile(circuit_list, backend=self.backend)
 
         if self.shots == 0:
-            # backend = qk.Aer.get_backend(
-            #    "statevector_simulator")
-
-            backend = qk.providers.aer.StatevectorSimulator(
-                max_parallel_threads=1)
-
-            qobject_list = qk.assemble(circuit_list, backend=backend)
-            job = backend.run(qobject_list)
+            backend = qk.providers.aer.StatevectorSimulator()
 
             for circuit in circuit_list:
+                job = qk.execute(circuit, backend)
                 statevector = job.result().get_statevector(circuit)
                 outputs.append(
                     np.sum(np.abs(statevector[2**(self.n_qubits - 1):])**2))
