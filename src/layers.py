@@ -94,6 +94,7 @@ class QLayer():
         self.randomize_weight()
 
     def __call__(self, inputs):
+        backend = qk.providers.aer.StatevectorSimulator()
         outputs = []
         circuit_list = []
         n_samples = inputs.shape[0]
@@ -103,7 +104,11 @@ class QLayer():
                     self.n_qubits, name="storage")
                 clas_register = qk.ClassicalRegister(
                     self.n_qubits, name="clas_reg")
-                registers = [data_register, clas_register]
+                registers = [data_register]
+
+                if self.shots != 0:
+                    registers = registers + clas_register
+
                 circuit = qk.QuantumCircuit(*registers)
 
                 idx = self.encoder.n_weights_per_target
@@ -120,7 +125,7 @@ class QLayer():
 
                 circuit_list.append(circuit)
 
-        transpiled_list = qk.transpile(circuit_list, backend=self.backend)
+        #transpiled_list = qk.transpile(circuit_list, backend=self.backend)
 
         qobject_list = qk.assemble(circuit_list,
                                    backend=self.backend,
@@ -130,13 +135,14 @@ class QLayer():
                                    )
 
         if self.shots == 0:
-            backend = qk.providers.aer.StatevectorSimulator()
-            job = backend.run(qobject_list)
+            for circuit in circuit_list:
+                counts = qk.execute(circuit, backend).result().get_counts()
+                outputs.append(self.sampler(counts))
         else:
             job = self.backend.run(qobject_list)
+            for counts in job.result().get_counts():
+                outputs.append(self.sampler(counts))
 
-        for counts in job.result().get_counts():
-            outputs.append(self.sampler(counts))
         outputs = np.array(outputs).reshape(n_samples, -1)
 
         return self._scale_output(np.array(outputs))

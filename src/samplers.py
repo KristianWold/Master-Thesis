@@ -9,7 +9,7 @@ class Parity():
         shots = sum(counts.values())
         output = 0
         for bitstring, samples in counts.items():
-            if self._parity_of_bitstring(bitstring):
+            if self.parity_of_bitstring(bitstring):
                 output += samples
 
         output = output / shots
@@ -26,7 +26,7 @@ class Parity():
 
         return circuit
 
-    def _parity_of_bitstring(self, bitstring):
+    def parity_of_bitstring(self, bitstring):
         binary = [int(i) for i in bitstring]
         parity = sum(binary) % 2
 
