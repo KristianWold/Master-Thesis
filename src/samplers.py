@@ -59,6 +59,10 @@ class AverageBit():
 
         return output
 
+    def observable(self, circuit, data_register):
+
+        return circuit
+
 
 class LastBit():
     def __call__(self, counts):

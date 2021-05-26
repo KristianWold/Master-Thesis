@@ -120,29 +120,23 @@ class QLayer():
 
                 circuit_list.append(circuit)
 
-        #transpiled_list = qk.transpile(circuit_list, backend=self.backend)
+        transpiled_list = qk.transpile(circuit_list, backend=self.backend)
+
+        qobject_list = qk.assemble(circuit_list,
+                                   backend=self.backend,
+                                   shots=self.shots,
+                                   max_parallel_shots=1,
+                                   max_parallel_experiments=0
+                                   )
 
         if self.shots == 0:
-            backend = qk.providers.aer.StatevectorSimulator(
-                max_parallel_threads=1)
-
-            for circuit in circuit_list:
-                job = qk.execute(circuit, backend)
-                statevector = job.result().get_statevector(circuit)
-                outputs.append(
-                    np.sum(np.abs(statevector[2**(self.n_qubits - 1):])**2))
+            backend = qk.providers.aer.StatevectorSimulator()
+            job = backend.run(qobject_list)
         else:
-            qobject_list = qk.assemble(circuit_list,
-                                       backend=self.backend,
-                                       shots=self.shots,
-                                       max_parallel_shots=1,
-                                       max_parallel_experiments=0
-                                       )
             job = self.backend.run(qobject_list)
 
-            for counts in job.result().get_counts():
-                outputs.append(self.sampler(counts))
-
+        for counts in job.result().get_counts():
+            outputs.append(self.sampler(counts))
         outputs = np.array(outputs).reshape(n_samples, -1)
 
         return self._scale_output(np.array(outputs))
