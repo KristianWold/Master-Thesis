@@ -107,7 +107,7 @@ class QLayer():
                 registers = [data_register]
 
                 if self.shots != 0:
-                    registers = registers + clas_register
+                    registers.append(clas_register)
 
                 circuit = qk.QuantumCircuit(*registers)
 
@@ -127,18 +127,18 @@ class QLayer():
 
         #transpiled_list = qk.transpile(circuit_list, backend=self.backend)
 
-        qobject_list = qk.assemble(circuit_list,
-                                   backend=self.backend,
-                                   shots=self.shots,
-                                   max_parallel_shots=1,
-                                   max_parallel_experiments=0
-                                   )
-
         if self.shots == 0:
             for circuit in circuit_list:
                 counts = qk.execute(circuit, backend).result().get_counts()
                 outputs.append(self.sampler(counts))
         else:
+            qobject_list = qk.assemble(circuit_list,
+                                       backend=self.backend,
+                                       shots=self.shots,
+                                       max_parallel_shots=1,
+                                       max_parallel_experiments=0
+                                       )
+
             job = self.backend.run(qobject_list)
             for counts in job.result().get_counts():
                 outputs.append(self.sampler(counts))

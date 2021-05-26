@@ -17,13 +17,6 @@ class Parity():
         return output
 
     def observable(self, circuit, data_register):
-        n_qubits = data_register.size
-
-        for i in range(n_qubits - 1):
-            circuit.cx(data_register[i], data_register[-1])
-
-        circuit.x(data_register[-1])
-
         return circuit
 
     def parity_of_bitstring(self, bitstring):
