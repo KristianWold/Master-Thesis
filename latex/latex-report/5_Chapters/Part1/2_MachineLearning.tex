@@ -1,0 +1,140 @@
+%================================================================
+\chapter{Supervised Learning}\label{chap:SupervisedLearning}
+%================================================================
+
+The goal of \emph{supervised learning}, one of the big branches of machine learning, is to obtain a function for predicting an output $y$ from an input $\boldsymbol{x}$. This is done by learning from input-output pairs $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, known as the training set. The domain of the input and output depends on the specific learning problem. The output y, also called the target or the response, is often either of a quantitative or qualitative character. These two cases constitutes two big paradigms in supervised learning: \emph{regression} and \emph{classification}, respectively. In the case of regression, the goal of the learning task is to predict a real-valued target y from the input $\boldsymbol{x}$. Typical examples of targets to regress on are \emph{temperature}, \emph{weight} and \emph{number of people}, which have in common a natural notion of distance measure in the sense that instances close in numerical value are also close in nature. E.g., two fish weighing $12.1$ kg and $12.2$ kg are similar, while a third fish weighing $24.0$kg is notably different.
+
+For classification, the goal is to predict one or more \emph{classes} from an input $\boldsymbol{x}$. In this setting, the target $y$ is discrete and categorical, such as \emph{color}, \emph{dead/alive} and \emph{type of animal}. In contrast to quantitative targets, qualitative targets lack a natural distance measure, in the sense that it is not meaningful to compare the distance between \emph{dog} and \emph{cat}, and \emph{dog} and \emph{seagull}. They are simply mutually exclusive classes.
+
+The input $\boldsymbol{x}$ is a vector consisting of elements $(x_1, \cdots, x_p)$ often called features and predictors. Each feature $x_i$ can either be quantitative or qualitative in the same manner as with the target previously discussed. In this thesis, we will be investigating quantitative features $\boldsymbol{x} \in \mathbb{R}^{p}$.
+
+
+%================================================================
+\section{Parametric Models}\label{sec:ParametricModels}
+%================================================================
+The approach of supervised learning often starts by acquiring a training set $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, where $N$ is the number of samples in the training set. This is called labeled data, since the samples of features $\boldsymbol{x}^{(i)}$ are accompanied by the ground truth target $y^{(i)}$(the labels of the samples) that we would like to predict. One often hypothesises that the acquired training data was produced by some mechanism or process that we can mathematically express as
+
+\begin{equation*}
+    y = f(\boldsymbol{x}) + \epsilon,
+\end{equation*}
+where $\epsilon$ is often included to account for randomness, noise or errors in the data, in contrast to the deterministic part $f(\boldsymbol{x})$. Depending on the context, the $\epsilon$ may be neglected or assumed to be normally distributed such as $\epsilon \sim \mathcal{N}(0, \sigma^2)$, where $\sigma^2$ is the variance.
+
+The goal is to approximate the underlying mechanism $f(\boldsymbol{x})$. To do this, one often proposes a parametric model
+
+\begin{equation*}
+    \hat{y} = f(\boldsymbol{x}; \boldsymbol{\theta}),
+\end{equation*}
+
+where $\hat{y}$ is the predicted value, $f(\cdot; \cdot)$ defines a \emph{family} of models, and $\boldsymbol{\theta}$ is a specific vector of parameters that defines a specific model from the family of models. Training the model on involves finding the parameters $\boldsymbol{\theta}$ such that the model best reproduces the target from the features found in the training data set. To quantify what is meant by "best" in this context, it is common to introduce a \emph{loss function} that measures the quality of the model with respect to the training data set:
+
+\begin{equation*}
+    L(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^{N} L(f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) , y^{(i)}),
+\end{equation*}
+
+The loss function returns a scalar value that measures how good your model fits the training data for a particular set of parameters. In general, a smaller value indicates a better model. This formulates the task of training the model as an optimization problem. In the next section, we will discuss different ways of training parameterized models, in particular with the use gradient-based methods.
+
+The choice of loss function is very problem dependent, and there is a vast collection of different choices in the machine learning literature. In this thesis we will focus the popular Mean Squared Error(MSE) when training supervised learning models. This loss function is suitable for regression problems since it implements a natural distance measure between prediction and target. It is formulated as
+
+\begin{equation}\label{eq:MSE}
+    MSE = \frac{1}{N}\sum_{i=1}^{N} (f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) - y^{(i)})^2.
+\end{equation}
+
+Fitting the model using MSE as loss function is often referred to as \emph{least squares approach}.
+
+
+
+
+%================================================================
+\section{Optimization}\label{sec:Optimization}
+%================================================================
+Finding the optimal parameters $\hat{\boldsymbol{\theta}}$ with respect to a chosen loss function $L$ can be formulated as
+
+\begin{equation}\label{eq:Optimization}
+    \hat{\boldsymbol{\theta}} = \underset{\boldsymbol{\theta}}{\argmin} \frac{1}{N}\sum_{i=1}^{N} L(f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) , y^{(i)}).
+\end{equation}
+
+This optimisation problem is not in general easy, and depends highly on the choice of loss function and parametric model. Aside from a few exceptions, like the case of linear regression, \autoref{eq:Optimization} does not generally have an analytical solution. More over, many popular parametric models results in non-convex optimisation problems, meaning the \emph{loss landscape} exhibit several local minima. In practice, such optimization problems can't be solved efficiently(STEPHEN A. VAVASIS). However, it is important to realize that an exact, or close to exact, minimization of the loss function is seldom needed or even favourable. What is ultimately interesting is whether the trained model has sufficient ability to predict. Over the years, several cheap and approximate methods for optimization have been invented to train machine learning models. We will discuss two such methods that implement gradient-based optimization. 
+
+%================================================================
+%\subsection{Matrix Inversion}\label{sec:MatrixInvertion}
+%================================================================
+%(uferdig avsnitt, skal kanskje droppes)
+%Linear regression models are defined as 
+
+%\begin{equation*}
+%    f(\boldsymbol{x}; \boldsymbol{\beta}) = \sum_{j=0}^p x_j \beta_j =  \boldsymbol{x}^T %\boldsymbol{\beta},
+%\end{equation*}
+%where $\boldsymbol{x}^T = [1, x_1, \cdots, x_p]$ is a vector of $p$ features together with a constant $1$ %to account for the intercept of the model, and $\boldsymbol{\beta}$ is a vector of model parameters %called coefficients. Using least squares approach leads to the following loss function:
+
+%\begin{equation*}
+%    L(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^{N} (\sum_{j=0}^p x_j^{(i)} \beta_j -  y^{(i)})^2.
+%\end{equation*}
+
+%This objective function can be reformulated using matrix and vector notation as
+
+%\begin{equation*}
+%    L(\boldsymbol{\theta}) = (\boldsymbol{X}\boldsymbol{\beta} - %\boldsymbol{Y})^T(\boldsymbol{X}\boldsymbol{\beta} - \boldsymbol{Y}),
+%\end{equation*}
+%where $\boldsymbol{X}^T = [\boldsymbol{x^}]$ 
+
+%================================================================
+\subsection{Batch Gradient Descent}\label{sec:GradientDescent}
+%================================================================
+In the absence of an analytical expression that minimizes the loss function, \emph{gradient descent} is an easy-to-implement method that iterativly decreases the loss. This is done by repeatedly adjusting the model parameters using information of the \emph{gradient} of the loss function. The derivative of the loss function with respect to the model parameters can be calculated as
+
+\begin{equation}\label{eq:LossDerivateWRTparameter}
+    \frac{\partial}{\partial \boldsymbol{\theta}_k} L(\boldsymbol{\theta}) =
+    \frac{1}{N}\sum_{i=1}^{N} \frac{\partial}{\partial \hat{y}^{(i)}} L( \hat{y}^{(i)}, y^{(i)})
+    \frac{\partial}{\partial \boldsymbol{\theta}_k}\hat{y}^{(i)}
+\end{equation}
+where $\boldsymbol{\theta}_k$ is the k'th model parameter, and  $\hat{y}^{(i)} = f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$. To arrive at this expression, the chain rule was used under the assumption the the loss function $L(\hat{y}^{(i)}, y^{(i)})$ and model output $\hat{y}^{(i)}$ are differentiable with respect to $\hat{y}^{(i)}$ and $\boldsymbol{\theta}_k$, respectively. Notice that the derivative is calculated with respect to the entire training set, i.e. the whole \emph{batch}, hence the name. The gradient is then constructed simply as a vector quantity containing the derivatives with respect to each model parameter:
+
+\begin{equation}\label{eq:Gradient}
+    \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta})= 
+    \big{(} \frac{\partial}{\partial \boldsymbol{\theta}_1} L(\boldsymbol{\theta}), 
+    \cdots, \frac{\partial}{\partial \boldsymbol{\theta}_p} L(\boldsymbol{\theta}) \big{)}
+\end{equation}
+
+The gradient \autoref{eq:Gradient} can be geometrically interpreted as  the direction at point $\boldsymbol{\theta}$ in parameters space for which the value of the loss function increases most rapidly(kilde). By the this logic, one can attempt to move all the parameters some small amount in the opposite direction, \emph{the direction of steepest descent}, in order to decrease the loss. This can be done recursively, and can be formulated as 
+
+
+\begin{equation}\label{eq:ParameterUpdate}
+    \boldsymbol{\theta}^{t+1} = \boldsymbol{\theta}^{t} - \mu \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta}^{t})
+\end{equation}
+for $t=1, \cdots, T$. Here, $T$ is the total number of iterations, and $\mu$ is some small positive value, often called the \emph{learning rate}. Usually, some initial choice of parameters $\boldsymbol{\theta}^{0}$ is chosen in a random fashion. The proceeding recalculation of the gradient and repeated adjustment of the parameters results in a gradual descent in the the loss landscape, analogous to walking down a mountain. This is the heart of gradient descent.
+
+Even though gradient descent is intuitively simple and sometimes sufficiently effective for training some models, it has several flaws that should be addressed when suggesting better methods of optimization. We will discuss this in the next section in relation to the alternative, and very popular, \emph{Adam optimizer}. 
+%================================================================
+\subsection{Adam Optimizer}\label{sec:AdamOptimizer}
+%================================================================
+A common problem with (batch) gradient descent is that optimisation can have a tendency of getting local minima, as only local information in the loss landscape is used when updating the parameters. Consequently, reaching the bottom of a local minima can not be 
+
+
+%================================================================
+\section{Dense Neural Network}\label{sec:DenseNeuralNetwork}
+%================================================================
+
+
+%================================================================
+\section{Trainability}\label{sec:Trainability}
+%================================================================
+
+
+%================================================================
+\subsection{Hessian Matrix}\label{sec:HessianMatrix}
+%================================================================
+
+
+%================================================================
+\subsection{Empirical Fisher Information Matrix}\label{sec:EFIM}
+%================================================================
+
+
+%================================================================
+\section{Expressivity}\label{sec:Expressivity}
+%================================================================
+
+
+%================================================================
+\subsection{Trajectory Length}\label{sec:TrajectoryLength}
+%================================================================
