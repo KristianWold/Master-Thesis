@@ -105,12 +105,19 @@ for $t=0, \cdots, T-1$. Here, $T$ is the total number of iterations, and $\mu$ i
 
 Even though batch gradient descent is intuitively simple and sometimes sufficiently effective for training some models, it has several flaws that should be addressed when suggesting better methods of optimization. A common problem with batch gradient descent is that optimisation can have a tendency of getting stuck in local minima, as only local information in the loss landscape is used when updating the parameters. In addition, the presence of \emph{saddel points}, areas of particular flatness in the loss landscape, tend to induce slow convergence. The two aforementioned phenomena is illustrated in figure(to come). Further more, the presence of high degree of distortions in certain directions in parameter space, so called  \emph{thin valleys}, can lead to oscillations and inefficient optimization. This is exemplified in figure(). We will discuss how the particularly popular \emph{Adam optimizer}, which was used in this thesis, addresses these problems. 
 
-\section{Introduction}
+
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=4cm]{local}
+    \includegraphics[width=8cm]{latex/figures/local_minimum_saddle_point.png}
+    \caption{One-dimensional }
+    \label{fig:localMinima}
+\end{figure}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{latex/figures/thin_vally.png}
     \caption{An image of a galaxy}
-    \label{fig:galaxy}
+    \label{fig:localMinima}
 \end{figure}
 
 %================================================================
