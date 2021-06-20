@@ -1,20 +1,134 @@
 %================================================================
-\chapter{Quantum Machine Learning}\label{chap:QML}
+\chapter{Parameterized Quantum Circuits}\label{chap:QML}
+%================================================================
+Over the years, many different quantum algorithms have been proposed that is anticipated to greatly outshine classical methods. Perhaps most famously is the Shor's algorithm, which promises to factor integers in polynomial time, which is believed to be an exponentially hard problem for classical computers. However, such useful quantum algorithms often need a large number of error-corrected qubits to be efficient, meaning noise introduced by the environment and inaccuracy of the gates is corrected for. Also, their implementation requires often a large number of quantum gates, requiring the quantum computer to handle deep circuits. As explained in \autoref{sec:Nisq}, near-term quantum computers are not able to accommodate these criteria, and are thus unsuitable. What would then be some interesting candidate algorithms for useful near-term application? A promising family of algorithms are \emph{parameterized quantum circuits}(PQC), which are quantum circuits comprised of fixed gates, such as CNOT gates, and adjustable gates, such as Pauli rotations(kilde). Unlike algorithms that are tailored to solve specific problems, such as Shor's algorithm for factoring, PQCs are general algorithms with free parameters that needs to be adjusted in order to solve a given problem. In practice, quantum computers are used to evaluate the circuits while classical hardware is used to postprosses the results and optimized the parameters. In this sense, both quantum and classical hardware is leveraged to solve the problem in a variational manner. This hybrid approach is though to be much less demanding on the number qubits and the depth of the circuit, as much of the computation is outsource to classical computers(kilde). Thus, they are much more suitable for near-term applications. Moreover, since PQC are not problem specific, one is freed from the need to tailor algorithms for solving specific problems, which is otherwise hard in practice because of how non-intuitive quantum computing can be. 
+
+Because of the variational nature PQC, there has lately been a lot of research on their use as machine learning models, which is the main focus of this thesis. In general, the typical structure of PQC models for machine learning can be broken up into three stages: \emph{feature encoding}, \emph{processing} and \emph{measurement} with potential postprocessing. This general procedure is summarized in \autoref{fig:PQC}.
+
+\begin{figure}[htp]
+\[ \begin{array}{c}
+    \Qcircuit @C=1em @R=1em {
+    \lstick{\ket{0}}& \multigate{3}{{U_{\phi(\boldsymbol{x})}}} & \qw & \multigate{3}{U_{\boldsymbol{\theta}}}  & \qw &  \qw  & \meter  \\
+    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}} & \qw & \ghost{U_{\boldsymbol{\theta}}}  & \qw &  \qw  & \meter  \\
+    \vdots & \nghost{{U_{\phi(\boldsymbol{x})}}} & \vdots  & \nghost{U_{\boldsymbol{\theta}}}  & \vdots &   &   \\
+    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}} & \qw & \ghost{U_{\boldsymbol{\theta}}}  & \qw &  \qw  & \meter  \\
+    & \underset{Encoder}{\underbrace{}}&&\underset{Ansatz}{\underbrace{}}&&&\underset{Measurement}{\underbrace{}}
+    }
+    \end{array} \rightarrow \underset{Post-processing}{\underbrace{a = f(\boldsymbol{z})}}\]
+\caption{The general structure of a PQC machine learning model. The procedure consists of three steps: A routine for $U_{\phi(\boldsymbol{x})}$ for encoding a feature vector preprocessed by the function $\phi(\cdot)$ to a quantum state. Next, $U_{\theta}$ applies a unitary transformation parameterized by $\theta$, transforming the state in Hilbert space. Lastly, the qubits are measured in the computational basis, resulting in a bitstring $\boldsymbol{z}$ which finally postprocessed by the function $f(\cdot)$ to yield a scalar value $a$.}
+\label{fig:PQC}
+\end{figure}
+
+In the sections to come, we will go into the details of how this thesis, and earlier works, construct PQC for machine learning.
+
+%================================================================
+\section{Feature Encoding}\label{sec:FeatureEncoding}
+%================================================================
+As we aim to utilize quantum computation to implement machine learning models, a first necessary step is to encode the information of data feature into a quantum state on qubits. This is often referred to as \emph{quantum feature map}, which maps a feature vector $\boldsymbol{x}$ to a quantum state $\psi_{\boldsymbol{x}}$ \cite{lloyd2020quantum}. In this section, we will introduce three ways of doing feature encode, namely \emph{qubit encoding}, \emph{RZZ encoding} and \emph{amplitude encoding}.  
+
+%================================================================
+\subsection{Qubit Encoding}\label{sec:QubitEncoding}
+%================================================================
+One popular approach for encoding a feature vector to a quantum state is the often-called method \emph{qubit encoding}\cite{Benedetti_2019}. This encoding requires $p$ qubits, where $p$ is the number of features, but it can be applied at a constant circuit depth. The encoding works by performing a Pauli-rotation on each qubit with a rotational angle equal to the corresponding feature, with a possible pre-processing. \autoref{fig:qubitencoding} shows how qubit encoding is implemented using $R_x$, $R_y$ and $R_z$ rotation.
+
+\begin{figure}[H]
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \[\Qcircuit @C=1em @R=.7em {
+         \lstick{\ket{0}}& \gate{R_x(x_1)} &  \qw \\
+         \lstick{\ket{0}}& \gate{R_x(x_2)} &  \qw \\
+         \vdots&  &   \\
+         \lstick{\ket{0}}& \gate{R_x(x_p)} &  \qw
+         }\]
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \[\Qcircuit @C=1em @R=.7em {
+         \lstick{\ket{0}}& \gate{R_y(x_1)} &  \qw \\
+         \lstick{\ket{0}}& \gate{R_y(x_2)} &  \qw \\
+         \vdots&  &   \\
+         \lstick{\ket{0}}& \gate{R_y(x_p)} &  \qw
+         }\]
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \[\Qcircuit @C=1em @R=.7em {
+         \lstick{\ket{0}}& \gate{H}& \gate{R_z(x_1)} &  \qw \\
+         \lstick{\ket{0}}&\gate{H}& \gate{R_z(x_2)} &  \qw \\
+         \vdots&& &  \\
+         \lstick{\ket{0}}&\gate{H}& \gate{R_z(x_p)} &  \qw
+         }\]
+     \end{subfigure}
+        \caption{Qubit encoding using $R_x$, $R_y$ and $R_z$ rotations to encode $p$ features, left to right.}
+        \label{fig:qubitencoding}
+\end{figure}
+
+When using $R_z$ rotations, a Hadamard gate is used on each qubit to create a super-position, as these rotations would otherwise leave $\ket{\boldsymbol{0}}$ invariant. As an example, two features $\boldsymbol{x} = (x_1, x_2)$ can be qubit encoded in the following way with $R_y$ rotations:
+
+\begin{equation}
+    R_y(x_1)\otimes R_y(x_2) (\ket{0} \otimes \ket{0}) = 
+    (\cos(\frac{x_1}{2})\ket{0} + \sin(\frac{x_1}{2})\ket{1})\otimes
+    (\cos(\frac{x_2}{2})\ket{0} + \sin(\frac{x_2}{2})\ket{1})
+\end{equation}
+
+As the circuit depth is quite low, qubit encoding is an effective method for embedding $p$ features into a $2^p$ dimensional Hilbert space. However, qubit encoding is mathematically very simple. In the next subsection, we will present a more complex way of encoding features which may improve the overall flexibility of the machine learning model.
+
+
+%================================================================
+\subsection{RZZ Encoding}\label{sec:RZZencoding}
+%================================================================
+\cite{Havl_ek_2019} introduced a quantum feature map for encoding quantum features up to second order, meaning that the embedding is dependent on terms such as $x_i x_j$, for $i\neq j$. The method can be seen as an extension of qubit encoding using $R_z$ gates, with additional extra RZZ gates that act on qubit $i$ and $j$ with rotational angle $\phi(x_i, x_j) = (\pi - x_i)(\pi - x_j)$. This is done for $i\in [1, \cdots, p-1]$ and $j\in [i+1, \cdots, p]$. As this way of encoding was never given a name, we will call it \emph{RZZ encoding} in this thesis. It can be visualized as the following circuit:
+
+\begin{equation}
+    \Qcircuit @C=1em @R=.7em {
+    \lstick{\ket{0}}& \gate{H} & \gate{R_z(x_1)} &     \ctrl{1} & 
+    \qw &  \ctrl{1}  &  \qw              \\
+    \lstick{\ket{0}}& \gate{H} & \gate{R_z(x_2)} &     \targ    &  
+    \gate{R_z(x_1 x_2)}&  \targ& \qw  \\
+    \vdots          &          &                 &              & 
+    &&                    \\
+    \lstick{\ket{0}}& \gate{H} & \gate{R_z(x_{p-1})} & \qw      & 
+    \qw& \qw &  \qw               \\
+    \lstick{\ket{0}}& \gate{H} & \gate{R_z(x_p)} &     \qw      & 
+    \qw& \qw & \qw               \\  
+     }
+\end{equation}
+
+
+
+%================================================================
+\subsection{Amplitude Encoding}\label{sec:AmplitudeEncoding}
 %================================================================
 
 
 %================================================================
-\section{Parameterized Quantum Circuit}\label{sec:PQC}
+\section{Ansatz}\label{sec:Anzats}
+%================================================================
+
+%================================================================
+\section{Model Output}\label{sec:ModelOutput}
 %================================================================
 
 
 %================================================================
-\section{Gradient Estimation}\label{sec:Gradient Estimation}
+\section{Optimization of PQC}\label{sec:OptPQC}
 %================================================================
 
 
 %================================================================
-\section{Quantum Kernel Network}\label{sec:Quantum Kernel Network}
+\subsection{Gradient-Free Optimization}\label{sec:Grad-FreeOpt}
+%================================================================
+
+
+%================================================================
+\subsection{Gradient-Based Optimization}\label{sec:Grad-FreeOpt}
+%================================================================
+
+
+%================================================================
+\section{Quantum Circuit Network}\label{sec:Quantum Kernel Network}
 %================================================================
 
 
@@ -30,10 +144,6 @@
 
 %================================================================
 \section{Recursive Circuit Optimisation}\label{sec:RCO}
-%================================================================
-
-%================================================================
-\section{Regularized Feature Maps}\label{sec:RFM}
 %================================================================
 
 
