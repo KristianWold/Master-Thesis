@@ -38,6 +38,9 @@ class ZeroBit():
 
         return 1 - output
 
+    def observable(self, circuit, data_register):
+        return circuit
+
 
 class AverageBit():
     def __call__(self, counts):
