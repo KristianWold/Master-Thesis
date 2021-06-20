@@ -25,7 +25,7 @@ The hessian matrix is a $n_\theta \times n_\theta$ matrix that quantifies the cu
 %================================================================
 \subsection{Empirical Fisher Information Matrix}\label{sec:EFIM}
 %================================================================
-A apparent shortcoming of the hessian matrix \autoref{eq:Hessian} is the huge computational cost of computing it, requiring the evaluation of $\mathcal{O}(n_\theta^2)$ double derivatives. This is particularly expensive for models of many parameters, which e.g. neural networks tend to be. An alternative and related quantity, called the \emph(Empirical Fisher Information Matrix)(EFIM), can be calculated using $\mathcal{O}(n_\theta)$ first order derivatives, which is much more suited for big models. We will now derive the EFIM and relate it to the hessian.
+An apparent shortcoming of the hessian matrix \autoref{eq:Hessian} is the huge computational cost of computing it, requiring the evaluation of $\mathcal{O}(n_\theta^2)$ double derivatives. This is particularly expensive for models of many parameters, which e.g. neural networks tend to be. An alternative and related quantity, called the \emph(Empirical Fisher Information Matrix)(EFIM), can be calculated using $\mathcal{O}(n_\theta)$ first order derivatives, which is much more suited for big models. We will now derive the EFIM and relate it to the hessian.
 
 Assume a square loss $\frac{1}{2N}\sum_{k=1}^{N} (f(\boldsymbol{x}^{(k)}; \boldsymbol{\theta}) - y^{(k)})^2$. Computing \autoref{eq:Hessian} with this loss results in 
     
