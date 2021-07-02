@@ -146,9 +146,8 @@ $\hat{m}_t \gets m_t/(1 - \beta_1^{t})$
 $\hat{v}_t \gets v_t/(1 - \beta_2^{t})$
 (Compute bias-corrected second raw moment estimate)\\
 $\theta_t \gets \theta_{t-1} - \alpha \hat{m}_t/(\sqrt{\hat{v}_t} + \epsilon)$
-(Update parameters)\\
-}
-\Return{$\theta_t$}
+(Update parameters)
+}\Return{$\theta_t$}
 \caption{\emph{Adam}, (kilde). The authors suggest default hyperparameters $\alpha = 0.001$, $\beta_1 = 0.9$, $\beta_2 = 0.999$ and $\epsilon = 10^{-8}$. The algorithm is applied parameter-wise.}
 \end{algorithm}
 
@@ -179,8 +178,8 @@ We will now generalize \autoref{eq:FeedforwardSingle} to an arbitrary layer. For
     \boldsymbol{a}^l = f^l(\boldsymbol{z}^l) = f^1(W^l \boldsymbol{a^{l-1}} + \boldsymbol{b}^l),
 \end{equation}
 where $\boldsymbol{a}^{l-1}$ is the activtion of the previous layer with the exception $\boldsymbol{a}^{0} = \boldsymbol{x}$. The output of the network is then the activation of the last layer, namely 
-\begin{equation}\label{eq:neuralNetwork}
-    \hat{y} = f(x;\boldsymbol{\theta}) = \boldsymbol{a}^{L},
+\begin{equation}\label{eq:neuralNetwork}\label{eq:DNN}
+    \hat{y} = f_{DNN}(x;\boldsymbol{\theta}) = \boldsymbol{a}^{L},
 \end{equation}
 where $\boldsymbol{\theta} = [W^1, \boldsymbol{b}^1, \cdots, W^L,  \boldsymbol{b}^L]$. This defines the whole forward procedure of a neural network, and also highlights the role of the functions $f^l(\cdot)$, often called the \emph{non-linearities}. If set to identity, $f^l(x) = x$, the recursive application of \autoref{eq:FeedforwardDNN} would simply apply repeated affine transformations, which is just an affine transformation in itself. In other words, increasing the number of layers would not increase the expressiveness of the network, as all the layers would collapse into a single layer. Therefore, introducing non-linear transformations is necessary to increase the flexibility of the neural network(kilde). 
 
@@ -202,34 +201,32 @@ This error can be defined for any layer recursively by repeated application of t
 \begin{equation}\label{eq:error}
     \delta^l_j = \frac{\partial L(\hat{y}, y)}{\partial \boldsymbol{a}^l_j} 
     = \sum_k \frac{\partial L(\hat{y}, y)}{\partial \boldsymbol{a}^{l+1}_k} \frac{\partial \boldsymbol{a}^{l+1}_k}{\partial \boldsymbol{a}^{l}_j}
-    = \sum_k \delta^{l+1}_j \frac{\partial \boldsymbol{a}^{l+1}_k}{\partial \boldsymbol{a}^{l}_j}.
+    = \sum_k \delta^{l+1}_k \frac{\partial \boldsymbol{a}^{l+1}_k}{\partial \boldsymbol{a}^{l}_j}.
 \end{equation}
 This relation is the origin of the name \emph{backpropogation}, as the error terms $\delta^l$ "propagate" backwards through the neural network as they are calculated.
 
 Using that 
-$\frac{\partial \boldsymbol{a}^{l}_k}{\partial W^l_{ij}} = f^l'(\boldsymbol{z}^{l}_k)\boldsymbol{a}^{l-1}_j I_{ik}$ 
+$\frac{\partial \boldsymbol{a}^{l}_k}{\partial W^l_{ij}} = f^{l\prime}(\boldsymbol{z}^{l}_k)\boldsymbol{a}^{l-1}_j I_{ik}$ 
 and 
-$\frac{\partial \boldsymbol{a}^{l}_k}{\partial \boldsymbol{b}^l_{i}} = f^l'(\boldsymbol{z}^{l}_k) I_{ik}$, the derivative with respect to the weights and biases can then be calculated as 
+$\frac{\partial \boldsymbol{a}^{l}_k}{\partial \boldsymbol{b}^l_{i}} = f^{l\prime}(\boldsymbol{z}^{l}_k) I_{ik}$, the derivative with respect to the weights and biases can then be calculated as 
 
 \begin{equation}\label{eq:derivweights}
     \frac{\partial L(\hat{y}, y)}{\partial W^l_{ij}} = 
     \sum_k \frac{\partial L(\hat{y}, y)}{\partial \boldsymbol{a}^{l}_k} \frac{\partial \boldsymbol{a}^{l}_k}{\partial W^l_{ij}} = 
-    \sum_k \delta^{l}_k f^l'(\boldsymbol{z}^{l}_k)\boldsymbol{a}^{l-1}_j I_{ik}=
-    \delta^{l}_i f^l'(\boldsymbol{z}^l_i) \boldsymbol{a}^{l-1}_j,
+    \sum_k \delta^{l}_k f^{l\prime}(\boldsymbol{z}^{l}_k)\boldsymbol{a}^{l-1}_j I_{ik}=
+    \delta^{l}_i f^{l\prime}(\boldsymbol{z}^l_i) \boldsymbol{a}^{l-1}_j,
 \end{equation}
 and
 \begin{equation}\label{eq:derivbiases}
     \frac{\partial L(\hat{y}, y)}{\partial \boldsymbol{b}^l_{i}} = 
     \sum_k \frac{\partial L(\hat{y}, y)}{\partial \boldsymbol{a}^{l}_k} \frac{\partial \boldsymbol{a}^{l}_k}{\partial \boldsymbol{b}^l_{i}} = 
-    \sum_k \delta^{l}_k f^l'(\boldsymbol{z}^{l}_k)\boldsymbol{a}^{l-1}_j I_{ik}=
-    \delta^{l}_i f^l'(\boldsymbol{z}^l_i).
+    \sum_k \delta^{l}_k f^{l\prime}(\boldsymbol{z}^{l}_k)\boldsymbol{a}^{l-1}_j I_{ik}=
+    \delta^{l}_i f^{l\prime}(\boldsymbol{z}^l_i).
 \end{equation}
 
 The final gradient, over all samples, is then the average of all the single-sample gradients
 
-\begin{equation}\label{eq:derivbiases}
+\begin{equation}\label{eq:averageGradient}
     \nabla_\theta L(\theta) = \frac{1}{N}\sum_{i=1}^N \nabla_\theta L(\hat{y}^{(i)}, y^{(i)}),
 \end{equation}
 which can be used to optimize the neural network with a gradient-based method as discussed earlier.
-
-\subsubsection{Universality of Dense Neural Networks}
