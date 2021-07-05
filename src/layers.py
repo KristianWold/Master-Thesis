@@ -101,9 +101,9 @@ class QLayer():
         for x in inputs:
             for i in range(self.n_targets):
                 data_register = qk.QuantumRegister(
-                    self.n_qubits, name="storage")
+                    self.n_qubits)
                 clas_register = qk.ClassicalRegister(
-                    self.n_qubits, name="clas_reg")
+                    self.n_qubits)
                 registers = [data_register]
 
                 if self.shots != 0:

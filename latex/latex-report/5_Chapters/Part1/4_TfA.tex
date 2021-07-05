@@ -1,0 +1,84 @@
+%================================================================
+\chapter{Tools for Analysis}\label{chap:TfA}
+%================================================================
+
+
+
+%================================================================
+\section{Trainability}\label{sec:Trainability}
+%================================================================
+In machine learning, \emph{trainability} refers to how easily a particular model can be trained under different conditions \cite{abbas2020power}. A common way of exploring the trainability is by exploring the geometry of the loss landscape. for example, the loss function of dense neural networks exhibit local flatness for most directions in parameter space, and strong distortion in others \cite{karakida2019universal}. In a loss landscape that is mostly flat, the gradient of the model will tend to diminish, known as \emph{vanishing gradient}, making it hard to train the model using gradient-based methods. This is also known to worsen with the number of layers, making the training of deep models prohibitive.
+
+To investigate the flatness and distortions of the loss landscape, a common metric to use is the \emph{Hessian} of the loss, which we will introduce in the next subsection. 
+%================================================================
+\subsection{Hessian Matrix}\label{sec:HessianMatrix}
+%================================================================
+Let $f(\boldsymbol{x}^{(k)}; \boldsymbol{\theta})$ be a parameterized and differentiable model, where $\boldsymbol{x}^{(k)} \in \mathbb{R}^p$ is $p$ features, and $\boldsymbol{\theta} \in \mathbb{R}^{n_\theta}$ is $n_{\theta}$ model parameters. For a general loss function on the form \autoref{eq:LossFunction}, $L(\boldsymbol{\theta}) = \sum{_{k=1}^{N}L(f(\boldsymbol{x}^{(k)};\boldsymbol{\theta}), y^{(k)}})$, where $N$ is the number of samples in the data set, the hessian matrix of the loss function is given by
+
+\begin{equation}
+\label{eq:Hessian}
+    H_{ij} = \frac{\partial^2 L(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}_i\partial \boldsymbol{\theta}_j}.
+\end{equation}
+
+The Hessian matrix is a $n_\theta \times n_\theta$ matrix that quantifies the curvature of the loss function locally in the parameter space at the point of $\boldsymbol{\theta}$. This is a much-studied quantity in the machine learning community, and it has been used to study the loss landscape both for classical and quantum mechanical machine learning models \cite{LeCun2012} \cite{Huembeli_2021}. In particular, it's eigenvalue spectrum quantifies the amount of curvature in various directions. Typical for classical neural networks, the spectrum is characterized by the presence of many eigenvalues near zero, with the exception of a few large(so called "big killers"). This indicated the that loss landscape is mostly flat, with huge distortions in a few directions, which in turn causes slow optimization as discussed earlier. 
+
+%================================================================
+\subsection{Empirical Fisher Information Matrix}\label{sec:EFIM}
+%================================================================
+An apparent shortcoming of the hessian matrix \autoref{eq:Hessian} is the huge computational cost of computing it, requiring the evaluation of $\mathcal{O}(n_\theta^2)$ double derivatives. This is particularly expensive for models of many parameters, which e.g. neural networks tend to be. An alternative and related quantity, called the \emph{Empirical Fisher Information Matrix}(EFIM), can be calculated using $\mathcal{O}(n_\theta)$ first order derivatives, which is much more suited for big models. We will now derive the EFIM and relate it to the hessian.
+
+Assume a square loss $\frac{1}{2N}\sum_{k=1}^{N} (f(\boldsymbol{x}^{(k)}; \boldsymbol{\theta}) - y^{(k)})^2$. Computing \autoref{eq:Hessian} with this loss results in 
+    
+\begin{equation}\label{eq:HessianSquareLoss}
+    H_{ij} = F_{ij} -
+    \frac{1}{N}\sum_{k=1}^{N} (y^{(k)} - f(\boldsymbol{x}^{(k)};\boldsymbol{\theta}))\frac{\partial^2 f(\boldsymbol{x}^{(k)};\boldsymbol{\theta})}{\partial \boldsymbol{\theta}_i\partial \boldsymbol{\theta}_j}, 
+\end{equation}
+where F is given by
+\begin{equation}
+\label{eq:EmpiricalFisher}
+    F_{ij} =  \frac{1}{N}\sum_{k=1}^{N}
+    \frac{\partial f(\boldsymbol{x}_k;\boldsymbol{\theta})}{\partial \boldsymbol{\theta}_i}
+    \frac{\partial f(\boldsymbol{x}_k;\boldsymbol{\theta})}{\partial \boldsymbol{\theta}_j}.
+\end{equation}.
+
+The quantity F is often called the empirical fisher information matrix(EFIM)\cite{karakida2019universal}, and unlike the Hessian matrix, it can be calculated only using first derivatives, i.e. the gradient.
+From \autoref{eq:HessianSquareLoss} it can been seen to coincide with the hessian matrix if $f(\boldsymbol{x}^{(k)};\boldsymbol{\theta}) = y^{(k)}$, since the terms in the last sum vanishes. This is the case if the model manage to perfectly replicate the targets from the inputs, which is approximately true for well-trained models what fit the data sufficiently. However, even for untrained models, the EFIM is sometimes used as a cheaper alternative to the hessian matrix, particularly for investigating the geometry of the loss landscape via its eigenvalue spectrum. This has been done both for classical and quantum mechanical machine learning models \cite{karakida2019universal} \cite{abbas2020power}. It is worth pointing out that these investigations, as well as this thesis, are mainly concerned with untrained models. Consequently, the EFIM does not coincide with the hessian matrix and does not give a mathematical accurate description of the curvature of the loss landscape. However, the EFIM still serves as a heuristic for addressing the flatness and distortions of the loss landscape. 
+
+%================================================================
+\section{Expressivity}\label{sec:Expressivity}
+%================================================================
+\emph{Expressivity} in machine learning, especially in the context of neural networks, is a way of characterizing how architectural properties of the model affects the space of functions it can compute. Put more simply, expressivity measures how flexible and complex the model is. The first attempts to measure expressivity of neural networks took a highly theoretical approach, such as () calculating of the VC dimension of shallow neural networks. The VC dimension, or \emph{Vapnik–Chervonenkis} dimension, is a well established measure of complexity. However, it is know to be hard to compute in practise for a variety of models\cite{abbas2020power}.  
+
+%================================================================
+\subsection{Trajectory Length}\label{sec:TrajectoryLength}
+%================================================================
+In order to explore the expressivity of deep neural networks, (kilde) introduced a more practical alternative to VC dimension called \emph{trajectory length}. This is an easy-to-compute heuristic that measures how small perturbations in the input of neural networks grows as they are passed through the various layers of the model. 
+
+Given a trajectory $\boldsymbol{x}(t)$ in a $p$-dimensional space, its arc length 
+$l(\boldsymbol{x}(t))$ is given by
+\begin{equation}
+   l(\boldsymbol{x}(t)) = 
+   \int_{t} \big\Vert \frac{\boldsymbol{x}(t)}{dt} \big\Vert dt
+\end{equation}
+where $\Vert \cdot\Vert$ indicates the Euclidean norm. Conceptually, the arc length of the trajectory $\boldsymbol{x}(t)$ is sum of the norm of its infinitesimal segments making. By approximating the trajectory with a finite number of points $\boldsymbol{x}(t_i)$, its arc length can be estimated as 
+
+\begin{equation}
+   l(\boldsymbol{x}(t)) \approx 
+   \sum_{i=1}^{N-1} \Vert\boldsymbol{x}(t_{i+1}) - \boldsymbol{x}(t_{i})\Vert.
+\end{equation}
+
+By making an appropriate trajectory $\boldsymbol{x}(t_i)$ in some input space, it is possible to investigate how its length changes as it is passed through each layer of a neural network. To be concrete, the quantity of interest is $l(\boldsymbol{a}^{l}(t_i))$, where $\boldsymbol{a}^{l}(t_i)$ are the outputs of layer $l$ resulting from the input $\boldsymbol{x}(t_i)$ for some neural network. As an example, one can make a trajectory $\boldsymbol{x}(t_i) \in \mathbb{R}^2$ in the shape of a circle. By projecting $\boldsymbol{a}^{l}(t_i)$ down to 2D, it is possible to visualize how each layer of the neural network distorts the trajectory. This has been exemplified in \autoref{fig:trajectoryLengthExample}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{latex/figures/trajectoryLengthExample.PNG}
+    \caption{Picture showing a trajectory increasing with the depth
+of a network. Starting with a circular trajectory (left most
+pane), it is fed through a fully connected tanh network with
+width 100. Pane second from left shows the image of the circular
+trajectory (projected down to two dimensions) after being transformed by the first hidden layer. Subsequent panes show the trajectory after being transformed by multiple layers. This figure is retrieved from (kilde).}
+\label{fig:trajectoryLengthExample}
+\end{figure}
+
+\autoref{fig:trajectoryLengthExample} shows that the inputs gets transformed in a highly non-linear way as it is being transformed by each layer. Especially, neighboring points in the input trajectory gets mapped further and further apart for each transformation, indicating that small perturbations in the input grows for each layer. (kilde) showed that the trajectory length of trained neural networks increase exponentially with depth, suggesting a capacity to compute exponentially complex functions as the number of layers increase. On the other hand, randomly initialized neural networks was shown to not exhibit this exponential growth regime.
+

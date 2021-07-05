@@ -113,14 +113,14 @@ class RCO:
         if params_prev is not None:
             circuit = self.ansatz(circuit, qreg, params_prev, inverse=True)
 
-        creg = qk.ClassicalRegister(qreg.size)
-        circuit.add_register(creg)
-        circuit.measure(qreg, creg)
+        #creg = qk.ClassicalRegister(qreg.size)
+        #circuit.add_register(creg)
+        #circuit.measure(qreg, creg)
         if return_circuit:
             return circuit
         else:
             job = qk.execute(circuit, backend=qk.Aer.get_backend(
-                'qasm_simulator'), shots=self.shots)
+                'statevector_simulator'), shots=self.shots)
             counts = job.result().get_counts(circuit)
 
             if use_error_measure == True:
@@ -131,7 +131,7 @@ class RCO:
             return output
 
     def gradient(self, target_circuit, params, params_prev=None):
-        backend = qk.Aer.get_backend('qasm_simulator')
+        backend = qk.Aer.get_backend('statevector_simulator')
 
         grads = np.zeros(params.shape)
         circuit_plus_list = []

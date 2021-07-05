@@ -33,7 +33,7 @@
 \setlist[enumerate]{font = \upshape, before = \leavevmode}
 \setlist[description]{font = \bfseries\sffamily, before = \leavevmode}
 \usepackage{siunitx}
-\usepackage{calrsfs}
+%\usepackage{calrsfs}
 \usepackage{fontawesome} % Github icon, etc. \faGithub
 \usepackage{hologo}      % Logos, such as BibTeX
 
@@ -51,11 +51,11 @@
 
 %---------- figure & tables ---------------
 \usepackage{graphicx}
-\usepackage{subfig}
 \usepackage{float}
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{caption} % figure & table caption
+\usepackage{subcaption}
 \captionsetup{labelfont={normal, bf}, font={sl}}  
 \usepackage{chngcntr}
 \usepackage{booktabs} % top- & midrule
@@ -68,6 +68,7 @@
 \usepackage{xfrac}      % provides \sfrac
 \usepackage{bm} 
 \usepackage{bbm} 
+\usepackage{qcircuit}
 
 %---------- tikz environment --------------
 \usepackage{tikz}
@@ -122,7 +123,7 @@
 }
     
 %---------------- algorithm -------------------
-\usepackage{algorithm}
+\usepackage[ruled,vlined]{algorithm2e}
 \usepackage{algpseudocode}
 \usepackage{algpascal}
 
