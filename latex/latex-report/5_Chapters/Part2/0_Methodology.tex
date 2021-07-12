@@ -1,19 +1,572 @@
 %================================================================
-\chapter{Methodology}\label{chap:methodology}
+\chapter{Implementation}\label{chap:implementation}
 %================================================================
+In this chapter, we will present details surrounding implementation of algorithms and methods presented in \autoref{part:Theory}. For this thesis, we have developed an elaborate frame work for doing machine learning, capable of implementing dense neural networks(DNN, \autoref{eq:DNN}) and quantum circuit networks(QCN, \autoref{eq:QCN}). In addition, various numerical tools for analysing the models are available. The code base is object-orientated using Python, focusing on flexibility. This grants huge freedom when specifying model architecture, such as setting the number of layers, number of nodes, type of activation functions, loss function and optimizer. The frame work is also capable of implementing hybrid models mixing both DNN and QNC layers. To implement quantum machine learning, the frame work is built around Qiskit\cite{Qiskit}, an IBM-made python-package used for emulating quantum circuits. 
 
-%================================================================
-\section{Data Generation}\label{sec:DataGeneration}
-%================================================================
-
-%================================================================
-\chapter{Computational Approach}\label{chap:computational}
-%================================================================
+All source code developed for this thesis can be found on our GitHub page \url{https://github.com/KristianWold/Master-Thesis}, together with notebooks containing training of models, generation of data, analysis and plotting. For easier reading, all python types referred to in this thesis will be highlighted in \textbf{bold}.
 
 %================================================================
 \section{Qiskit}\label{sec:Qiskit}
 %================================================================
 
+Qiskit\cite{Qiskit} is an open source python-package used for practically emulating quantum circuits and quantum algorithms. It can be installed using pip with the following command:
+
+\begin{lstlisting}[language=bash]
+  $ pip install qiskit
+\end{lstlisting}
+To import the package, include the following among the import in any python scrip:
+\begin{lstlisting}[language=python]
+  import qiskit as qk
+\end{lstlisting}
+
 %================================================================
-\section{Quantum Kernel Network Implementation}\label{sec:QKNI}
+\subsection{Registers and Circuits}\label{sec:QMLE}
 %================================================================
+
+To create a quantum circuit in Qiskit, one can first create one or more \emph{quantum registers}, which are list structures containing qubits. The registers can be put together into a circuit in the following way:
+
+\begin{lstlisting}[language=python, numbers=left]
+q_reg_1 = qk.QuantumRegister(2)
+q_reg_2 = qk.QuantumRegister(2)
+c_reg = qk.ClassicalRegister(2)
+circuit = qk.QuantumCircuit(q_reg_1, q_reg_2, c_reg)
+\end{lstlisting}
+Here, each of the registers \textbf{q\_reg\_1} and \textbf{q\_reg\_2} contains two qubits. By default, they are each initialized in the state $\ket{0}$. Thus, total circuit can be written as
+\begin{equation}
+    \ket{00}\ket{00},
+\end{equation}
+where is \emph{ket} refers to one register. Further, \textbf{c\_reg} is a \emph{classical register} of classical bits, meant for storing classical information when the circuit is later measured. In general, a circuit can contain any number of quantum registers with any number of qubits. However, if one wishes to include a classical register, it must be included as the last argument in \textbf{qk.QuantumCircuit()}.
+
+%================================================================
+\subsection{Applying Gates}\label{sec:operationsOnQubits}
+%================================================================
+
+Continuing after creating our circuit, we may apply a variety of quantum gates by calling different methods for the \textbf{circuit} object. Hadamard gates can be applied to the two qubits of register \textbf{q\_reg\_1} in the following way:
+
+\begin{lstlisting}[language=python, numbers=left]
+circuit.h(q_reg_1[0])
+circuit.h(q_reg_1[1])
+\end{lstlisting}
+
+This prepares the state 
+\begin{equation*}
+    \ket{00}\ket{00} \rightarrow 
+    \big(\frac{1}{2}\ket{00} + \frac{1}{2}\ket{01} +
+    \frac{1}{2}\ket{10} + \frac{1}{2}\ket{11}\big)\ket{00}  
+\end{equation*}
+
+
+A possible way of creating entanglement between the registers is to use CNOT gates on \textbf{q\_reg\_2} conditioned on the qubits in \textbf{q\_reg\_1}:
+
+
+\begin{lstlisting}[language=python, numbers=left]
+circuit.cx(q_reg_1[0], q_reg_2[0])
+circuit.cx(q_reg_1[1], q_reg_2[1])
+\end{lstlisting}
+resulting in the state 
+
+\begin{equation*}
+\begin{aligned}
+\big(\frac{1}{2}\ket{00} + \frac{1}{2}\ket{01} +
+\frac{1}{2}\ket{10} + \frac{1}{2}\ket{11}\big)\ket{00} \rightarrow \\
+\frac{1}{2}\ket{00}\ket{00} + \frac{1}{2}\ket{01}\ket{01} +
+\frac{1}{2}\ket{10}\ket{10} + \frac{1}{2}\ket{11}\ket{11}
+\end{aligned}
+\end{equation*}
+
+
+For a complete documentation of the gates available in Qiskit, see \url{https://qiskit.org/documentation/stubs/qiskit.circuit.QuantumCircuit.html}.
+
+%================================================================
+\subsection{Measurement}\label{sec:MeasurementQiskit}
+%================================================================
+
+To measure the state of \textbf{q\_reg\_2} in the computational basis and store it to \textbf{c\_reg}, we make use of the method \textbf{measure()}:
+
+\begin{lstlisting}[language=python, numbers=left]
+  circuit.measure(q_reg_2, c_reg)
+\end{lstlisting}
+
+Finally, to repeatedly execute the circuit and sample the results, we make use of \textbf{qk.execute} together with the backend \emph{qasm\_simulator}:
+
+
+\begin{lstlisting}[language=python, numbers=left]
+job = qk.execute(circuit, 
+                 backend = 
+                 qk.Aer.get_backend("qasm_simulator"),
+                 shots = 1000)
+result = job.result().get_counts(circuit)
+print(result)
+\end{lstlisting}
+
+\begin{flalign*}
+    & \rightarrow \{'00':261, '01':242, '10':253, '11':244\} &
+\end{flalign*}
+Resulting from this is a python dictionary whose keys are strings indicating the different states that was measured. The value corresponding to each key is the number of times that state was measured. To set the number of times to execute and measure the circuit, the argument \textbf{shots} may be used. In this case, it was set to 1000. Using \textbf{qk.Aer.get\_backend("qasm\_simulator")} as the backend, the circuit is simulated locally on the classical machine in an ideal fashion, meaning the imperfections of real quantum computers as described in \autoref{sec:Nisq} are disregarded. Still, since a finite number of shots was used, the normalized results $\frac{261}{1000}$, $\frac{242}{1000}$, $\frac{253}{1000}$ and $\frac{244}{1000}$ only approximate the exact value $\frac{1}{4}$. 
+
+%================================================================
+\subsection{Exact Expectation Value}\label{sec:Exact Expectation Value}
+%================================================================
+
+When simulating circuits on classical hardware, e.g. with Qiskit, we have the luxury of being able to access state resulting from some computation directly and calculate exact expectation values. As explained in \autoref{sec:MeasuringState}, this is not possible when using real quantum computers. Have access to exact expectation values is useful when the noise of finite sampling or realistic hardware is uninteresting for the analysis. 
+
+To access the exact state, the classical register \textbf{c\_reg} must be omitted from the circuit, as we never plan to measure it in the ordinary way. Then, the circuit is simulated using the \emph{statevector\_simulator} backend:
+
+\begin{lstlisting}[language=python, numbers=left]
+job = qk.execute(circuit, 
+                 backend = 
+                 qk.Aer.get_backend("statevector_simulator"))
+result = job.result().get_counts(circuit)
+print(result)
+\end{lstlisting}
+\begin{flalign*}
+    & \rightarrow \{'00':0.25, '01':0.25, '10':0.25, '11':0.25\} &
+\end{flalign*}
+Here, the "measurements" are exact and normalized, as if infinitely many shots were used for sampling. 
+
+
+%================================================================
+\subsection{Simulating Real Devices}\label{sec:Simulating Real Devices}
+%================================================================
+
+
+
+%================================================================
+\section{QNN Example}\label{sec:QNNimpement}
+%================================================================
+We will now present a possible way of implementing a QNN \autoref{eq:QNN} for fitting the popular Iris data set(kilde). The model will be optimized using the parameter shift rule and gradient descent. 
+
+%================================================================
+\subsection{Encoding}
+%================================================================
+
+To encode the data, we will make a callable object on the form \textbf{circuit = encoder(circuit, data\_reg, data)}, where \textbf{data\_reg} is a quantum register of \textbf{circuit}, and \textbf{data} is a numpy array containing the features of one sample. Qubit encoding using $R_x$ rotations, as presented in \autoref{sec:QubitEncoding}, can be implemented as the following function:
+
+\begin{lstlisting}[language=python, numbers=left]
+def qubit_encoder(circuit, data_reg, data):
+    for i, x in enumerate(data):
+        circuit.rx(x, data_register[i])
+        
+    return circuit
+\end{lstlisting}
+
+This function requires that the number of features does not exceed the number of qubits.
+
+%================================================================
+\subsection{Ansatz}
+%================================================================
+To implement the ansatz, we want a callable object on the form 
+\textbf{circuit = ansatz(circuit, data\_reg, theta, reps)}, where \textbf{theta} is a numpy array containing the parameters. The "simple ansatz" detailed in \autoref{sec:Ansätze} can be implemented as a python function:
+
+\begin{lstlisting}[language=python, numbers=left]
+def simple_ansatz(circuit, data_reg, theta):
+    n_qubits = data_reg.size()
+    
+    for i range(n_qubits - 1):
+        circuit.cx(data_reg[i], data_reg[i+1])
+    
+    for i, w in enumerate(theta):
+        circuit.ry(w, data_register[i])
+        
+    return circuit
+\end{lstlisting}
+Here, \textbf{data\_reg.size()} was used to retrieve the number of qubits present in the register. The first for-loop ensures to entangle the qubits in sequence using CNOT gates. The last for-loop applies an $R_y$ rotation to each qubit corresponding to the parameters.
+
+%================================================================
+\subsection{Inference}\label{sec:InferenceImplementation}
+%================================================================
+To derive an inference from the model, we must estimate an expectation value as explained in \autoref{sec:Inference}. We can do this by making a callable object \textbf{y\_pred = sampler(counts)}, where \textbf{counts} is a python dictionary containing the measuring results, as explained in \autoref{sec:MeasurementQiskit} and \autoref{sec:Exact Expectation Value}. We can implement a function estimating the parity(see \autoref{sec:Inference}) in the following way:
+
+\begin{lstlisting}[language=python, numbers=left]
+def parity(counts):
+    shots = sum(counts.values())
+    
+    output = 0
+    for bitstring, samples in counts.items():
+        if parity_of_bitstring(bitstring) == 1:
+            output += samples
+
+    output = output / shots
+
+    return output
+\end{lstlisting}
+where \textbf{parity\_of\_bitstring(bitstring)} is a function that calculates the parity of a bitstring, which can be implemented as 
+\begin{lstlisting}[language=python, numbers=left]
+def parity_of_bitstring(bitstring):
+    binary = [int(i) for i in bitstring]
+    parity = sum(binary) % 2
+    
+    return parity
+\end{lstlisting}
+
+The function \textbf{parity()} iterates over the different measured states and makes a weighted average of their parities, resulting in the estimation of the average parity of the state.
+
+To performe the whole inference, we can implement a function \textbf{qnn(x, theta)}, where \textbf{x} is a numpy array containing features of a single sample, and \textbf{theta} is a numpy array containing parameters. The function can be implemented as 
+
+\begin{lstlisting}[language=python, numbers=left]
+def qnn(x, theta):
+    n_qubits = len(x)
+    reps = 2
+    data_reg = qk.QuantumRegister(n_qubits)
+    clas_reg = qk.ClassicalRegister(n_qubits)
+    circuit = qk.QuantumCircuit(data_reg, clas_reg)
+    
+    circuit = qubit_encoder(circuit, data_reg, x)
+    circuit = simple_ansatz(circuit, theta, reps)
+
+    job = qk.execute(circuit, 
+                     backend = 
+                     qk.Aer.get_backend("qasm_simulator"),
+                     shots = 1000)
+    counts = job.result().get_counts(circuit)
+    y_pred = parity(counts)
+    
+    return y_pred
+\end{lstlisting}
+
+
+%================================================================
+\subsection{Gradient}\label{sec:GradientImplementation}
+%================================================================
+Having a function that implements a QNN that performs inference, we can apply the parameter shift rule described in \autoref{sec:AnalyticalGrad} to calculate the gradient of the output with respect to the parameters:
+
+\begin{lstlisting}[language=python, numbers=left]
+def gradient(x, theta):
+    deriv_plus = np.zeros(len(theta))
+    deriv_minus = np.zeros(len(theta))
+    
+    for i in range(len(theta)):
+        theta[i] += np.pi/2 #parameter shifted forward
+        deriv_plus[i] = qnn(x, theta) 
+        
+        theta[i] -= np.pi   #parameter shifted backwards
+        deriv_minus[i] = qnn(x, theta)
+        
+        theta[i] += np.pi/2 #parameter reset
+    
+    return 0.5*(deriv_plus - deriv_minus) #linear combination
+\end{lstlisting}
+This function returns a numpy array with the same length as \textbf{theta}, containing the derivatives $\frac{\partial y}{\partial \theta_i}$.
+
+%================================================================
+\subsection{Training}\label{sec:QNNTraining}
+%================================================================
+
+Finally, we can implement a function \textbf{train(x\_list, y\_list, theta, lr, epochs)} that calculates the average gradient \autoref{eq:averageGradient} resulting from the samples and targets \textbf{x\_list} and \textbf{y\_list}, using MSE loss. The function then updates the parameters \textbf{theta} iterativly(\textbf{epochs} number of times) using gradient descent with learning rate \textbf{lr}:
+
+\begin{lstlisting}[language=python, numbers=left]
+def train(x_list, y_list, theta, lr, epochs):
+    loss = []
+    for i in range(epochs):
+        grad = np.zeros(len(theta))
+        loss.append(0)
+        
+        for x, y in zip(x_list, y_list):
+            y_pred = qnn(x, theta)      #inference
+            loss[-1] += (y_pred - y)**2 #accumulate loss        
+            grad = grad + (y_pred - y)*gradient(x, theta)
+        
+        loss[-1] = loss[-1]/len(y)      #normalize
+        grad = grad/len(y)
+        theta += -lr*grad               #update parameters
+    
+    return theta, loss
+\end{lstlisting}
+
+At line 10, \textbf{grad += (y\_pred - y)*gradient(x, theta)} accumulates the gradient of the MSE loss function with respect to the parameter, i.e. \autoref{eq:LossDerivateWRTparameter}. The parameters are then updated at line 14.
+
+
+%================================================================
+\subsection{Putting It All Together}\label{sec:PIAT}
+%================================================================
+Stuff
+
+%================================================================
+\section{Quantum Circuit Network}\label{sec:QCNimplementation}
+%================================================================
+Stuff
+
+%================================================================
+\subsection{Encoders, Ansätze and Samplers}\label{sec:EAaS}
+%================================================================
+In the QCN framework, we implement encoders, ansätze and samplers as callable python classes with much the same functionality as described in \autoref{sec:QNNimpement}. We will now go thorugh the use of the most important classes.
+
+\subsubsection*{QubitEncoder}
+The encoder class \textbf{QubitEncoder} can be instantiated as 
+
+\begin{lstlisting}[language=python, numbers=left]
+from encoders import QubitEncoder
+
+encoder = QubitEncoder(mode)
+\end{lstlisting}
+
+Here, \textbf{mode} is a string that specifies the rotation used for encoding, either \textbf{"x"}, \textbf{"y"} or \textbf{"z"}. See \autoref{sec:QubitEncoding} for details.
+
+\subsubsection*{Ansatz}
+The ansatz class \textbf{Ansatz} can be instantiated as
+\begin{lstlisting}[language=python, numbers=left]
+from ansatzes import Ansatz
+
+ansatz = Ansatz(block, reps)
+\end{lstlisting}
+Here, \textbf{block} is a python list containing strings that specify gates that are applied to the circuit. For example, 
+\textbf{block = ["entangle", "ry"]} will first apply CNOT gates to all neighboring qubits in sequence. $R_y$ rotations are then applied to every qubit. This particular argument recreates the simple ansatz described in \autoref{sec:Ansätze}. \textbf{reps} specifies the number of times the ansatz is then repeated.
+
+\subsubsection*{Parity}
+The sampler class \textbf{Parity} can be instantiated as
+\begin{lstlisting}[language=python, numbers=left]
+from samplers import Parity
+
+sampler = Parity()
+\end{lstlisting}
+This class implements the same functionality as the \textbf{parity} function described in \autoref{sec:QNNimpement}.
+
+%================================================================
+\subsection{QLayer}\label{sec:QLayer}
+%================================================================
+
+Our framework for making QCN models implements layers consisting of QNN models as nodes, as explained in \autoref{sec:Quantum Circuit Network}. In the framework, a QCN layer can be created as a python object of the type \textbf{QLayer} in the following way:
+
+\begin{lstlisting}[language=python, numbers=left]
+from layers import QLayer
+
+qlayer = QLayer(n_qubits,   #number of qubits in each QNN
+                n_features, #number of input features
+                n_targets,  #number of outputs, i.e. nodes
+                scale,      #scaling of output
+                encoder,
+                ansatz,
+                sampler,
+                backend,
+                shots)
+\end{lstlisting}
+
+The arguments \textbf{encoder}, \textbf{ansatz} and \textbf{sampler} defines the architecture of each QNN in the layer. Examples of possible choices are described in \autoref{sec:EAaS}. 
+
+As an example, a \textbf{QLayer} can be instantiated and used on a data in the following way:
+
+
+\begin{lstlisting}[language=python, numbers=left]
+import qiskit as qk
+from layers import QLayer
+backend = qk.Aer.get_backend("qasm_simulator")
+
+x = np.random.normal((4,3))
+
+qlayer = QLayer(n_qubits = 3,
+                n_features = 3,
+                n_targets = 2,
+                scale = 2*np.pi,
+                encoder = QubitEncoder(mode = "x"),
+                ansatz = Ansatz(blocks=["entangle", "y"],
+                reps = 2),
+                sampler = Parity(),
+                backend = backend,
+                shots=1000)
+                
+y_pred = qlayer(x)
+print(y_pred)
+\end{lstlisting}
+(skriv output her)
+
+Here, \textbf{x} is a dataset containing four samples of three features each. By specifying \textbf{n\_targets=2}, the layer consists of two nodes and produces thus two output targets. The layer is callable, and performs inference on the input \textbf{x} sample-wise.
+
+If the number of shots are set to zero, i.e. \textbf{shots=0}, the outputs are exactly calculated with the \emph{statevector\_simulator} backend, as explained in \autoref{sec:Exact Expectation Value}.
+
+%================================================================
+\subsection{Constructing QCNs from QLayers}\label{sec:ConstructingNetworks}
+%================================================================
+In general, a QCN can be constructed with any number of layers, with any number of inputs and outputs. The only constraint is that the outputs of one layer and the inputs of a subsequent layer must match in shape.
+
+A two-layer QNC can be constructed in the following way using the \textbf{NeuralNetwork} class:
+
+\begin{lstlisting}[language=python, numbers=left]
+from neuralnetwork import NeuralNetwork
+
+x = np.random.normal(0, 1, (4,3))
+
+#unspecified arguments assumes default values
+layer1 = QLayer(n_qubits=3,
+                n_features=3,
+                n_targets=4) 
+                
+layer2 = QLayer(n_qubits=4,
+                n_features=4,
+                n_targets=1)
+
+network = NeuralNetwork(layers = [layer1, layer2],
+                        cost = MSE(),
+                        optimizer = Adam(lr=0.1))          
+y_pred = network.predict(x)
+print(y_pred)
+\end{lstlisting}
+ 
+In the above code, the \textbf{NeuralNetwork} class stores the layer objects in a python list \textbf{self.layers}. When doing inference, the class implements feed forward, as described in \autoref{sec:FeedForward}, using a \textbf{\_call\_} method:
+\begin{lstlisting}[language=python, numbers=left]
+def __call__(self, x):
+        self.a = []
+        self.a.append(x)
+        for layer in self.layers:
+            x = layer(x)
+            self.a.append(x)
+\end{lstlisting}
+The output of all layers are stored, as they are needed during back-propagation. \textbf{network.predict(x)} returns only the output of the last layer, i.e. the model output. 
+
+%================================================================
+\subsection{Back Propagation}\label{sec:BackpropImplementation}
+%================================================================
+
+The class \textbf{NeuralNetwork} performs back propagation, as described in \autoref{sec:BackwardPropagationQCN}, using a class method \textbf{network.backward(x,y)}. In simplified terms, the method is implemented as:
+\begin{lstlisting}[language=python, numbers=left]
+def backward(self, x, y):
+    self(x)                 #feed forward      
+    y_pred = self.a[-1]     #inference
+    delta = self.cost.derivative(y_pred, y)
+
+    #work thru layers in reverse
+    for i, layer in reversed(list(enumerate(self.layers))):
+        weight_gradient, delta = layer.grad(self.a[i], 
+                                            delta)
+        self.weight_gradient_list.append(weight_gradient)
+
+    self.weight_gradient_list.reverse()
+\end{lstlisting}
+\textbf{network.backward(x,y)} starts by performing feed forward and inference. In line 4, the error of the last layer \autoref{eq:lastLayerErrorQCN} is initiated as \textbf{delta}. For each layer, starting with the last first, the gradient is calculated and the error \textbf{delta} is updated. This is done using \autoref{eq:derivweightsQCN} and \autoref{eq:errorQCN}, respectively, which is implemented in the layer method \textbf{layer.grad(self.a[i], delta)}.
+
+%================================================================
+\subsection{Training}\label{sec:QCNTraining}
+%================================================================
+To train the QCN, the class method \textbf{network.train(self, x, y, epochs)} can be used. In simplified terms, it is implemented as
+
+\begin{lstlisting}[language=python, numbers=left]
+def train(self, x, y):
+    self.loss = []
+    for i in range(epochs):
+        self.backward(x, y)
+        self.step()
+
+        y_pred = self.a[-1]
+        self.loss.append(self.cost(y_pred, y))
+            
+    y_pred = self.predict(x)
+    self.loss.append(self.cost(y_pred, y))
+\end{lstlisting}
+The method for training starts by calling \textbf{self.backward} in order to calculate and store the gradient in \textbf{self.weight\_gradient\_list}. Then, the method \textbf{self.step()} is used to update the parameters of the layers. This is done using \autoref{eq:ParameterUpdate}, but with the gradient modified by the specified optimizer. This is then repeated a number of times specified by \textbf{epochs}.
+
+%================================================================
+\subsection{Single-Circuit Models}\label{sec:Single-CircuitModel}
+%================================================================
+Using the \textbf{NeuralNetwork}, it is possible to construct single-circuit QNNs in addition to the usual multi-circuit QCNs. This can be done using a single \textbf{QLayer} with a single node, as this will constitute only one QNN:
+\begin{lstlisting}[language=python, numbers=left]
+layer = QLayer(n_qubits = 4,
+               n_features = 4,
+               n_targets = 1,
+               encoder = RZZEncoder(),
+               ansatz = Ansatz(blocks=["entangle", "ry"],
+                               reps=2),
+               sampler = Pairty(),
+               backend = backend,
+               shots = 1000)
+                               
+
+qnn_model = NeuralNetwork(layers = [layer1])
+\end{lstlisting}
+As there are no intermediate layers, we do not need to compute the derivative of the node outputs with respect to their inputs. This opens up for ways of encoding where the parameter shift rule, as implemented in \autoref{sec:AnalyticalGrad} and \autoref{sec:GradientImplementation}, fails. Possible choices is RZZ encoding(as used in the above code) and amplitude encoding.
+
+%================================================================
+\subsection{Hybrid Networks}\label{sec:Hybrid Networks}
+%================================================================
+In addition to \textbf{QLayer} layers, the neural network framework also implements \textbf{Dense} layers, which are densely connected, classical layers as defined in \autoref{sec:DenseNeuralNetwork}. It can be instantiated in the following way:
+
+\begin{lstlisting}[language=python, numbers=left]
+from layers import Dense, Sigmoid
+
+dense = Dense(n_features = 4,
+              n_targets = 3,
+              scale = 1,
+              activation = Sigmoid(),
+              bias = True)
+\end{lstlisting}
+Here, \textbf{activation} specifies the activation of the layer, in this case the sigmoid function. Setting \textbf{bias} to true enables the use of bias parameters in the layer. Like \textbf{QLayer}, \textbf{Dense} also implements methods like \textbf{\_call\_} for feed forward, and \textbf{grad()} for back-propagation. This opens up for construction of neural networks that consists of an arbitrary combination of \textbf{QLayer} and \textbf{Dense} layers, which can be simultaneously optimized using the methods of \autoref{sec:QCNTraining}.
+
+%================================================================
+\section{Tools for Analysis}\label{sec:Tools for Analysis Imp}
+%================================================================
+
+%================================================================
+\subsection{Magnitude of Gradient}\label{sec:Gradient Magnitude}
+%================================================================
+
+
+
+%================================================================
+\subsection{Empirical Fisher Information}\label{sec:FIMImplement}
+%================================================================
+To investigate the loss landscape of the QCN model, we calculate the EFIM \autoref{eq:EmpiricalFisher} and its eigen value spectrum using a class \textbf{EFIM}. Given some \textbf{network} and data set \textbf{x}, it can be used in the following way:
+\begin{lstlisting}[language=python, numbers=left]
+from analysis import EFIM
+
+efim = EFIM(network)
+efim.fit(x)
+\end{lstlisting}
+Calling \textbf{efim.fit(x)} calculates the EFIM of \textbf{network} over the data \textbf{x}, and is impemented as
+\begin{lstlisting}[language=python, numbers=left]
+def fit(self, x):
+    n_samples = x.shape[0]
+
+    self.model.backward(x, samplewise=True)
+    gradient = self.model.weight_gradient_list
+
+    gradient_flattened = []
+    for grad in gradient:
+        gradient_flattened.append(grad.reshape(n_samples, -1))
+
+    gradient_flattened = np.concatenate(gradient_flattened, axis=1)
+
+    self.fim = 1 / n_samples * gradient_flattened.T @ gradient_flattened
+\end{lstlisting}
+At line 4, the cost function of the network is set to \textbf{NoCost()}. This ensures that \textbf{backward} calculates the gradient of the model output and not any particular loss, which is required by the EFIM. In addition, specifying \textbf{samplewise=True} in the \textbf{backward()} method stops the gradient from being averaged over all the samples. Rather, it is stored individually for each sample. The following for-loop unravels and concatenates all the gradients of the various layers into a single matrix with dimension $(N, n_{\theta})$, which is the number of samples and parameters, respectively. The EFIM is calculated as a matrix product in line $13$, normalized by the number of samples. This matrix is then stored in \textbf{self.efim}
+
+After calculating the EFIM, its eigenvalue spectrum can be calculated as 
+
+\begin{lstlisting}[language=python, numbers=left]
+eigenvalue_spectrum = efim.eigen(x)
+\end{lstlisting}
+This performs a simple eigenvalue decomposition of \textbf{self.efim} using numpy's \textbf{linalg.eigh} to extract the eigenvalues. Because the EFIM is often very degenerate, some of the lower lying eigenvalues turn out negative, likely because of floating-point errors. To combat this, any eigenvalue lower than $10^{-25}$ is set to this value. 
+
+%================================================================
+\subsection{Trajectory Length}\label{sec:TrajectoryLengthImplement}
+%================================================================
+Assume we have a \textbf{NeuralNetwork} object and a trajectory $\boldsymbol{x}(t_i)$, as described in \autoref{sec:TrajectoryLength}. Then, we can calculate the trajectory length \autoref{eq:TrajectoryLengthDiscrete} of the resulting outputs of each layer using the class \textbf{TrajectoryLength}:
+
+\begin{lstlisting}[language=python, numbers=left]
+from analysis import TrajectoryLength
+
+tl = TrajectoryLength(network)
+traj_len, traj_proj = tl.fit(x)
+\end{lstlisting}
+This produces a two python list: \textbf{traj\_len} contains the trajectory length of the layer outputs. \textbf{traj\_proj} contains the layer outputs themselves, projected down onto 2D for visualization. The projection was done using scikit-learn's(kilde) PCA decomposition. (Describe code?)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
