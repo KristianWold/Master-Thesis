@@ -4,6 +4,7 @@ from copy import deepcopy
 from tqdm.notebook import tqdm
 from neuralnetwork import *
 from utils import *
+from sklearn.decomposition import PCA
 
 
 class FIM():
@@ -29,6 +30,7 @@ class FIM():
         """
         n_samples = x.shape[0]
 
+        self.model.cost = NoCost()
         self.model.backward(x, samplewise=True)
         gradient = self.model.weight_gradient_list
 
@@ -79,26 +81,24 @@ class FIM():
         return fr[0][0]
 
 
-def trajectory_length(x):
-    """Calculate the trajectory length of a discretized curve.
+class TrajectoryLength:
+    def __init__(self, model):
+        self.model = model
 
-    Parameters
-    ----------
-    x : ndarray
-        Discretized curve.
-    """
+    def fit(self, x):
+        pca = PCA(n_components=2)
 
-    diff = (x[1:] - x[:-1])
-    diff = np.append(diff, (x[0] - x[-1]).reshape(1, -1), axis=0)
-    accum = np.sum(diff**2, axis=1)
-    accum = np.sum(np.sqrt(accum))
-    return accum
+        self.model(x)
+        self.trajectory_length = []
+        self.trajectory_projection = []
+        for trajectory in self.model.a:
+            diff = (trajectory[1:] - trajectory[:-1])
+            accum = np.sum(diff**2, axis=1)
+            accum = np.sum(np.sqrt(accum))
+            self.trajectory_length.append(accum)
+            self.trajectory_projection.append(pca.fit_transform(trajectory))
 
-
-def trajectory_curvature(x):
-    """Not implemented
-    """
-    pass
+        return self.trajectory_length, self.trajectory_projection
 
 
 def gradient_analysis(network_list):
