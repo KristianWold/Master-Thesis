@@ -5,7 +5,7 @@ import os
 
 PROJECT_ROOT_DIR = "../../results"
 DATA_ID = "../../results/data"
-FIGURE_ID = "../../results/figures"
+FIGURE_ID = "../../latex/figures"
 
 if not os.path.exists(PROJECT_ROOT_DIR):
     os.mkdir(PROJECT_ROOT_DIR)

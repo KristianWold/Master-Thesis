@@ -51,6 +51,53 @@ class Encoder():
         self.n_weights_per_target = 0
 
 
+class RZZEncoder():
+    """Quantum circuit for encoding data by Pauli rotations.
+
+    Parameters
+    ----------
+    mode : str
+        Specify what Pauli rotations to use. "x", "y" and "z" corresponds
+        to Rx, Ry and Rz rotation, respectivly.
+    """
+
+    def __call__(self, circuit, data_register, weight, data):
+        """Apply gates to circuit for encoding data.
+
+        Parameters
+        ----------
+        mode : str
+            Specify what Pauli rotations to use. "x", "y" and "z" corresponds
+            to Rx, Ry and Rz rotation, respectivly.
+        """
+
+        n_qubits = data_register.size
+        n_features = data.shape[0]
+
+        for i, x in enumerate(data):
+            circuit.h(data_register[i])
+            circuit.rz(x, data_register[i])
+
+        for i, x1 in enumerate(data):
+            for j, x2 in enumerate(data):
+                if j > i:
+                    circuit.cx(data_register[i], data_register[j])
+                    angle = (np.pi - x1) * (np.pi - x2) / np.pi**2
+                    circuit.rz(angle, data_register[j])
+                    circuit.cx(data_register[i], data_register[j])
+
+        # apply Hadamard on latent qubits
+        if n_qubits > n_features:
+            for i in range(n_features, n_qubits):
+                circuit.h(data_register[i])
+
+        return circuit
+
+    def calculate_n_weights(self, n_qubits):
+        self.n_qubits = n_qubits
+        self.n_weights_per_target = 0
+
+
 class RegularizedEncoder():
     def __init__(self, reg=True):
         self.reg = reg
