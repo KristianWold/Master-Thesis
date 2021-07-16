@@ -15,18 +15,37 @@ In order to test models in a practical setting, and give support to previous res
 %================================================================
 \section{Vanishing Gradient Phenomenon}\label{sec:Vanishing Gradient Phenomenon}
 %================================================================
-We start by investigating the magnitude of the gradient for QNNs for different number of qubits and repetitions of the ansatz. To construct the QNNs, we use qubit encoding with $R_x$ rotations together with the simple ansatz. To derive an output, we estimate the parity of the state exactly using the methods outlined in see \autoref{sec:Exact Expectation Value} and \autoref{sec:Inference}. 
-Instead of investigating the gradient of some loss function, i.e. \autoref{eq:LossDerivateWRTparameter}, we will investigate the gradient of the model output itself, $\frac{\partial f(\boldsymbol{x^{(i)}};\boldsymbol{\theta})}{\partial \theta_j}$. If this quantity vanishes, it follows that also \autoref{eq:LossDerivateWRTparameter} also vanishes, for any loss function and labels $y$.
+\subsection{Vanishing Gradient in QNNs}\label{sec:Vanishing Gradient for QNNs}
 
-To get a result representative of a realistic feature space, we will sample features uniformly from $\boldsymbol{x}^{(i)} \sim U(-\frac{\pi}{2}, \frac{\pi}{2})$, as explained in (ost). The QNNs will also be initialized in the standard way, i.e. sampling parameters as $\theta_j \sim U(-\frac{\pi}{2}, \frac{\pi}{2})$. The resulting magnitude of the gradients for different number of qubits and ansatz repetitions can be seen in figure 
+We start by investigating the magnitude of the gradient for QNNs for different number of qubits and repetitions of the ansatz. To construct the QNNs, we use qubit encoding with $R_x$ rotations together with the simple ansatz. To derive an output, we estimate the parity of the state exactly using the methods outlined in see \autoref{sec:Exact Expectation Value} and \autoref{sec:Inference}. 
+Instead of investigating the gradient of some loss function, i.e. \autoref{eq:LossDerivateWRTparameter}, we will investigate the gradient of the model output itself, $\frac{\partial f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})}{\partial \theta_j}$. If this quantity vanishes, it follows that also \autoref{eq:LossDerivateWRTparameter} also vanishes, for any loss function and labels $y$.
+
+To get a result representative of a realistic feature space, we will sample features uniformly from $\boldsymbol{x}^{(i)} \sim U(-\frac{\pi}{2}, \frac{\pi}{2})^p$, as explained in (ost). Here, $p$ is the number of features, which we will set equal to the number of qubits for each QNN. The QNNs will also be initialized in the standard way, i.e. sampling parameters as $\theta_j \sim U(-\pi, \pi)$. The resulting magnitude of the gradients for different number of qubits and ansatz repetitions can be seen in figure 
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=8cm]{latex/figures/thin_vally.png}
-    \caption{Two-dimensional representation of the loss landscape for a parameterized model, illustrating a thin valley. The optimization steps in red showcase optimization without momentum. Optimization steps in blue implement momentum, showing dampened oscillation and better convergence. The figure is retrieved from \citet{SupervisedwquantumComputers}.}
-    \label{fig:thinValley}
+    \includegraphics[width=8cm]{latex/figures/vanishing_gradient_QNN.pdf}
+    \caption{}
+    \label{fig:QNN_vanishing}
 \end{figure}
 
+From the above figure, we see that our implementation of QNNs results in a gradient that vanishes exponentially in the number of qubits. As QNNs are PQCs, randomly initializing their parameters essentially results in a random circuit, which was shown by \citet{McClean_2018} to produce gradients closely centered around zero when the number of qubits were increased. As explained in \autoref{sec:BarrenPlateus}, it is necessary to use exponentially many shots in order to obtain a good signal-to-noise ratio for wide circuits, which in turn makes training intractable. 
+
+\subsection{Vanishing Local Gradients in QCNs}\label{sec:Vanishing Local Gradients in QCNs}
+
+A potentially promising feature of QCNs is the ability to scale up the model by introducing more circuits, rather than wider and deeper ones. As the gradient of QNNs tend to vanish for a high number of qubits, we want to investigate how the gradients of smaller QNNs behave when they enter as nodes in a QCN architecture. 
+
+The QNNs used to contruct QCNs here are set up and initialized in the same manner as in \autoref{sec:Vanishing Gradient for QNNs}, with two repetitions of the simple ansatz. Also, we sample input data in the same manner, i.e. uniformly as $\boldsymbol{x}^{(i)} \sim U(-\frac{\pi}{2}, \frac{\pi}{2})^p$. In this section, all QCNs have 8 hidden layers, with each layer having $d$ number of nodes and $d$ number of qubits. The outputs of each hidden layer is scaled to the interval $[-\pi, \pi]$ to make full use of the qubit encoding of the subsequent layer.  
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=8cm]{latex/figures/vanishing_gradient_partial_input.pdf}
+    \caption{}
+    \label{fig:QNN_vanishing}
+\end{figure}
+
+
+\subsection{Vanishing Total Gradient}\label{sec:Vanishing Total Gradient Induced by Back Propagation}
 
 %================================================================
 \section{Investigating the Loss Landscape}\label{sec:Investigating the Loss Landscape}
@@ -97,7 +116,7 @@ Returning to \autoref{fig:FIM Comparison}, we see that the spectra of the three 
 
 
 %================================================================
-\section{Expressivity of Untrained and Trained Models}\label{sec:Expressivity of Untrained and Trained Models}
+\section{Expressivity}\label{sec:Expressivity}
 %================================================================
 
 
