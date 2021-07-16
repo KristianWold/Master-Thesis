@@ -111,6 +111,12 @@ class NeuralNetwork():
 
         return weight_list
 
+    @property
+    def n_inputs(self):
+        n_inputs = self.layers[0].n_features
+
+        return n_inputs
+
     def randomize_weight(self):
         for layer in self.layers:
             layer.randomize_weight()
@@ -119,11 +125,11 @@ class NeuralNetwork():
         for layer in self.layers:
             layer.shots = shots
 
-    def save(self, filename):
-        pickle.dump(self, open(filename, "wb"))
+#    def save(self, filename):
+#        pickle.dump(self, open(filename, "wb"))
 
-    def load(self, filename):
-        self = pickle.load(open(filename, "rb"))
+#    def load(self, filename):
+#        self = pickle.load(open(filename, "rb"))
 
 
 def sequential_qnn(n_qubits=None,

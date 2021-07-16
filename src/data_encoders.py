@@ -82,7 +82,7 @@ class RZZEncoder():
             for j, x2 in enumerate(data):
                 if j > i:
                     circuit.cx(data_register[i], data_register[j])
-                    angle = (np.pi - x1) * (np.pi - x2) / np.pi**2
+                    angle = (np.pi - x1) * (np.pi - x2)
                     circuit.rz(angle, data_register[j])
                     circuit.cx(data_register[i], data_register[j])
 

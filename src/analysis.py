@@ -102,26 +102,30 @@ class TrajectoryLength:
 
 
 def gradient_analysis(network_list):
-    n_models = len(network_list)
-    gradients = np.zeros(
-        (n_models, len(network_list[0].weight_gradient_list)))
+    n_networks = len(network_list)
 
-    input_partial_avg = np.zeros(len(network_list[0].weight_gradient_list))
-    weight_partial_avg = np.zeros(len(network_list[0].weight_gradient_list))
+    gradient_all = np.zeros(
+        (n_networks, len(network_list[0].weight_gradient_list)))
+
+    input_partial_all = np.zeros_like(gradient_all)
+    weight_partial_all = np.zeros_like(gradient_all)
 
     for i, network in enumerate(network_list):
         for j in range(len(network.weight_gradient_list)):
-            grad = network.weight_gradient_list[j]
+            gradient = network.weight_gradient_list[j]
             input_partial = network.layers[j].input_partial
             weight_partial = network.layers[j].weight_partial
 
-            gradients[i, j] += np.mean(np.abs(grad))
-            input_partial_avg[j] += np.mean(np.abs(input_partial))
-            weight_partial_avg[j] += np.mean(np.abs(weight_partial))
+            gradient_all[i, j] = np.mean(np.abs(gradient))
+            input_partial_all[i, j] = np.mean(np.abs(input_partial))
+            weight_partial_all[i, j] = np.mean(np.abs(weight_partial))
 
-    gradient_avg = np.mean(gradients, axis=0)
-    gradient_std = np.std(gradients, axis=0)
-    input_partial_avg /= n_models
-    weight_partial_avg /= n_models
+    gradient_avg = np.mean(gradient_all, axis=0)
+    input_partial_avg = np.mean(input_partial_all, axis=0)
+    weight_partial_avg = np.mean(weight_partial_all, axis=0)
 
-    return gradient_avg, input_partial_avg, weight_partial_avg
+    gradient_std = np.std(gradient_all, axis=0)
+    input_partial_std = np.std(input_partial_all, axis=0)
+    weight_partial_std = np.std(weight_partial_all, axis=0)
+
+    return gradient_avg, input_partial_avg, weight_partial_avg, gradient_std, input_partial_std, weight_partial_std
