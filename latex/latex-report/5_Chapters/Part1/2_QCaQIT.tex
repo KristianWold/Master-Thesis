@@ -235,11 +235,11 @@ These action of these gates on any state is to rotate it on the Bloch sphere aro
 
 
 %================================================================
-\subsection{Controlled Operations}\label{sec:ControlledOperations}
+\subsection{Multi-Qubit Operators}\label{sec:ControlledOperations}
 %===============================================================
 With only single qubit gates, the number of states we can access is greatly reduced as all the qubits stay independent, i.e. the state can be written as \autoref{eq:tensorProductState}. By introducing gates that operates on several qubits, one can for example transform the state of one qubit conditioned on the state of an other qubit. This makes the two qubits correlated, known as \emph{entanglement} in quantum mechanics.
 
-One such conditional gate is the controlled NOT gate(CNOT gate). It is formulated as
+One such conditional gate is the controlled NOT gate (CNOT gate). It is formulated as
 
 \begin{equation}
     CNOT = 
@@ -315,8 +315,6 @@ This gate applies $U$ to the target qubit if and only if all three control qubit
     \end{array}.
 \end{equation}
 Here, the conditioning on state $\ket{0}$ is indicated by a white dot. Multi-controlled gates will be relevant when we later talk about \emph{amplitude encoding}, which is a technique for encoding information onto the amplitudes of a quantum state.
-
-
 
 
 %================================================================
