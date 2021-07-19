@@ -239,6 +239,7 @@ These action of these gates on any state is to rotate it on the Bloch sphere aro
 %===============================================================
 With only single qubit gates, the number of states we can access is greatly reduced as all the qubits stay independent, i.e. the state can be written as \autoref{eq:tensorProductState}. By introducing gates that operates on several qubits, one can for example transform the state of one qubit conditioned on the state of an other qubit. This makes the two qubits correlated, known as \emph{entanglement} in quantum mechanics.
 
+\subsubsection*{CNOT}
 One such conditional gate is the controlled NOT gate (CNOT gate). It is formulated as
 
 \begin{equation}
@@ -270,6 +271,7 @@ where we have also included its formulation in Dirac notation. Looking at the ci
 \end{equation}
 This is a well-known state called a \emph{Bell state}. It has the interesting property that the qubits are correlated: When the first qubit is measured to be in either state $0$ or $1$, the second qubit will also be found in the same state, and vice versa. This is known as an entangled state, which cannot be expressed as a product of independent single qubit states, such as \autoref{eq:tensorProductState}. By introducing controlled gates, we have increased the space of states possible to access.
 
+\subsubsection*{Multi-controlled Controlled Gate}
 The CNOT gate is just one example of a controlled quantum gate. In general, we can have a controlled gate on the form 
 
 \begin{equation}
@@ -315,6 +317,38 @@ This gate applies $U$ to the target qubit if and only if all three control qubit
     \end{array}.
 \end{equation}
 Here, the conditioning on state $\ket{0}$ is indicated by a white dot. Multi-controlled gates will be relevant when we later talk about \emph{amplitude encoding}, which is a technique for encoding information onto the amplitudes of a quantum state.
+
+\subsubsection*{SWAP gate}
+A well-known two-qubit gate is the SWAP gate. As the name indicates, the SWAP gate swaps the information of qubits. It is defined as 
+
+\begin{equation}
+    SWAP = 
+    \begin{bmatrix}
+        1 & 0 & 0 & 0 \\
+        0 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 0 \\
+        0 & 0 & 0 & 1
+    \end{bmatrix}
+    = 
+    \begin{array}{c}
+    \Qcircuit @C=1em @R=1.3em {
+    & \qswap & \qw \\
+    & \qswap \qwx & \qw
+    }
+    \end{array},
+\end{equation}
+For a two-qubit system, where the first qubit is in the state $\ket{\psi}$ and the other is in $\ket{\phi}$, the swap gate has the following function:
+
+\begin{equation}
+    \begin{array}{c}
+    \Qcircuit @C=1em @R=1.3em {
+    \lstick{\ket{\psi}}& \qswap & \rstick{\ket{\phi}} \qw \\
+    \lstick{\ket{\phi}}& \qswap \qwx  & \rstick{\ket{\psi}} \qw
+    }
+    \end{array}
+\end{equation}
+
+
 
 
 %================================================================
