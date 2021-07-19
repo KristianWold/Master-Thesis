@@ -96,7 +96,11 @@ class TrajectoryLength:
             accum = np.sum(diff**2, axis=1)
             accum = np.sum(np.sqrt(accum))
             self.trajectory_length.append(accum)
-            self.trajectory_projection.append(pca.fit_transform(trajectory))
+            if trajectory.shape[1] > 1:
+                self.trajectory_projection.append(
+                    pca.fit_transform(trajectory))
+            else:
+                self.trajectory_projection.append(None)
 
         return self.trajectory_length, self.trajectory_projection
 

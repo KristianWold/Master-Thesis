@@ -77,7 +77,7 @@ class NeuralNetwork():
         self.loss = []
         for i in dec(range(epochs)):
 
-            self.backward(x, y)  # swap here?
+            self.backward(x, y)
             self.step()
 
             y_pred = self.a[-1]
