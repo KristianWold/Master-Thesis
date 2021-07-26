@@ -145,29 +145,42 @@ Returning to \autoref{fig:FIM Comparison}, we see that the spectra of the three 
 %================================================================
 \section{Expressivity}\label{sec:Expressivity}
 %================================================================
-We will investigate the expressivity QCN using the trajectory length method of \citet{raghu2017expressive}, as described in \autoref{sec:TrajectoryLength}. The trajectory length will be first studied for randomly initialized QCNs for varying number of qubits in each node. Then, for some selected QCNs, the trajectory length will be investigated as the models are gradually fitted on 2D gaussian data. The results in both cases will be compared to similar DNNs, with approximately same number of parameters. 
+We will investigate the expressivity QCN using the trajectory length method of \citet{raghu2017expressive}, as described in \autoref{sec:TrajectoryLength}. The trajectory length will be first studied for randomly initialized QCNs for varying number of qubits in each node. Then, for some selected QCNs, the trajectory length will be investigated as the models are gradually fitted on 2D gaussian data. The results in both cases will be compared to similar DNNs, with approximately the same number of parameters for fair comparison. The input trajectory $\boldsymbol{x}(t_i)$ used will be circle in $\mathbb{R}^2$ with radius $\frac{\pi}{2}$ and centered around $0$, divided up into $1000$ equally spaced point.
 
 %================================================================
 \subsection{Untrained Models}\label{sec:Untrained Models}
 %================================================================
+
+\autoref{fig:TL_untrained} shows the trajectory length resulting from each layer up to the eighth laye, for several different QCNs. All layers have $d$ number of nodes, and all nodes have $d$ number of qubits. $d$ ranges from $4$ to $8$. For comparison, the trajectory length is also calculated for an 8-layer DNN with approximately the same number of parameters as the biggest QCN. The QCNs and the DNN is randomly initialized, as in \autoref{sec:Vanishing Gradient Phenomenon}.
+
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12cm]{latex/figures/TL_untrained.pdf}
     \caption{}
-    \label{fig:QNN_vanishing}
+    \label{fig:TL_untrained}
 \end{figure}
+
+\autoref{fig:TL_untrained_projection}, accompanying \autoref{fig:TL_untrained}, shows the trajectories of selected models and layers, projected onto 2D. The rows correspond to the 4 qubit QCN, 8 qubit QCN and DNN, from top to bottom. The columns correspond to the first layer, second layer, third layer and last layer, left to right.   
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=12cm]{latex/figures/TL_untrained_projection.pdf}
     \caption{}
-    \label{fig:QNN_vanishing}
+    \label{fig:TL_untrained_projection}
 \end{figure}
+
+\autoref{fig:TL_untrained}, we see that the untrained DNN exhibits an exponential decrease in trajectory length as it is being transformed by each layer. From \autoref{fig:TL_untrained_projection}, we see this manifesting itself as the trajectory concentrating around some mean, progressively more for each layer. This shows that randomly initialized DNNs can tend to compute functions which are not very sensitive to the input, which is consistent with the result of \citet{raghu2017expressive}. 
+
+From the same figures we see that the 4-qubit QCNs exhibits a trajectory length that increases approximately exponentially in the number of layers. \autoref{fig:TL_untrained_projection} shows how the trajectory changes after each layer for the same model, becoming increasingly more distorted and complex. This is in opposition of the result for the DNN, which rather showed an exponential decrease of the trajectory length, concentrating its trajectory around a mean. However, as the number of qubits in each node increase, the QCNs tend to produce trajectory lengths that decrease exponentially in the number of layers. This effect is more severe the more qubits are used. This effect can be explained by the concentration of output values of PQCs and QNNs and their mean, for increasing number of qubits. As QCNs create new features for each layer using QNNs, this concentration around the mean is applied multiple times, mapping the inputs closer and closer. 
+
+For 4 though 8 qubits, the previous result indicates that QCNs generally compute more complex functions than the DNN when randomly initialized. A possible explanation for this is that the mathematical transformation applied by each QNN in each nodes are in a way more powerful and "interesting" compared to DNNs. As the information is represented as an entangled state in an exponentially large Hilbert space, each Pauli rotation transforms an exponential number of amplitudes. This constitutes a more complex computation than the affine transformation happening in the DNN, for the same number of parameters. However, this results only in a more interesting output for a low number of qubits, as the increased dimension of the Hilbert space tends to concentrate the output around the mean. 
 
 
 %================================================================
 \subsection{Trained Models}\label{sec:Trained Models}
 %================================================================
+\autoref{fig:TL_trained} shows how the trajectory length changes as various models are incrementally trained to fit 2D Gaussian data(see). The models being investigated here are two QCNs with 5 and 6 qubits, respectively, with each node QNN having the same architecture as in \autoref{sec:Untrained Models}. These will be compared with DNNs with approximately same number of parameters. For more information about the models, see \autoref{tab:TL models}. All the models are trained using Adam optimizer with the standard hyperparameters and a learning rate of $0.1$. The QCNs are trained for a total of $40$ epochs, in increments of $10$. In order to produce a fair comparison, the DNNs will not be trained for the same increments of epochs. Rather, they will trained until they achieve approximately the same MSE on the training set as the QCNs, for each increment. In this way, we obtain QCNs and DNNs that fit the data to an equal degree, which we then deem comparable. 
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
@@ -176,15 +189,46 @@ We will investigate the expressivity QCN using the trajectory length method of \
         \caption{Lorem ipsum}
         
     \end{subfigure}%
-    ~ 
+    \hfill 
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/TL_trained_DNN.pdf}
+        \caption{Lorem ipsum}
+    \end{subfigure}
+    \vskip\baselineskip
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/TL_trained.pdf}
+        \caption{Lorem ipsum}
+        
+    \end{subfigure}%
+    \hfill 
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[height=1.9in]{latex/figures/TL_trained_DNN.pdf}
         \caption{Lorem ipsum}
     \end{subfigure}
     \caption{Caption place holder}
-    \label{fig:FIM Comparison}
+    \label{fig:TL_trained}
 \end{figure}
+
+From \autoref{fig:TL_trained}, we see that training the QCNs and DNNs progressively increases the trajectory length of the models. After only $10$ to $20$ epochs, the trajectory length of the 5 qubit QNC enters the exponential growth regime. This demonstrates that randomly initialized QCNs can be made to produce complex functions through training, even though outputs initially tended to concentrate around a mean, as shown in \autoref{fig:TL_untrained}. A likely explanation is that the training updates the parameters in such a way that brings structure to each of the node QNNs, moving them away from being random circuits. In this way, the outputs no longer concentrate around the mean, which in turn lets the model compute more complex functions. As seen in (fig), 6-qubit is also eventually brought into the exponential growth regime after $60$ epochs, which is significantly more than what was required for 5 qubits. As discussed in \autoref{sec:Vanishing Gradient Phenomenon}, increasing the number of qubits makes the magnitude of the gradient exponentially smaller. Thus, a larger number of epochs are required to significantly change the parameters such that the QNN nodes no longer resemble random circuits.
+
+Moving over to the corresponding DNNs, we see that they fail to enter the same exponential growth regime as the QCNs, even when trained until they fit the data to the same degree. This indicates that QCNs, in this context, are more expressive than DNNs for the same number of parameters. Using the same argument as in \autoref{sec:Untrained Models}, the increased expressivity of QCNs relative to DNNs same number of parameters 
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+Model &Type & Qubits& Layers & Width &$n_{\theta}$ \\ \hline
+A    & QCN & 5 &  3 & 5& 168   \\ \hline
+B    & QCN & 6 &  3 & 6& 228 \\ \hline
+C    & DNN & NA&  3 & 8& 177  \\ \hline
+D    & DNN & NA&  3 & 9& 217  \\ \hline
+\end{tabular}
+\caption{Stuff.} 
+\label{tab:TL models}
+\end{table}
 
 
 
