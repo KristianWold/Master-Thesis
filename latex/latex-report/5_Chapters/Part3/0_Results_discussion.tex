@@ -212,7 +212,7 @@ For 4 though 8 qubits, the previous result indicates that QCNs generally compute
     \label{fig:TL_trained}
 \end{figure}
 
-From \autoref{fig:TL_trained}, we see that training the QCNs and DNNs progressively increases the trajectory length of the models. After only $10$ to $20$ epochs, the trajectory length of the 5 qubit QNC enters the exponential growth regime. This demonstrates that randomly initialized QCNs can be made to produce complex functions through training, even though outputs initially tended to concentrate around a mean, as shown in \autoref{fig:TL_untrained}. A likely explanation is that the training updates the parameters in such a way that brings structure to each of the node QNNs, moving them away from being random circuits. In this way, the outputs no longer concentrate around the mean, which in turn lets the model compute more complex functions. As seen in (fig), 6-qubit is also eventually brought into the exponential growth regime after $60$ epochs, which is significantly more than what was required for 5 qubits. As discussed in \autoref{sec:Vanishing Gradient Phenomenon}, increasing the number of qubits makes the magnitude of the gradient exponentially smaller. Thus, a larger number of epochs are required to significantly change the parameters such that the QNN nodes no longer resemble random circuits.
+From \autoref{fig:TL_trained}, we see that training the QCNs and DNNs progressively increases the trajectory length of the models. After only $10$ to $20$ epochs, the trajectory length of the 5 qubit QNC enters the exponential growth regime. This demonstrates that randomly initialized QCNs can be made to produce complex functions through training, even though outputs initially tended to concentrate around a mean, as shown in \autoref{fig:TL_untrained}. A likely explanation is that the training updates the parameters in such a way that brings structure to each of the node QNNs, moving them away from being random circuits. In this way, the outputs no longer concentrate around the mean, which in turn lets the model compute more complex functions. As seen in (fig), 6-qubit is also eventually brought into the exponential growth regime(and strictly increasing) after between $50$ and $60$ epochs, which is significantly more than what was required for 5 qubits. As discussed in \autoref{sec:Vanishing Gradient Phenomenon}, increasing the number of qubits makes the magnitude of the gradient exponentially smaller. Thus, a larger number of epochs are required to significantly change the parameters such that the QNN nodes no longer resemble random circuits.
 
 Moving over to the corresponding DNNs, we see that they fail to enter the same exponential growth regime as the QCNs, even when trained until they fit the data to the same degree. This indicates that QCNs, in this context, are more expressive than DNNs for the same number of parameters. Using the same argument as in \autoref{sec:Untrained Models}, the increased expressivity of QCNs relative to DNNs same number of parameters 
 
@@ -236,3 +236,33 @@ D    & DNN & NA&  3 & 9& 217  \\ \hline
 \section{Training Models on Gaussian Data}\label{sec:Training Models}
 %================================================================
 
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/.pdf}
+        \caption{Lorem ipsum}
+        
+    \end{subfigure}%
+    \hfill 
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/TL_trained_QCN_qubit_6.pdf}
+        \caption{Lorem ipsum}
+    \end{subfigure}
+    \vskip\baselineskip
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/TL_trained_DNN_nodes_8.pdf}
+        \caption{Lorem ipsum}
+        
+    \end{subfigure}%
+    \hfill 
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/TL_trained_DNN_nodes_9.pdf}
+        \caption{Lorem ipsum}
+    \end{subfigure}
+    \caption{Caption place holder}
+    \label{fig:TL_trained}
+\end{figure}
