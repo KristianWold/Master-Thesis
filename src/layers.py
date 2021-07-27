@@ -94,7 +94,7 @@ class QLayer():
         self.randomize_weight()
 
     def __call__(self, inputs):
-        backend = qk.providers.aer.StatevectorSimulator()
+        backend_state_vec = qk.providers.aer.StatevectorSimulator()
         outputs = []
         circuit_list = []
         n_samples = inputs.shape[0]
@@ -118,30 +118,21 @@ class QLayer():
                 self.ansatz(circuit, data_register,
                             self.weight[idx:, i])
 
-                if self.shots == 0:
-                    circuit = self.sampler.observable(circuit, data_register)
-                else:
+                if self.shots != 0:
                     circuit.measure(data_register, clas_register)
 
                 circuit_list.append(circuit)
 
-        #transpiled_list = qk.transpile(circuit_list, backend=self.backend)
+        for circuit in circuit_list:
+            if self.shots == 0:
+                counts = qk.execute(
+                    circuit, backend_state_vec).result().get_counts()
+            else:
+                circuit = qk.transpile(circuit, self.backend)
+                counts = qk.execute(
+                    circuit, self.backend).result().get_counts()
 
-        if self.shots == 0:
-            for circuit in circuit_list:
-                counts = qk.execute(circuit, backend).result().get_counts()
-                outputs.append(self.sampler(counts))
-        else:
-            qobject_list = qk.assemble(circuit_list,
-                                       backend=self.backend,
-                                       shots=self.shots,
-                                       max_parallel_shots=1,
-                                       max_parallel_experiments=0
-                                       )
-
-            job = self.backend.run(qobject_list)
-            for counts in job.result().get_counts():
-                outputs.append(self.sampler(counts))
+            outputs.append(self.sampler(counts))
 
         outputs = np.array(outputs).reshape(n_samples, -1)
 

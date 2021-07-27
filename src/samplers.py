@@ -16,9 +16,6 @@ class Parity():
 
         return output
 
-    def observable(self, circuit, data_register):
-        return circuit
-
     def parity_of_bitstring(self, bitstring):
         binary = [int(i) for i in bitstring]
         parity = sum(binary) % 2
@@ -38,9 +35,6 @@ class ZeroBit():
 
         return 1 - output
 
-    def observable(self, circuit, data_register):
-        return circuit
-
 
 class AverageBit():
     def __call__(self, counts):
@@ -55,10 +49,6 @@ class AverageBit():
 
         return output
 
-    def observable(self, circuit, data_register):
-
-        return circuit
-
 
 class LastBit():
     def __call__(self, counts):
@@ -71,7 +61,3 @@ class LastBit():
         output = output / shots
 
         return output
-
-    def observable(self, circuit, data_register):
-
-        return circuit
