@@ -204,7 +204,7 @@ class ReLu():
         return x
 
     def derivative(self, x):
-        x = x * (1 - x)
+        x = flaot(x > 0)
 
         return x
 

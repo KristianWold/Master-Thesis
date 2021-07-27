@@ -173,6 +173,7 @@ def sequential_qnn(n_qubits=None,
 def sequential_dnn(dim=None,
                    bias=True,
                    scale=None,
+                   activation=None,
                    cost=MSE(),
                    optimizer=Adam(lr=0.1)):
     L = len(dim)
@@ -180,12 +181,18 @@ def sequential_dnn(dim=None,
     if scale == None:
         scale = (L - 1) * [1]
 
+    if activation == None:
+        activation = (L - 1) * [Tanh()]
+
     layers = []
     for i in range(L - 1):
         in_dim = dim[i]
         out_dim = dim[i + 1]
-        layer = Dense(n_features=in_dim, n_targets=out_dim, scale=scale[i],
-                      activation=Sigmoid(), bias=bias)
+        layer = Dense(n_features=in_dim,
+                      n_targets=out_dim,
+                      scale=scale[i],
+                      activation=activation[i],
+                      bias=bias)
         layers.append(layer)
 
     network = NeuralNetwork(layers, cost=cost, optimizer=optimizer)
