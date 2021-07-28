@@ -464,7 +464,7 @@ layer = QLayer(n_qubits = 4,
                encoder = RZZEncoder(),
                ansatz = Ansatz(blocks=["entangle", "ry"],
                                reps=2),
-               sampler = Pairty(),
+               sampler = Parity(),
                backend = backend,
                shots = 1000)
                                
@@ -492,12 +492,6 @@ Here, \textbf{activation} specifies the activation of the layer, in this case th
 %================================================================
 \section{Tools for Analysis}\label{sec:Tools for Analysis Imp}
 %================================================================
-
-%================================================================
-\subsection{Magnitude of Gradient}\label{sec:Gradient Magnitude}
-%================================================================
-
-
 
 %================================================================
 \subsection{Empirical Fisher Information}\label{sec:FIMImplement}
@@ -545,10 +539,39 @@ from analysis import TrajectoryLength
 tl = TrajectoryLength(network)
 traj_len, traj_proj = tl.fit(x)
 \end{lstlisting}
-This produces a two python list: \textbf{traj\_len} contains the trajectory length of the layer outputs. \textbf{traj\_proj} contains the layer outputs themselves, projected down onto 2D for visualization. The projection was done using scikit-learn's(kilde) PCA decomposition. (Describe code?)
+This produces a two python list: \textbf{traj\_len} contains the trajectory length of the layer outputs. \textbf{traj\_proj} contains the layer outputs themselves, projected down onto 2D for visualization. The projection was done using scikit-learn's \cite{scikit-learn} PCA decomposition. 
 
 
+%================================================================
+\section{Numerical Experiments}\label{sec:Numerical Experiments}
+%================================================================
+For easy reading, we will present hyper-parameters and configuration details in \autoref{chap:results_discussion} alongside the relevant results and discussion. However, for sake of tidiness, we will present and discuss configuration choices that appear very frequently in the analysis in this section.
 
+%================================================================
+\subsection{Initialization}\label{sec:Initialization}
+%================================================================
+For QNNs and QCNs, the parameters will be initialized uniformly as $\theta_i \sim U(-\pi, \pi)$. Since Pauli rotations have a periodicity of $2\pi$, this choice of sampling allows us to potentially reach the whole space of models defined by the architecture, as all possible rotation angles can be realized. Initializations that have this characteristic is popular in the literature\cite{abbas2020power}\cite{skolik2020layerwise}.
+
+For DNNs, we will use the popular Xavier initialization \cite{xavier}, which is the default initialization used by pyTorch\cite{pytorch} when using densely connected layers.
+
+%================================================================
+\subsection{Pre-processing Input}\label{sec:Pre-processing Input}
+%================================================================
+For QNNs and QCNs, inputs will be scales such that $x_i \in [0, \pi]$. This is deliberately half the periode of Pauli rotations, which are uses when performing qubit encoding(\autoref{sec:QubitEncoding}). If inputs were rather scaled to one period, i.e. $x_i \in [0, 2\pi]$, extremal inputs would result in the same quantum state after encoding. Since mapping of different data point to the same quantum state can potentially inhibit learning, we opt for the original way of scaling.
+
+For DNNs, we apply standardization of the input by subtracting the mean and dividing by the standard deviation, feature-wise. This is a popular method suggested by various authors \cite{hands-on}\cite{LeCun2012}, meant to speed up convergence.
+
+%================================================================
+\subsection{Optimization}\label{sec:Optimization}
+%================================================================
+We use Adam, as presented in \autoref{sec:AdamOptimizer}, to optimize all models in this thesis. We use default hyper-parameters suggested by the authors, \citet{kingma2017adam}, together with a learning rate of $lr=0.1$. This is the same learning rate as used by \citet{abbas2020power} for training QNNs. Being a relatively large learning rate, it leads to quick optimization of the models. This is a useful property, as each training iteration can be quite time consuming due to the overhead associated with simulating quantum circuits on classical hardware.
+
+%================================================================
+\subsection{Configuring QCNs and DNNs}\label{sec:Configuring QCNs and DNNs}
+%================================================================
+Unless specified otherwise, the outputs of intermediate layers of QCNs with be scaled to the interval $a_i^{(l)} \in [-\pi, \pi]$. Using the same argument about the periodicity of Pauli rotations from \autoref{sec:Initialization}, this enables(or at least makes it more likely) the outputs of one layer to realize any rotation angle in the next layer. For the last layer, the output will be scaled to $a_i^{(L)} \in [0, 1]$. This is sufficient, given that the target $y$ is scaled to within this interval. 
+
+For DNNs, we will be using Tanh activations on all hidden layers. This is partly because it is a hughly popular choice, known to produce fast-converging neural models\cite{hands-on}. Further, Tanh is also a bounded function, returning values on the interval $[-1, 1]$, unlike the also popular activation ReLu. This results in the outputs of intermediate layers to bounded as well, like for QCNs, making them easier to compare.
 
 
 
