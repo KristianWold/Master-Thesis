@@ -494,6 +494,43 @@ Here, \textbf{activation} specifies the activation of the layer, in this case th
 %================================================================
 
 %================================================================
+\subsection{Magnitude of Gradients}\label{sec:Magnitude of Gradients}
+%================================================================
+In order to investigate the vanishing gradient phenomenon discussed in \autoref{sec:BarrenPlateus} for QNNs, QCNs and DNNs, we will calculate the average magnitude of the gradient for different models and architectures. Instead of calculating the gradient of some loss function, i.e. \autoref{eq:LossDerivateWRTparameter}, we will instead calculate the gradient of the model output itself, i.e.
+\begin{equation}\label{eq:model gradient}
+    \frac{\partial f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})}{\partial \theta_j}.
+\end{equation}
+Using our framework for neural networks, \autoref{eq:model gradient} be calculated for each data sample using the \textbf{NoCost()} loss function together with sample-wise backward propagation. Given a model \textbf{network}, this can be implemented in the following way:
+
+\begin{lstlisting}[language=python, numbers=left]
+network.cost = NoCost()
+network.backward(samplewise=True)
+\end{lstlisting}
+
+If \autoref{eq:model gradient} vanishes, it follows that also \autoref{eq:LossDerivateWRTparameter} vanishes, for any loss function. The quantity \autoref{eq:model gradient} also has the added benefit of being data agnostic, as it is independent of labels $y^{(i)}$.
+
+Given a QNN $f_{QNN}$, we wish to compute the magnitude of the gradient averaged over $N$ samples $\boldsymbol{x}^{(i)}$ and the parameters $\theta_j$. This allows us to capture the average behaviour of the gradient of the model. To produce a more significant result, this quantity will finally be averaged over $T$ different realizations of the parameters $\boldsymbol{\theta}^{(k)}$. This quantity can be expressed as
+
+\begin{equation}\label{eq:magnitude QNN}
+    \frac{1}{TNn_{\theta}}\sum_{k=1}^T\sum_{i=1}^N \sum_{j=1}^{n_{\theta}}\big|\frac{\partial f_{QNN}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(k)})}{\partial \theta_j}\big|.
+\end{equation}
+
+For QCNs and DNNs, we want computing the same quantity as \autoref{eq:magnitude QNN}, but averaged over the parameters within each layer, rather than all parameters of the model. This enables us to investigate how the average behaviour of the gradient changes from layer to layer. This quantity can be formulated as
+
+\begin{equation}\label{eq:magnitude QCN DNN}
+    \frac{1}{TNn_{\theta}}\sum_{k=1}^T\sum_{i=1}^N \sum_{j=1}^{n_{\theta}^{l}}\big|\frac{\partial f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{k)})}{\partial \theta^{[l]}_j}\big|,
+\end{equation}
+where $f$ is a QCN or DNN model, $n_{\theta}^{l}$ are the number of parameters in layer $l$, and $\theta^{[l]}_j$ is the j'th of these parameters.
+
+
+We are also interested in the local gradients of QCNs, \autoref{eq:localGradients}, with respect to the intermediate inputs, i.e. $\frac{\partial a_{m}^{(l)}}{\partial a_{n}^{(l-1)}}$. We will average the magnitude of the local gradients within the same layer $l$, over $N$ samples $\boldsymbol{x}^{(i)}$, and over $T$ different realizations of the parameters. This quantity can be expressed as 
+
+\begin{equation}\label{eq:magnitude local}
+    \frac{1}{TNn_{\theta}m^{(l)}m^{(l-1)}}\sum_{k=1}^T\sum_{i=1}^N \sum_{m,n}\big|\frac{\partial a_{m}^{(l)}}{\partial a_{n}^{(l-1)}}\big|,
+\end{equation}
+where $m^{(l)}$ is the number of nodes in layer $l$, and the indices $m$ and $n$ iterates over nodes in layer $l$ and $l-1$, respectively. Note that the dependence of $\big|\frac{\partial a_{m}^{(l)}}{\partial a_{n}^{(l-1)}}\big|$ on the samples and parameter realizations has been suppressed for clarity.
+
+%================================================================
 \subsection{Empirical Fisher Information}\label{sec:FIMImplement}
 %================================================================
 To investigate the loss landscape of the QCN model, we calculate the EFIM \autoref{eq:EmpiricalFisher} and its eigen value spectrum using a class \textbf{EFIM}. Given some \textbf{network} and data set \textbf{x}, it can be used in the following way:
@@ -550,9 +587,13 @@ For easy reading, we will present hyper-parameters and configuration details in 
 %================================================================
 \subsection{Initialization}\label{sec:Initialization}
 %================================================================
-For QNNs and QCNs, the parameters will be initialized uniformly as $\theta_i \sim U(-\pi, \pi)$. Since Pauli rotations have a periodicity of $2\pi$, this choice of sampling allows us to potentially reach the whole space of models defined by the architecture, as all possible rotation angles can be realized. Initializations that have this characteristic is popular in the literature\cite{abbas2020power}\cite{skolik2020layerwise}.
+For QNNs and QCNs, the parameters will be initialized uniformly as $\theta_i \sim U(-\pi, \pi)$. Since Pauli rotations(used in the simple ansatz \autoref{eq:simple ansatz}) have a periodicity of $2\pi$, this choice of sampling allows us to reach the whole space of models defined by the architecture, as all possible rotation angles can be realized. Initializations that have this characteristic is typical to use for machine learning models based on PQCs \cite{abbas2020power}\cite{skolik2020layerwise}.
 
-For DNNs, we will use the popular Xavier initialization \cite{xavier}, which is the default initialization used by pyTorch\cite{pytorch} when using densely connected layers.
+For DNNs, we will use the popular Xavier initialization \cite{xavier}, which is the default initialization used by pyTorch\cite{pytorch} when using densely connected layers. The Xavier initialization is obtained by sampling the weights and biases $\boldsymbol{\theta^{l}}$ of layer $l$ uniformly as 
+\begin{equation}
+    \theta^{l} \sim U\big(-\frac{1}{\sqrt{n}},\frac{1}{\sqrt{n}}\big),
+\end{equation}
+where $n$ is the number nodes in the previous layer. 
 
 %================================================================
 \subsection{Pre-processing Input}\label{sec:Pre-processing Input}
