@@ -196,7 +196,7 @@ In this subsection, we investigate the same QCN and DNN architectures as formula
 
 %In \autoref{fig:TL_untrained}, we see that the untrained DNN exhibits an exponential decrease in trajectory length as it is being transformed by each layer. From \autoref{fig:TL_untrained_projection}, we see this manifesting itself as the trajectory concentrating around some mean, progressively more for each layer. This shows that randomly initialized DNNs can tend to compute functions which are not very sensitive to the input, which was shown experimentally by \citet{raghu2017expressive} to be possible in practical settings. 
 
-From \autoref{fig:TL_untrained}, we see that the trajectory length of QCNs with 4 and 5 qubits tend to grow exponentially with the number of layers. This growth is however diminishing in the number of qubits, and switches over to an exponential decrease for 6 qubits and above. For 8 qubits, the decrease is similar to that of the DNN with similarly many parameters. Comparing the results to \autoref{fig:TL_untrained_projection}, we see how the increasing and decreasing trajectory length manifests themselves. Seen from the top row, the trajectory produced by the 4 qubit QCN tends to become increasingly distorted and complex. This is similar to the behaviour of classical networks seen in \autoref{fig:trajectoryLengthExample}, produced by \citet{raghu2017expressive}, and shows that also QCNs can compute functions exponentially complex in the number of layers. In contrast, the trajectory of the 8 qubit QCN and DNN (seen in the next two rows) can be seen to gradually concentrate for each layer, resulting in a function that is very little sensitive to the input.  
+From \autoref{fig:TL_untrained}, we see that the trajectory length of QCNs with 4 and 5 qubits tend to grow exponentially with the number of layers. This growth is however diminishing as the number of qubits increase, and switches over to an exponential decay for 6 qubits and above. For 8 qubits, the decay is similar to that of the DNN with similarly many parameters. Comparing the results to \autoref{fig:TL_untrained_projection}, we see how the increasing and decreasing trajectory length manifests themselves. Seen from the top row, the trajectory produced by the 4 qubit QCN tends to become increasingly distorted and complex. This is similar to the behaviour of classical networks seen in \autoref{fig:trajectoryLengthExample}, produced by \citet{raghu2017expressive}, and shows that also QCNs can compute functions exponentially complex in the number of layers. In contrast, the trajectory of the 8 qubit QCN and DNN (seen in the next two rows) can be seen to gradually concentrate for each layer, resulting in a function that is very little sensitive to the input.  
 
 
 %================================================================
@@ -235,34 +235,35 @@ From \autoref{fig:TL_untrained}, we see that the trajectory length of QCNs with 
     \label{fig:TL_trained}
 \end{figure}
 
-From \autoref{fig:TL_trained}, we see that training the QCNs and DNNs progressively increases the trajectory length of the models. After only $10$ to $20$ epochs, the trajectory length of the 5 qubit QNC enters the exponential growth regime. This demonstrates that randomly initialized QCNs can be made to produce complex functions through training, even though outputs initially tended to concentrate around a mean, as shown in \autoref{fig:TL_untrained}. This shows that training updates the parameters in such a way that brings structure to each of the node QNNs, moving them away from being random circuits. This causes the outputs to no longer concentrate around the mean, which in turn lets the model compute more complex functions. As seen in (fig), 6-qubit is also eventually brought into the exponential growth regime(and strictly increasing with each layer) after between $50$ and $60$ epochs, which is significantly more than what was required for 5 qubits. As discussed in \autoref{sec:Vanishing Gradient Phenomenon}, increasing the number of qubits makes the magnitude of the gradient exponentially smaller. Thus, a larger number of epochs are required to significantly change the parameters such that the QNN nodes no longer resemble random circuits.
+From \autoref{fig:TL_trained}, we see that training the QCNs and DNNs progressively increases the trajectory length of the models. After only $5$ epochs, the trajectory length of the 6 qubit QNC enters the exponential growth regime. This demonstrates that randomly initialized QCNs can be made to produce complex functions through training, even though outputs initially tended to concentrate around a mean, as shown in \autoref{fig:TL_untrained}. As seen in (fig), 7-qubit is brought into the exponential growth regime after between $10$, more twice the amount required for 6 qubits. 
 
-Moving over to the corresponding DNNs, we see that they fail to enter the same exponential growth regime as the QCNs, even when trained until they fit the data to the same degree. This indicates that QCNs, in this context, are more expressive than DNNs for the same number of parameters. Using the same argument as in \autoref{sec:Untrained Models}, the increased expressivity of QCNs relative to DNNs same number of parameters 
+Moving over to the corresponding DNNs, we see that they fail to enter the same exponential growth regime as the QCNs, even when trained until they fit the data to the same degree. This indicates that QCNs, in this context, are more expressive than DNNs for the same number of parameters.  
 
 \begin{table}[H]
 \centering
 \begin{tabular}{|l|l|l|l|l|l|}
 \hline
 Model &Type & Qubits& Layers & Width &$n_{\theta}$ \\ \hline
-A    & QCN & 5 &  3 & 5& 168   \\ \hline
-B    & QCN & 6 &  3 & 6& 228 \\ \hline
-C    & DNN & NA&  3 & 8& 177  \\ \hline
-D    & DNN & NA&  3 & 9& 217  \\ \hline
+A    & QCN & 5 &  4 & 5& 168   \\ \hline
+B    & QCN & 6 &  4 & 6& 228 \\ \hline
+C    & DNN & NA&  4 & 8& 177  \\ \hline
+D    & DNN & NA&  4 & 9& 217  \\ \hline
 \end{tabular}
 \caption{Stuff.} 
 \label{tab:TL models}
 \end{table}
 
 %================================================================
-\subsection{Discussion}\label{sec:Discussion Expressivity}
+\subsection{Discussion (very rough!)}\label{sec:Discussion Expressivity}
 %================================================================
 
-
-This effect can be explained by the concentration of output values of PQCs and QNNs and their mean, for increasing number of qubits. As QCNs create new features for each layer using QNNs, this concentration around the mean is applied multiple times, mapping the inputs closer and closer. 
+For higher number of qubits, we saw from \autoref{fig:TL_untrained_projection} that the trajectory concentrated progressively around some mean, for each layer. This effect can be explained by the concentration of output values of PQCs and QNNs and their mean, for increasing number of qubits. As QCNs create new features for each layer using QNNs, this concentration around the mean is applied multiple times, mapping the inputs closer and closer. 
 
 A possible explanation for this is that the mathematical transformation applied by each QNN in each nodes are in a way more powerful and "interesting" compared to DNNs. As the information is represented as an entangled state in an exponentially large Hilbert space, each Pauli rotation transforms an exponential number of amplitudes. This constitutes a more complex computation than the affine transformation happening in the DNN, for the same number of parameters. However, this results only in a more interesting output for a low number of qubits, as the increased dimension of the Hilbert space tends to concentrate the output around the mean. 
 
+This shows that training updates the parameters in such a way that brings structure to each of the node QNNs, moving them away from being random circuits. This causes the outputs to no longer concentrate around the mean, which in turn lets the model compute more complex functions.
 
+As discussed in \autoref{sec:Vanishing Gradient Phenomenon}, increasing the number of qubits makes the magnitude of the gradient exponentially smaller. Thus, a larger number of epochs are required to significantly change the parameters such that the QNN nodes no longer resemble random circuits.
 
 %================================================================
 \section{Training Models on Gaussian Data}\label{sec:Training Models}
@@ -353,7 +354,7 @@ K    & DNN & 3D  &                    & 5  \\ \hline
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
-        \includegraphics[height=1.9in]{latex/figures/1D_gaussian_data_fit.pdf}
+        \includegraphics[height=1.9in]{latex/figures/1D_gaussian_data_fit_noisy.pdf}
         \caption{Lorem ipsum}
         
     \end{subfigure}%
