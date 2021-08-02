@@ -117,6 +117,14 @@ class NeuralNetwork():
 
         return n_inputs
 
+    @property
+    def n_parameters(self):
+        n_params = 0
+        for layer in self.layers:
+            n_params += layer.weight.size
+
+        return n_params
+
     def randomize_weight(self):
         for layer in self.layers:
             layer.randomize_weight()

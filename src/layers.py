@@ -125,12 +125,16 @@ class QLayer():
 
         for circuit in circuit_list:
             if self.shots == 0:
+                # exact simulation
                 counts = qk.execute(
                     circuit, backend_state_vec).result().get_counts()
             else:
+                # noisy simulaton
                 circuit = qk.transpile(circuit, self.backend)
-                counts = qk.execute(
-                    circuit, self.backend).result().get_counts()
+                counts = qk.execute(circuit,
+                                    self.backend,
+                                    seed_transpiler=42,
+                                    seed_simulator=42).result().get_counts()
 
             outputs.append(self.sampler(counts))
 
