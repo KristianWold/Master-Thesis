@@ -44,7 +44,10 @@ class Ansatz():
 
     def calculate_n_weights(self, n_qubits):
         self.n_qubits = n_qubits
-        self.n_weights_per_target = self.reps * self.n_qubits
+        self.n_weights_per_target = 0
+        for block in self.blocks:
+            if block in ["rx", "ry", "rz"]:
+                self.n_weights_per_target += self.reps * self.n_qubits
 
 
 class Ansatz2():
