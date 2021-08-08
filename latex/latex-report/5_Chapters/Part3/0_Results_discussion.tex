@@ -26,7 +26,7 @@ We start by investigating the magnitude of the gradient of QNNs for different nu
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{latex/figures/vanishing_gradient_QNN.pdf}
-    \caption{}
+    \caption{Average magnitude of gradients for QNNs with different ansatz repetitons and number of qubits. The QNNs utilize qubit encoding with $R_y$ rotations, the simple ansatz for processing, and parity sampling to derive an output. The QNNs are fed $N=100$ points of uniformly sampled samples, where the number of features is set equal the number of qubits. }
     \label{fig:QNN_vanishing}
 \end{figure}
 
@@ -45,11 +45,11 @@ In order to investigate the average behaviour of the local gradients \autoref{eq
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{latex/figures/vanishing_gradient_partial_input.pdf}
-    \caption{}
+    \caption{Average magnitude of local gradients \autoref{eq:localGradients} calculated for each layer for various 8 layer QCNs. This quantity was calculated using \autoref{eq:magnitude local}. The number of qubits per node are constant for each QCN, and the number of nodes per layer is set equal the number of qubits. The QNNs are fed $N=100$ points of uniformly sampled samples, where the number of features is set equal the number of qubits. The standard deviation is calculated over 10 different realizations of the model parameters.}
     \label{fig:QCN_local_vanishing}
 \end{figure}
 
-In the above figure we see the average magnitude of the local gradients for different layers and number of qubits. The local gradients of the QNNs entering the QCN model tend to vanish exponentially in the number of qubits, as with the single-circuit QNNs seen in \autoref{fig:QNN_vanishing}. However, the relative position of the QNNs along the depth of the QCN does not seem to affect the magnitude. This can be seen from the overlapping confidence intervals of the magnitudes for each number of qubits. Any variation of the average magnitude between the layers is thus likely just noise induced by the low number of $10$ parameter realizations, and does not indicate significant differences.  
+In the above figure we see the average magnitude of the local gradients for different layers and number of qubits. The local gradients of the QNNs entering the QCN model tend to vanish exponentially in the number of qubits, as with the single-circuit QNNs seen in \autoref{fig:QNN_vanishing}. However, the relative position of the QNNs along the depth of the QCN does not seem to affect the magnitude. This can be seen from the overlapping confidence intervals of the magnitudes for each number of qubits. Any variation of the average magnitude between the layers is thus likely just noise induced by the low number of $10$ parameter realizations, and does not indicate significant differences.  (No systematic structure that kills the gradient)
 
 %================================================================
 \subsection{Vanishing Total Gradient in QCNs}\label{sec:Vanishing Total Gradients in QCNs}
@@ -64,7 +64,7 @@ In this section, the total gradient is calculated using the local gradients from
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{latex/figures/vanishing_gradient_total.pdf}
-    \caption{}
+    \caption{Average magnitude of the total gradient \autoref{eq:derivweightsQCN} calculated for each layer for various 8 layer QCNs. This quantity is calculated using \autoref{eq:magnitude QCN DNN}. The number of qubits per node are constant for each QCN, and the number of nodes per layer is set equal the number of qubits.  For comparison, the same quantity is also calculated for an 8 layer DNN.(more info about DNN)} 
     \label{fig:QNC_vanishing_total}
 \end{figure}
 
@@ -126,7 +126,7 @@ J    & DNN & NA& NA   & 3      & 9     & NA             & 163 \\ \hline
         \includegraphics[height=1.9in]{latex/figures/FIM_qubits_6.pdf}
         \caption{Lorem ipsum}
     \end{subfigure}
-    \caption{Caption place holder}
+    \caption{Comparison of EFIM eigenvalue spectrum between QNNs, QCNs and DNNs. For details about the architectures, see \autoref{tab:FIM models}. The EFIM is calculated using $N=200$ points of uniformly sampled points, where the number of features are set equal the number of qubits. The EFIM spectrum is finally averaged over 10 different model realizations.}
     \label{fig:FIM Comparison}
 \end{figure}
 
@@ -139,17 +139,17 @@ Moving over to the QCNs, we see from \autoref{fig:FIM Comparison} that the spect
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[height=1.9in]{latex/figures/FIM_qubits_4_comparison.pdf}
-        \caption{Lorem ipsum}
+        \caption{Comparison of the EFIM eigenvalue spectrum for different 4-qubit QNNs and QCNs.}
         \label{fig:FIM QCN a}
     \end{subfigure}%
     ~ 
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[height=1.9in]{latex/figures/FIM_qubits_6_comparison.pdf}
-        \caption{Lorem ipsum}
+        \caption{Comparison of the EFIM eigenvalue spectrum for different 6-qubit QNNs and QCNs.}
         \label{fig:FIM QCN b}
     \end{subfigure}
-    \caption{Caption place holder}
+    \caption{Comparison of the EFIM eigenvalue spectrum between different QNNs and QCNs. For details about the architectures, see \autoref{tab:FIM models}. The EFIM is calculated using $N=200$ points of uniformly sampled points, where the number of features is set equal the number of qubits for each model. The EFIM spectrum is finally averaged over 10 different model realizations to produce a more significant result.}
     \label{fig:FIM QCN}
 \end{figure}
 
@@ -267,11 +267,7 @@ From \autoref{fig:TL_trained} we see that training brought the QCNs into the exp
 
 Comparing \autoref{fig:TL_trained_A} and \autoref{fig:TL_trained_B}, we see that the 7-qubit QCN required twice the number of epochs to enter the exponential growth regime compared to the 6-qubit QCN. As discussed in \autoref{sec:Vanishing Gradient Phenomenon}, increasing the number of qubits makes the magnitude of the gradient exponentially smaller. Thus, a larger number of epochs, potentially exponentially so, are required to significantly change the parameters such that the nodes no longer resemble random circuits. This might produce a significant overhead for QCNs with a high number of qubits.
 
-Looking at \autoref{fig:TL_trained_C} and \autoref{fig:TL_trained_D}, we see that the corresponding DNNs fail to enter the exponential growth regime after training that matches the MSE reduction of the QCNs. The DNNs achieved exponential growth after more than an order magnitude more epochs. Even then, the trajectory length of the DNNs fell short of the QCNs. This suggests that QCNs can be trained to be more expressive than DNNs of similar number of parameters. A possible explanation for this is that the mathematical transformation applied by each node in the QCN is in a way more powerful and "interesting" compared to DNNs. As the information is represented as an entangled state in an exponentially large Hilbert space, each Pauli rotation transforms an exponential number of amplitudes. This constitutes a more complex computation than the affine transformation happening in the DNN, for the same number of parameters. However, this results only in a more interesting output for a low number of qubits, as the increased dimension of the Hilbert space tends to concentrate the output around the mean. 
-
-This 
-
-
+Looking at \autoref{fig:TL_trained_C} and \autoref{fig:TL_trained_D}, we see that the corresponding DNNs fail to enter the exponential growth regime, even after training the models for a number of epochs that result in the same MSE as the QCNs. The DNNs achieve exponential growth first after more than an order magnitude more epochs. This suggests that QCNs can be trained to be more expressive than DNNs of similar number of parameters. How can we explained this increased expressivity? A possible explanation for this is that the mathematical transformation applied by the QCN is in a way more powerful compared to DNNs. Typically, sufficiently deep PQCs are conjectured to be intractable for classical computers to simulate efficiently \cite{abbas2020power}\cite{lloyd2018quantum}. Stated in \autoref{sec:Multiple Qubits}, as the numbers of qubits $n$ increase, the dimensionality of the resulting Hilbert space grows exponentially as $d = 2^n$. It follows that gates applied on this space is mathematically represented as a $d\times d$ matrices, which causes an exponential overhead on classical computers. In this sense, the encoding and unitary transformations of each QCN node constitutes a harder computation than the affine transformation and non-linearity of DNN nodes. Still, even though a computation is harder, it does necessarily result in the computation of a richer, more complicated function. For example, it was shown from \autoref{fig:TL_untrained} that the opposite is true for randomly initialized QCNs. However, the increasing trajectory length seen in \autoref{fig:TL_trained} suggest that(elaborate). 
 
 %================================================================
 \section{Training Models on Gaussian Data}\label{sec:Training Models}
@@ -331,7 +327,12 @@ K    & DNN & 3D  & NA    & 3      & 5& 217  \\ \hline
     \label{fig:trained ideal}
 \end{figure}
 
-From the above figure, we see that QCN models perform better than the other models on the Gaussian data. 
+From \autoref{fig:trained ideal}, we see that the QCNs minimized the MSE quicker than both the QNN and the DNN on the mixed Gaussian data. The QCNs faster optimization compared to the DNNs is not surprising, since this was suggested by the its relatively larger gradient and uniform EFIM spectrum seen in \autoref{sec:Vanishing Gradient Phenomenon} and \autoref{sec:Investigating the Loss Landscape}, respectively. Even though the QNNs also exhibit a relatively uniform EFIM spectrum, \autoref{fig:trained ideal} shows that they are unable to make a good fit on the mixed Gaussian data. This shows that our choice of QNN architecture is insufficient for approximating this data. As explained in \autoref{sec:FeedForward}, our QNNs perform a mostly unitary (and thus linear) transformation of the input, except at the stage of encoding and measurement. This results in a perhaps too constrained functional form, which explains the QNN's inability to fit the data. QCNs, on the other hand, incorporate multiple non-linearities for each layer. This is likely the key to their greater flexibility, as it enables them to compute a larger family of functions. 
+
+Looking again at \autoref{fig:trained ideal}, we see that the optimization of the QCNs with one ansatz repetition exhibit a lot of variance, indicating that the training is very sensitive to parameter initialization and that it is getting stuck in local minima.   
+
+In \autoref{tab:training models}, the final MSE is 
+
 \begin{table}[H]
 \centering
 \begin{tabular}{|l|l|l|l|l|}
@@ -340,15 +341,15 @@ Model& Type& Data& MSE, $10^{2}$ Epochs& MSE, $10^{4}$ Epochs \\ \hline
 A    & QNN & 1D  &    & NA   \\ \hline
 B    & QCN & 1D  & $7.5\times 10^{-3}$  & NA \\ \hline
 C    & QCN & 1D  & $2.2\times 10^{-3}$  & NA  \\ \hline
-D    & DNN & 1D  & $1.3\times 10^{-2}$ & $5.1\times 10^{-5}$  \\ \Xhline{2\arrayrulewidth}
+D    & DNN & 1D  & $1.3\times 10^{-2}$ & $\boldsymbol{5.1\times 10^{-5}}$  \\ \Xhline{2\arrayrulewidth}
 E    & QNN & 2D  &                    & NA  \\ \hline
-F    & QCN & 2D  &                    & NA  \\ \hline
-G    & QCN & 2D  &                    & NA  \\ \hline
-H    & DNN & 2D  &                    &   \\ \Xhline{2\arrayrulewidth}
+F    & QCN & 2D  &  $1.7\times 10^{-2}$ & NA  \\ \hline
+G    & QCN & 2D  &  $\boldsymbol{4.2\times 10^{-3}}$ & NA  \\ \hline
+H    & DNN & 2D  &  $3.0\times10^{-2}$ & $4.6\times10^{-3}$\\ \Xhline{2\arrayrulewidth}
 I    & QNN & 3D  &                    & NA  \\ \hline
-J    & QCN & 3D  &                    & 5  \\ \hline
-K    & QCN & 3D  &                    & 5  \\ \hline
-K    & DNN & 3D  &                    & 5  \\ \hline
+J    & QCN & 3D  &  $4.9\times 10^{-3}$ & NA  \\ \hline
+K    & QCN & 3D  &  $\boldsymbol{2.8\times10^{-3}}$  & NA  \\ \hline
+K    & DNN & 3D  &  $1.3\times10^{-2}$  & $3.1\times10^{-3}$  \\ \hline
 \end{tabular}
 \caption{Stuff.} 
 \label{tab:training models}
@@ -382,3 +383,8 @@ K    & DNN & 3D  &                    & 5  \\ \hline
     \caption{Caption place holder}
     \label{fig:trained ideal}
 \end{figure}
+
+
+%================================================================
+\subsection{Discussion}\label{sec:Training Discussion}
+%================================================================

@@ -129,12 +129,54 @@ Here, the "measurements" are exact and normalized, as if infinitely many shots w
 \subsection{Simulating Real Devices}\label{sec:Simulating Real Devices}
 %================================================================
 
+Even though a given quantum algorithm may produce a satisfying resuling when executed on idealized hardware, like simulated with Qiskit, the same on necessarly true when run on real hardware. This is due to the introduced noise and inaccuracies as explained in \autoref{sec:Nisq}. To produce a more realistic result, Qiskit allows for realistic simulation of many noisy IBM quantum computers by choosing an appropriate backend. 
+
+\subsubsection*{Noisy Backend}
+
+There are three main components for simulating noisy devices. The first is the \emph{noise model} is responsible for implementing noise and inaccuracies present in the real hardware. In Qiskit, noise models have 4 components that determine the total model:
+
+\begin{itemize}
+    \item \textbf{Decoherence} Error resulting from interactions from the enviroment on the qubits, such as thermal noise.
+    \item \textbf{Gate Error}: Error resulting from application of gates.
+    \item \textbf{Gate Length}: Error resulting from the length of the gate.
+    \item \textbf{Gate Length}: Error resulting from the measurement of the qubits. 
+\end{itemize}
+
+The next component is a \emph{coupling map} that defined which the coupling of the qubit, i.e. what pairs of qubits that can interact via two-qubits gates (see \autoref{sec:Nisq}). Finally, the last component defines the basis gates of the quantum computer. 
+
+In this thesis, we will be using the IBM quantum computer Santiago, which is has 5 qubits and only linear connectivity between the qubits. This choice is deliberate, as qubit encoding and the simple ansatz are specially made to work efficiently on such architectures. To access and save the backend simulating this quantum computer, we can use the followig code:
+
+\begin{lstlisting}[language=python, numbers=left]
+import pickle
+from qiskit.providers.aer import QasmSimulator
+from qiskit import IBMQ
+
+IBMQ.enable_account(token)
+backend = provider.get_backend('ibmq_santiago')
+backend = QasmSimulator.from_backend(backend)
+pickle.dump(backend, open("backend_santiago", "wb"))
+\end{lstlisting}
+
+Here, \textbf{token} is a string identifying a IBM account necessary for accessing the correct backend. 
+\textbf{backend = QasmSimulator.from\_backend(backend)} pulls the necessary components describes earlier and implements them into the \textbf{QasmSimulator} backend, ready to be used for noisy simulation. 
+
+\subsubsection*{Transpiling}
+When using a noisy backend, it is important to transpile the circuit before simulating, because the gates must be decomposed into the correct basis gates, and such that the specific coupling map is respected. Transpiling a circuit with respect to a given backend is done automatically when executing the circuit:
+
+\begin{lstlisting}[language=python, numbers=left]
+jov = qk.execute(transpile(circuit, noisy_backend, seed_transpiler=42, seed_simulator=42)
+\end{lstlisting}
+Here, the \textbf{seed\_transpiler} and \textbf{seed\_simulator} are seeds that make the work of the transpiler and the noise model reproducible. In this thesis, they will be set to $42$. Transpiling will also apply a light optimization of the of the circuit, in the sense that it will attempt to reduce the number of basis gates needed to reproduce the circuit. This is particularly important, since we want the depth to be as low as possible. Heavier optimization routines may be used to reduce the circuit even more, with the price of more time spent transpiling.  
+
+
+
+
 
 
 %================================================================
 \section{QNN Example}\label{sec:QNNimpement}
 %================================================================
-We will now present a possible way of implementing a QNN \autoref{eq:QNN} for fitting the popular Iris data set(kilde). The model will be optimized using the parameter shift rule and gradient descent. 
+We will now present a possible way of implementing a QNN \autoref{eq:QNN} for fitting data. The model will be optimized using the parameter shift rule and gradient descent. 
 
 %================================================================
 \subsection{Encoding}
@@ -277,14 +319,9 @@ At line 10, \textbf{grad += (y\_pred - y)*gradient(x, theta)} accumulates the gr
 
 
 %================================================================
-\subsection{Putting It All Together}\label{sec:PIAT}
-%================================================================
-Stuff
-
-%================================================================
 \section{Quantum Circuit Network}\label{sec:QCNimplementation}
 %================================================================
-Stuff
+In this section, we will introduce how our frame work can used to implement various QCN architectures, and how these can be used to fit data. We will also show how the framework can be used to implements single-circuit QNNs, pure classical DNNS, and hybrid models combining QCN and DNN. 
 
 %================================================================
 \subsection{Encoders, Ansätze and Samplers}\label{sec:EAaS}
@@ -474,20 +511,66 @@ qnn_model = NeuralNetwork(layers = [layer1])
 As there are no intermediate layers, we do not need to compute the derivative of the node outputs with respect to their inputs. This opens up for ways of encoding where the parameter shift rule, as implemented in \autoref{sec:AnalyticalGrad} and \autoref{sec:GradientImplementation}, fails. Possible choices is RZZ encoding(as used in the above code) and amplitude encoding.
 
 %================================================================
-\subsection{Hybrid Networks}\label{sec:Hybrid Networks}
+\subsection{DNNs}\label{sec:DNNs}
 %================================================================
-In addition to \textbf{QLayer} layers, the neural network framework also implements \textbf{Dense} layers, which are densely connected, classical layers as defined in \autoref{sec:DenseNeuralNetwork}. It can be instantiated in the following way:
+In addition to \textbf{QLayer} layers, the neural network framework also implements \textbf{Dense} layers, which are densely connected, classical layers as defined in \autoref{sec:DenseNeuralNetwork}. It can be instantiated in the following way, and put together to form a DNN:
 
 \begin{lstlisting}[language=python, numbers=left]
 from layers import Dense, Sigmoid
 
-dense = Dense(n_features = 4,
+dense1 = Dense(n_features = 4,
               n_targets = 3,
               scale = 1,
               activation = Sigmoid(),
               bias = True)
 \end{lstlisting}
-Here, \textbf{activation} specifies the activation of the layer, in this case the sigmoid function. Setting \textbf{bias} to true enables the use of bias parameters in the layer. Like \textbf{QLayer}, \textbf{Dense} also implements methods like \textbf{\_call\_} for feed forward, and \textbf{grad()} for back-propagation. This opens up for construction of neural networks that consists of an arbitrary combination of \textbf{QLayer} and \textbf{Dense} layers, which can be simultaneously optimized using the methods of \autoref{sec:QCNTraining}.
+Here, \textbf{activation} specifies the activation of the layer, in this case the sigmoid function. Setting \textbf{bias} to true enables the use of bias parameters in the layer. Like \textbf{QLayer}, \textbf{Dense} also implements methods like \textbf{\_call\_} for feed forward, and \textbf{grad()} for back-propagation. A DNN can be set up the following way:
+
+\begin{lstlisting}[language=python, numbers=left]
+from layers import Dense, Sigmoid
+
+dense1 = Dense(n_features = 4,
+              n_targets = 3,
+              scale = 1,
+              activation = Sigmoid(),
+              bias = True)
+dense2 = Dense(n_features = 3,
+              n_targets = 2,
+              scale = 1,
+              activation = Sigmoid(),
+              bias = True)
+layers=[dense1, dense2]       
+network = Neuralnetwork(layers)
+\end{lstlisting}
+
+This opens up for construction of neural networks that consists of an arbitrary combination of \textbf{QLayer} and \textbf{Dense} layers, which can be simultaneously optimized using the methods of \autoref{sec:QCNTraining}.
+
+%================================================================
+\subsection{Hybrid Models}\label{sec:Hybrid Models}
+%================================================================
+Because of the flexibility of the framework and compatability of the different layers, it is possible to make hybrid models by combining \textbf{Dense} and \textbf{QLayer} layers using
+
+\begin{lstlisting}[language=python, numbers=left]
+dense = Dense(n_features = 64,
+              n_targets = 4,
+              scale = np.pi,
+              activation = Tanh(),
+              bias = True)
+              
+qlayer = QLayer(n_qubits = 4,
+                n_features = 4,
+                n_targets = 1,
+                encoder = Encoder(),
+                ansatz = Ansatz(blocks=["entangle", "ry"],
+                reps=2),
+                sampler = Parity(),
+                backend = backend,
+                shots = 1000)
+layers=[dense, qlayer]       
+network = Neuralnetwork(layers)
+\end{lstlisting}
+I this code, the initial dense layer is used to reduce 64 feature to 4, a form a learned feature reduction. This may be a beneficial approach which we will study later, as feeding 64 features directly into a QCN would require 64 qubits using qubit encoding. Note that the use of tanh activation and a scaling of $\pi$ ensure that the output of the dense layer is in $[-\pi, \pi]$, which we argue in \autoref{sec:Configuring QCNs and DNNs} is a appropriate scaling for QCNs.
+
 
 %================================================================
 \section{Tools for Analysis}\label{sec:Tools for Analysis Imp}

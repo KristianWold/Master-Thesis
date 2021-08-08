@@ -1,4 +1,50 @@
 %================================================================
-\chapter{Data Generation}\label{sec:Appendix B}
+\chapter{Data Sets}\label{sec:Appendix B}
 %================================================================
-Stuff
+In this chapter, we will present details surrounding the data sets used for training and testing models in this thesis. 
+
+%================================================================
+\section{Mixed Gaussian Data}\label{sec:Mixed Gaussian Data}
+%================================================================
+In order to obtain a complex, varying surface suited for regression, we choose to generate such data artificially by summing multiple Gaussian functions with different means and standard deviations. This creates what is known as mixed Gaussian data. 
+
+Given a data point $\boldsymbol{x}$ with $p$ features, the output of a general multivariate Gaussian (without normalization and correlations) can be computed using 
+\begin{equation}\label{eq:Gaussian}
+    y = e^{(\boldsymbol{x} - \boldsymbol{\mu})^T \Sigma^{-1}(\boldsymbol{x} - \boldsymbol{\mu})},
+\end{equation}
+where $\boldsymbol{\mu}$ is a $p$-dimensional vector that defines the position of the center of the Gaussian function, and $\Sigma$ is a $p\times p$ diagonal matrix defining the extension of the Gaussian in each direction. In this thesis, we will prepare samples $\boldsymbol{x}^{(i)} \in [0,1]^p$ as a meshgrid that uniformly fills the input space $[0,1]^p$. This ensures a dense data set that captures the details of the mixed Gaussian function. We will generate data sets for $p \in[1,2,3].$ These differed data sets are described in \autoref{tab:MixedGaussianData}. For a 
+
+\begin{table}[]\label{tab:MixedGaussianData}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+ Name& \#Samples&  \# Features& Feature Type& Target Type \\ \hline
+ 1D Mixed Gaussian&  100&  1& $x_i \in [0,1]$ & $y_i \in [0,1]$  \\ \hline
+ 2D Mixed Gaussian&  144&  2& $x_i \in [0,1]$ & $y_i \in [0,1]$ \\ \hline
+ 3D Mixed Gaussian&  216&  3& $x_i \in [0,1]$ & $y_i \in [0,1]$ \\ \hline
+\end{tabular}
+\caption{Details on the various mixed Gaussian data sets.}
+\end{table}
+
+
+
+
+
+
+
+
+%================================================================
+\section{Boston Housing Data}\label{sec:Boston Housing Data}
+%================================================================
+
+%================================================================
+\subsection{Feature Reduction wit PCA}\label{sec:Feature Reduction wit PCA}
+%================================================================
+
+%================================================================
+\section{Sparse Data Set}\label{sec:Spare Data Set}
+%================================================================
+
+
+
+
+
