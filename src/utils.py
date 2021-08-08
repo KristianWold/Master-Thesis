@@ -113,3 +113,61 @@ def r2(models, x, y):
         r2_scores.append(r2)
 
     return sum(r2_scores) / len(r2_scores)
+
+
+def generate_1D_mixed_gaussion():
+    n = 100
+    x = np.linspace(0, 1, n).reshape(-1, 1)
+    y = gaussian(x, 0.2, 0.01) - gaussian(x, 0.5, 0.01) + \
+        gaussian(x, 0.8, 0.01)
+    return (x, y)
+
+
+def generate_2D_mixed_gaussion():
+    n = 12
+    x = np.linspace(0, 1, n)
+    x = generate_meshgrid([x, x])
+
+    mean1 = np.array([[0.2, 0.8]])
+    mean2 = np.array([[0.5, 0.8]])
+    mean3 = np.array([[0.8, 0.8]])
+    mean4 = np.array([[0.2, 0.5]])
+    mean5 = np.array([[0.5, 0.5]])
+    mean6 = np.array([[0.8, 0.5]])
+    mean7 = np.array([[0.2, 0.2]])
+    mean8 = np.array([[0.5, 0.2]])
+    mean9 = np.array([[0.8, 0.2]])
+    var = np.array([[0.01, 0], [0, 0.01]])
+
+    y = gaussian(x, mean1, var1) - gaussian(x, mean2, var2) +\
+        gaussian(x, mean3, var3) - gaussian(x, mean4, var4) +\
+        gaussian(x, mean5, var5) - gaussian(x, mean6, var6) + gaussian(x, mean7, var7) - gaussian(x, mean8, var8) +\
+        gaussian(x, mean9, var9)
+
+    return (x, y)
+
+
+def generate_1D_mixed_gaussion():
+    n = 6
+    x = np.linspace(0, 1, n)
+    x = generate_meshgrid([x, x, x])
+
+    mean1 = np.array([[0.25, 0.25, 0.25]])
+    mean2 = np.array([[0.25, 0.25, 0.75]])
+    mean3 = np.array([[0.25, 0.75, 0.75]])
+    mean4 = np.array([[0.25, 0.75, 0.25]])
+    mean5 = np.array([[0.75, 0.25, 0.25]])
+    mean6 = np.array([[0.75, 0.25, 0.75]])
+    mean7 = np.array([[0.75, 0.75, 0.75]])
+    mean8 = np.array([[0.75, 0.75, 0.25]])
+
+    var = np.array([[0.02, 0, 0], [0, 0.02, 0], [0, 0, 0.02]])
+
+    y = gaussian(x, mean1, var) - gaussian(x, mean2, var) + \
+        gaussian(x, mean3, var) - gaussian(x, mean4, var) - \
+        gaussian(x, mean5, var) + gaussian(x, mean6, var) - \
+        gaussian(x, mean7, var) + gaussian(x, mean8, var)
+
+    y = scaler(y, a=0, b=1)
+
+    return (x, y)
