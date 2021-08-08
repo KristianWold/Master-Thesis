@@ -6,6 +6,7 @@ from optimizers import Adam, GD
 from data_encoders import *
 from samplers import *
 from utils import *
+from ansatzes import *
 
 """
 class Ansatz():
@@ -218,6 +219,8 @@ class RegularizedModel():
         self.map_params = []
 
         self.n_qubits = n_features + 1
+        self.ansatz.n_qubits = self.n_qubits
+
         self.theta = np.random.uniform(
             0, 2 * np.pi, self.n_qubits * self.reps + self.n_features)
 
@@ -230,12 +233,16 @@ class RegularizedModel():
             self.optimizer.initialize(self.theta.shape)
 
     def predict(self, x):
+        backend_state_vec = qk.providers.aer.StatevectorSimulator()
         outputs = []
         circuit_list = []
         for i, x_ in enumerate(x):
             data_register = qk.QuantumRegister(self.n_qubits)
             classical = qk.ClassicalRegister(self.n_qubits)
-            registers = [data_register, classical]
+            registers = [data_register]
+            if self.shots != 0:
+                registers.append(classical)
+
             circuit = qk.QuantumCircuit(*registers)
 
             circuit = self.encoder(
@@ -247,20 +254,19 @@ class RegularizedModel():
                 circuit = self.ansatz(
                     circuit, data_register, self.theta[start:end])
 
-            circuit.measure(data_register, classical)
+            if self.shots != 0:
+                circuit.measure(data_register, classical)
+
             circuit_list.append(circuit)
 
-        transpiled_list = qk.transpile(circuit_list, backend=self.backend)
-        qobject_list = qk.assemble(transpiled_list,
-                                   backend=self.backend,
-                                   shots=self.shots,
-                                   max_parallel_shots=1,
-                                   max_parallel_experiments=0
-                                   )
-        job = self.backend.run(qobject_list)
-
         for circuit in circuit_list:
-            counts = job.result().get_counts(circuit)
+            if self.shots == 0:
+                counts = qk.execute(
+                    circuit, backend_state_vec).result().get_counts()
+            else:
+                counts = qk.execute(
+                    circuit, self.backend, shots=self.shots, seed_transpiler=42, seed_simulator=42).result().get_counts()
+
             outputs.append(self.sampler(counts))
 
         return np.array(outputs).reshape(-1, 1)

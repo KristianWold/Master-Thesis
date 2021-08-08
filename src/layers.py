@@ -130,9 +130,9 @@ class QLayer():
                     circuit, backend_state_vec).result().get_counts()
             else:
                 # noisy simulaton
-                circuit = qk.transpile(circuit, self.backend)
                 counts = qk.execute(circuit,
                                     self.backend,
+                                    shots=self.shots,
                                     seed_transpiler=42,
                                     seed_simulator=42).result().get_counts()
 
