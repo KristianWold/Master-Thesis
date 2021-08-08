@@ -94,7 +94,7 @@ class QLayer():
         self.randomize_weight()
 
     def __call__(self, inputs):
-        backend_state_vec = qk.providers.aer.StatevectorSimulator()
+        backend_state_vec = qk.Aer.get_backend('statevector_simulator')
         outputs = []
         circuit_list = []
         n_samples = inputs.shape[0]
