@@ -36,7 +36,7 @@ In the sections to come, we will discuss specific choices of feature encoding, a
 %================================================================
 \section{Feature Encoding}\label{sec:FeatureEncoding}
 %================================================================
-In this section, we will introduce three ways of doing feature encoding, namely \emph{qubit encoding}, \emph{RZZ encoding} and \emph{amplitude encoding}. 
+In this section, we will introduce two ways of doing feature encoding, namely \emph{qubit encoding}, \emph{RZZ encoding}. 
 
 %================================================================
 \subsection{Qubit Encoding}\label{sec:QubitEncoding}
@@ -84,8 +84,40 @@ When using $R_z$ rotations, a Hadamard gate is used on each qubit to create a su
     (\cos(\frac{x_1}{2})\ket{0} + \sin(\frac{x_1}{2})\ket{1})\otimes
     (\cos(\frac{x_2}{2})\ket{0} + \sin(\frac{x_2}{2})\ket{1})
 \end{equation}
+Writing the tensor product out as an explicit state vector, we get 
+
+\begin{equation}\label{eq:qubit rotation interaction}
+\begin{bmatrix}
+    \cos(\frac{x_1}{2})\cos(\frac{x_2}{2}) \\
+    \cos(\frac{x_1}{2})\sin(\frac{x_2}{2}) \\
+    \sin(\frac{x_1}{2})\cos(\frac{x_2}{2}) \\
+    \sin(\frac{x_1}{2})\sin(\frac{x_2}{2}) \\
+    \end{bmatrix}.
+\end{equation}
+We see from this that qubit encoding provides a state whose amplitudes encode interactions between the features. In this sense, it computes an exponential number of interactions between features in constant time, potentially creating a powerful representation of the data useful for solving a give learning problem.
+
+
+As the the number of features are increased, the number of amplitudes will increase exponentially and contribute higher and higher interactions, creating a complex representation of the data in Hilbert space. 
 
 As the circuit depth is quite low, qubit encoding is an effective method for embedding $p$ features into a $2^p$ dimensional Hilbert space. However, the state resulting from qubit encoding is mathematically very simple, which may limit the overall expressive power of the final model. In the next subsection, we will present a more complex way of encoding features which has been shown to improve the overall flexibility of the machine learning model in some circumstances. 
+
+
+%================================================================
+\subsection{Tensorial Feature Mapping}\label{sec:Tensorial Feature Mapping}
+%================================================================
+
+From \autoref{eq:qubit rotation interaction}, we see that qubit encoding computes interactions between the features. This observation can be used to create interesting representations for data of few features by repeating them multiple times, at the expense of including more qubits. By imposing $x_1 = x_2 = x$ in the example in \autoref{sec:QubitEncoding}
+
+\begin{equation}\label{eq:tensorial feature mapping}
+\begin{bmatrix}
+    \cos(\frac{x}{2})^2 \\
+    \sin(\frac{x}{2})\cos(\frac{x}{2}) \\
+    \sin(\frac{x}{2})\cos(\frac{x}{2}) \\
+    \sin(\frac{x}{2})^2 \\
+    \end{bmatrix}.
+\end{equation}
+
+This technique is sometimes called  \emph{tensorial feature mapping}(kilde), and results in a state that encodes polynomials of $\sin$ and $\cos$ transformations of data, as seen in \autoref{eq:tensorial feature mapping}. In (kilde), tensorial feature mapping was shown to produce superior QNN models over normal qubit encoding. 
 
 
 %================================================================
@@ -103,42 +135,42 @@ As the circuit depth is quite low, qubit encoding is an effective method for emb
 This procedure produces a much more complex feature map, and can be made more complex still by repeating the whole encoding process several times in a row. The number of such repetitions is often called the \emph{depth} of the feature map.  \citet{abbas2020power} conjecture that this feature map is difficult to simulate classically for depth $\geq 2$ and increasing number of features. Since it requires $\mathcal{O}(p^2)$ operations on a quantum computer, its time complexity is polynomial and hence efficient in comparison. It was showed by the same authors that RZZ encoding produce much more flexible models than qubit encoding. However, it is also more computationally demanding, as it requires a circuit depth $\mathcal{O}(p^2)$ and full connectivity between all the qubits.
 
 %================================================================
-\subsection{Amplitude Encoding}\label{sec:AmplitudeEncoding}
+%\subsection{Amplitude Encoding}\label{sec:AmplitudeEncoding}
 %================================================================
-\emph{Amplitude encoding} is a way of encoding features directly as the amplitudes of a quantum state. Given a data set $\boldsymbol{x} = (x_1, \cdots, x_p)$, where $p=2^n$, amplitude encoding involves preparing a state $\ket{\psi_\boldsymbol{x}} = \sum_{i=1}^p x_i\ket{i}$ on $n$ qubits. Because of the normalization of quantum states, it is necessary to scale the data to ensure that $\sum_{i=1}^p |x_i|^2 = 1$ holds. The main advantage of amplitude encoding stems from the fact that the number of amplitudes is exponential in the number of qubit. Hence, we only need $\log_2(p)$ qubits to encode $p$ features, enabling us to encode an exponential amount of information as the number of qubits increase. However, there is not a general way of preparing a state for any given $\boldsymbol{x} = (x_1, \cdots, x_p)$ in an efficient way, i.e. with time-complexity polynomial in the number of qubits.
+%\emph{Amplitude encoding} is a way of encoding features directly as the amplitudes of a quantum state. Given a data set $\boldsymbol{x} = (x_1, \cdots, x_p)$, where $p=2^n$, amplitude encoding involves preparing a state $\ket{\psi_\boldsymbol{x}} = \sum_{i=1}^p x_i\ket{i}$ on $n$ qubits. Because of the normalization of quantum states, it is necessary to scale the data to ensure that $\sum_{i=1}^p |x_i|^2 = 1$ holds. The main advantage of amplitude encoding stems from the fact that the number of amplitudes is exponential in the number of qubit. Hence, we only need $\log_2(p)$ qubits to encode $p$ features, enabling us to encode an exponential amount of information as the number of qubits increase. However, there is not a general way of preparing a state for any given $\boldsymbol{x} = (x_1, \cdots, x_p)$ in an efficient way, i.e. with time-complexity polynomial in the number of qubits.
 
-Here, we will present a method for preparing an arbitrary state $\ket{\psi}$ with real-valued amplitudes starting from the initial state $\ket{0}$. The method is based on the description of \cite{SupervisedwquantumComputers}, which is in turn based on the work of \cite{Mottonen}. The method prepares the state by iterativly \emph{branching} the state by using multi-controlled rotations. Consider a general system of $n$ qubits. Starting in the state $\ket{00\cdots0}$ the algorithm applies an $R_y$ rotation with rotation angle $\beta^1_1$ on the first qubit
-\begin{equation}
-    \ket{\psi_1} = R_y^1(\beta^1_1)\ket{000} = a_1\ket{00\cdots0} + a_2\ket{10\cdots0},
-\end{equation}
-where the superscript of the gate indicates which qubit it acts on. 
-This creates two different branches where the first qubit is in state $\ket{0}$ and $\ket{1}$, respectively. Then, for each branch, we apply a different rotation on the second qubit. This can be done by conditioning the rotation on the first qubit, resulting in  
-\begin{equation}
-\begin{aligned}
-    \ket{\psi_2} = R_y^{2|q_1 = 0}(\beta^2_1)R_y^{2|q_1 = 1}(\beta^2_2)\ket{\psi_1} =\\ a_1(b_1\ket{00\cdots0} + b_2\ket{01\cdots0}) + a_2(b_3\ket{10\cdots0} + b_4\ket{11\cdots0}).
-\end{aligned}
-\end{equation}
-Here, the superscript "$2|q_1=0$" means that the gate is applied on the second qubit, conditioned on the first qubit being in state $\ket{0}$ ($q_1=0$). 
-In this way, each branch is broken into two new branches. This procedure is continued until all possible branches has been created. In general, we use multi-controlled rotations on qubit $i$ conditioned on all possible states of the preceding qubits, i.e.
-\begin{equation}
-    R_y^{i|q_1,\cdots,q_{i-1}}(\beta^i_j)\ket{q_1 \cdots q_{i-1}}\otimes \ket{0},
-\end{equation}
-where $j$ enumerates the $2^{i-1}$ different branches of $\ket{q_1 \cdots q_{i-1}}$. To ensure that we arrive at the desired amplitude after all the branches have been created, we must choose rotation angles
+%Here, we will present a method for preparing an arbitrary state $\ket{\psi}$ with real-valued amplitudes starting from the initial state $\ket{0}$. The method is based on the description of \cite{SupervisedwquantumComputers}, which is in turn based on the work of \cite{Mottonen}. The method prepares the state by iterativly \emph{branching} the state by using multi-controlled rotations. Consider a general system of $n$ qubits. Starting in the state $\ket{00\cdots0}$ the algorithm applies an $R_y$ rotation with rotation angle $\beta^1_1$ on the first qubit
+%\begin{equation}
+%    \ket{\psi_1} = R_y^1(\beta^1_1)\ket{000} = a_1\ket{00\cdots0} + a_2\ket{10\cdots0},
+%\end{equation}
+%where the superscript of the gate indicates which qubit it acts on. 
+%This creates two different branches where the first qubit is in state $\ket{0}$ and $\ket{1}$, respectively. Then, for each branch, we apply a different rotation on the second qubit. This can be done by conditioning the rotation on the first qubit, resulting in  
+%\begin{equation}
+%\begin{aligned}
+%    \ket{\psi_2} = R_y^{2|q_1 = 0}(\beta^2_1)R_y^{2|q_1 = 1}(\beta^2_2)\ket{\psi_1} =\\ a_1(b_1\ket{00\cdots0} + b_2\ket{01\cdots0}) + a_2(b_3\ket{10\cdots0} + b_4\ket{11\cdots0}).
+%\end{aligned}
+%\end{equation}
+%Here, the superscript "$2|q_1=0$" means that the gate is applied on the second qubit, conditioned on the first qubit being in state $\ket{0}$ ($q_1=0$). 
+%In this way, each branch is broken into two new branches. This procedure is continued until all possible branches has been created. In general, we use multi-controlled rotations on qubit $i$ conditioned on all possible states of the preceding qubits, i.e.
+%\begin{equation}
+%    R_y^{i|q_1,\cdots,q_{i-1}}(\beta^i_j)\ket{q_1 \cdots q_{i-1}}\otimes \ket{0},
+%\end{equation}
+%where $j$ enumerates the $2^{i-1}$ different branches of $\ket{q_1 \cdots q_{i-1}}$. To ensure that we arrive at the desired amplitude after all the branches have been created, we must choose rotation angles
 
-\begin{equation}
-    \beta^{i}_j = 2\arcsin{
-    \frac{\sqrt{\sum_{l=1}^{2^{n-i}} |x_{(2j - 1)2^{n-i} + l}|^2}}
-    {\sqrt{\sum_{l=1}^{2^{n-i+1}} |x_{(j-1)2^{n-i+1}  + l}|^2}}
-    },
-\end{equation}
-with the special case for $i=n$
+%\begin{equation}
+%    \beta^{i}_j = 2\arcsin{
+%    \frac{\sqrt{\sum_{l=1}^{2^{n-i}} |x_{(2j - %1)2^{n-i} + l}|^2}}
+%    {\sqrt{\sum_{l=1}^{2^{n-i+1}} |x_{(j-1)2^{n-i+1}  %+ l}|^2}}
+%    },
+%\end{equation}
+%with the special case for $i=n$
 
-\begin{equation}
-    \beta^{n}_j = 2\arcsin{
-    \frac{x_{(2j - 1) + l}}
-    {\sqrt{\sum_{l=1}^{2} |x_{2(j-1)  + l}|^2}}
-    }.
-\end{equation}
+%\begin{equation}
+%    \beta^{n}_j = 2\arcsin{
+%    \frac{x_{(2j - 1) + l}}
+%    {\sqrt{\sum_{l=1}^{2} |x_{2(j-1)  + l}|^2}}
+%    }.
+%\end{equation}
 %As an easy example, lets say we want to encode the normalized features $\boldsymbol{x} = %(x_1, x_2, x_3 ,x_4)$ onto two qubits. We start by calculating the first rotation angle:
 %\begin{equation}
 %    \beta^{(1)}_1 = 2\arcsin{
@@ -147,17 +179,17 @@ with the special case for $i=n$
 %\end{equation}
 %where the normalization of the vector was used to remove the denominator. 
 
-The full procedure is visualized in the following circuit:
+%The full procedure is visualized in the following circuit:
 
-\begin{equation}
-   \Qcircuit @C=1em @R=.7em {
-         \lstick{\ket{0}}& \gate{R_y(\beta^{1}_1)}&  \ctrl{1}                  & \ctrlo{1}                 & \qw &  \qw    &  \ctrl{1}                 & \ctrlo{1}                 &  \qw    &  \ctrlo{1}                        &\\
-         \lstick{\ket{0}}& \qw                      &  \gate{R_y(\beta^{2}_1)} & \gate{R_y(\beta^{2}_2)} & \qw &  \qw    &  \ctrl{2}                 & \ctrl{2}                  &  \qw    &  \ctrlo{2}                        &\\
-         \vdots          &                          &                            &                           &     &  \cdots &                           &                           &  \cdots &                                   &\\
-         \lstick{\ket{0}}& \qw                      &  \qw                       & \qw                       & \qw &  \qw    &  \ctrl{1}                 & \ctrl{1}                  &  \qw    &  \ctrlo{1}                        &\\
-         \lstick{\ket{0}}& \qw                      &  \qw                       & \qw                       & \qw &  \qw    &  \gate{R_y(\beta^{n}_1)}& \gate{R_y(\beta^{n}_2)} &  \qw    &  \gate{R_y(\beta^{n}_{2^{n-1}})} &\\
-         }        
-\end{equation}
+%\begin{equation}
+%   \Qcircuit @C=1em @R=.7em {
+%         \lstick{\ket{0}}& \gate{R_y(\beta^{1}_1)}&  \ctrl{1}                  & \ctrlo{1}                 & \qw &  \qw    &  \ctrl{1}                 & \ctrlo{1}                 &  \qw    &  \ctrlo{1}                        &\\
+%         \lstick{\ket{0}}& \qw                      &  \gate{R_y(\beta^{2}_1)} & \gate{R_y(\beta^{2}_2)} & \qw &  \qw    &  \ctrl{2}                 & \ctrl{2}                  &  \qw    &  \ctrlo{2}                        &\\
+%         \vdots          &                          &                            &                           &     &  \cdots &                           &                           &  \cdots &                                   &\\
+%         \lstick{\ket{0}}& \qw                      &  \qw                       & \qw                       & \qw &  \qw    &  \ctrl{1}                 & \ctrl{1}                  &  \qw    &  \ctrlo{1}                        &\\
+%         \lstick{\ket{0}}& \qw                      &  \qw                       & \qw                       & \qw &  \qw    &  \gate{R_y(\beta^{n}_1)}& \gate{R_y(\beta^{n}_2)} &  \qw    &  \gate{R_y(\beta^{n}_{2^{n-1}})} &\\
+%         }        
+%\end{equation}
 
 
 
@@ -291,8 +323,18 @@ For QNNs, the features $\boldsymbol{x}$ enter the state $\ket{\psi_{\boldsymbol{
 %================================================================
 \subsection{Barren Plateus in QNN Loss Landscape}\label{sec:BarrenPlateus}
 %================================================================
-While recent studies have shown several promising characteristics of QNNs, such as faster training and greater flexibility\cite{abbas2020power}, these studies have been largely focused on smaller systems and heuristic measures. As such, few scaling relations of QNNs have been rigorously proven. Recently, \citet{McClean_2018} established an important result connecting the magnitude of the gradient for a large class of PQCs to the number of qubits. They found that the variance of the output of randomly initialized PQCs vanish exponentially in the number of qubits, with a worsening effect the deeper the circuit is. This is because the PQC essentially approached a random circuit,  leading to a concentration of outputs around an the average output over all possible initialization. In particular, it was showed that the gradient of PQCs center around zero, meaning the gradient vanishes exponentially fast as the circuits grows wider and deeper.  
+While recent studies have shown several promising characteristics of QNNs, such as faster training and greater flexibility\cite{abbas2020power}, these studies have been largely focused on smaller systems and heuristic measures. As such, few scaling relations of QNNs have been rigorously proven. Recently, \citet{McClean_2018} established an important result connecting the magnitude of the gradient and observables for a large class of PQCs to the number of qubits. First, they point out that observables of a state $\ket{\psi_n}$ sampled uniformly from an n-qubit Hilbert space tend to concentrate around the its mean over the whole Hilbert space as the number of qubits increases. Mathematically, we can express this as
 
+\begin{equation}
+    \lim_{n\to\infty} V(\bra{\psi_n}\hat{O}\ket{\psi_n}) = 0,
+\end{equation}
+where $V()$ indicates the variance. Also, this concentration happens exponentially fast in n. From \autoref{sec:Ansätze}, we know that a PQC $U_{\boldsymbol{\theta}}$ can in general prepare any state $\ket{\psi_\boldsymbol{\theta}}$ only if it is exponentially deep. However, \citet{McClean_2018} showed that shallow PQC with polynomial depth were also susceptible for the same exponential concentration of observable. This effect is also worsening the deeper the circuit is. Further, they showed that tha gradient of PQC has a mean around zero, i.e.
+
+\begin{equation}
+     E(\partial \theta_i \bra{\psi_{\boldsymbol{\theta}}}\hat{O}\ket{\psi_{\boldsymbol{\theta}}}) = 0.
+\end{equation}
+
+These two results show that the gradient of PQCs are concentrarting around zero. In other words, as the depth and width of PQCs grows, they essentially approached a random circuit, leading to a concentration of outputs around an the average output over all possible initialization. In addition, their gradients vanish exponentially fast.
 
 The vanishing of PQCs gradients manifests itself as loss landscapes that are extremely flat in most of parameter space, reminiscent of the vanishing gradient phenomenon of classical neural networks as the depth increase\cite{shalevshwartz2017failures}. The exponential vanishing of the gradient means that exponentially many shots are required in order to obtain a sufficient signal-to-noise ratio, as explained in \autoref{sec:EstimatingExpectationValues}. This may render the training of larger QNN models intractable as the number of qubits is increased in order to handle harder learning problems.
 
@@ -365,7 +407,28 @@ The terms
 \end{equation}  The calculation of the gradient allows us to leverage more information of the loss function and enables for gradient-based optimisation. Potentially, this could mean faster optimization relative to derivative-free optimization, such as Nelder-Mead's algorithm which was originally used to optimize QCN(kilde). However, as explained in \autoref{sec:GradientDescent}, gradient-based methods such as gradient descent are prone to getting stuck in local minima, potentially causing slow optimization.    
 
 %================================================================
-\section{Recursive Circuit Optimisation}\label{sec:RCO}
+\subsection{Regularized Feature Map}\label{sec:Regularized Feature map}
 %================================================================
 
+\begin{figure}[htp]
+\[ \begin{array}{c}
+    \Qcircuit @C=1em @R=1em {
+    \lstick{\ket{0}}& \multigate{3}{{U_{\phi(\boldsymbol{x})}}} & \qw    & \multigate{3}{S_{\boldsymbol{\theta}}} & \qw    & \multigate{3}{{U_{\phi(\boldsymbol{-x})}}} & \qw    &  \\
+    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    & \ghost{S_{\boldsymbol{\theta}}}        & \qw    &\ghost{{U_{\phi(\boldsymbol{-x})}}}        & \qw    &  \\
+    \vdots          & \nghost{{U_{\phi(\boldsymbol{x})}}}       & \vdots & \nghost{S_{\boldsymbol{\theta}}}       & \vdots & \nghost{{U_{\phi(\boldsymbol{-x})}}}       & \vdots &   \\
+    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    & \ghost{S_{\boldsymbol{\theta}}}        & \qw    &\ghost{{U_{\phi(\boldsymbol{-x})}}}        & \qw    &  \\
+                    & \underset{Encoding}{\underbrace{}}        &        &\underset{Splitter}{\underbrace{}}    &        &\underset{Reverse Encoding}{\underbrace{}}        &             
+    }
+    \end{array}\]
+\caption{}
+\label{fig:QNN}
+\end{figure}
+
+
+
+%================================================================
+%\section{Recursive Circuit Optimization}\label{sec:RCO}
+%================================================================
+
+%Assume we have a unitary operator $U$ that prepares a state$\ket{\psi} = U\ket{0}$. In the case that $U$ has a high circuit depth, preparation of the state may fail on noisy hardware due to decoherence, as explained in \autoref{sec:Nisq}. 
 

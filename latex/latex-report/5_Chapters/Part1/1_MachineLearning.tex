@@ -43,6 +43,10 @@ The choice of loss function is very problem dependent, and there is a vast colle
 
 Fitting the model using MSE as loss function is often referred to as the \emph{least squares approach}.
 
+%================================================================
+\section{Generalizability}\label{sec:Generalizability}
+%================================================================
+If we obtain a low loss, are we assured that the resulting model is good and useful? It depends on the use-case, but if we want to use the model for predicting on new data, we often don't want the model to fit the training data too hard. As explained earlier, the main goal of the model is to approximate the underlying mechanism $f(\boldsymbol{x})$. If the model fits the data too hard, it will also pick up details of the noise $\epsilon$ in the training data. The problem with this is that if we gather a new data set, a \emph{test set} $y' = f(\boldsymbol{x}) + \epsilon'$, the noise $\epsilon'$ will be different from the noise in the training data seen by the model because of its random nature. This phenomenon is called \emph{overfitting}, and will cause the model to perform badly on new data, even though its performance on the training data is good. By fitting the model less hard, by i.e. reducing its complexity, the model may resemble $f(\boldsymbol{x})$  more closely, and make accurate predictions on values of $\boldsymbol{x}$ not seen in the training set. In this sense, the model \emph{generalizes} to unseen data. To uncover overfitting, it is standard to prepare an independent training and test data set $\mathcal{T}_{Train}$ and $\mathcal{T}_{Test}$, and train the model on the former set and test its performance on the latter. 
 
 
 
