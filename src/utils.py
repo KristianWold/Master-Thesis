@@ -61,25 +61,6 @@ def gaussian(x, mean, var):
     return y
 
 
-def random_mixed_gaussian(x, n_gaussians=3):
-    dim = x.shape[-1]
-    mean = np.random.uniform(0, 1, (n_gaussians, 1, dim))
-
-    var = []
-    for i in range(n_gaussians):
-        var_ = np.random.uniform(-0.001, 0.001, (dim, dim))
-        var_[np.diag_indices(dim)] = np.random.uniform(0.005, 0.05, dim)
-        var.append(var_)
-
-    alpha = np.random.uniform(-1, 1, n_gaussians)
-
-    y = 0
-    for i in range(n_gaussians):
-        y += alpha[i] * gaussian(x, mean[i], var[i])
-
-    return y
-
-
 def scaler(x, mode="uniform", a=0, b=np.pi):
     if mode == "uniform":
         x = x - np.min(x, axis=0)
@@ -115,15 +96,16 @@ def r2(models, x, y):
     return sum(r2_scores) / len(r2_scores)
 
 
-def generate_1D_mixed_gaussion():
+def generate_1D_mixed_gaussian():
     n = 100
     x = np.linspace(0, 1, n).reshape(-1, 1)
     y = gaussian(x, 0.2, 0.01) - gaussian(x, 0.5, 0.01) + \
         gaussian(x, 0.8, 0.01)
+    y = scaler(y, a=0, b=1)
     return (x, y)
 
 
-def generate_2D_mixed_gaussion():
+def generate_2D_mixed_gaussian():
     n = 12
     x = np.linspace(0, 1, n)
     x = generate_meshgrid([x, x])
@@ -139,15 +121,17 @@ def generate_2D_mixed_gaussion():
     mean9 = np.array([[0.8, 0.2]])
     var = np.array([[0.01, 0], [0, 0.01]])
 
-    y = gaussian(x, mean1, var1) - gaussian(x, mean2, var2) +\
-        gaussian(x, mean3, var3) - gaussian(x, mean4, var4) +\
-        gaussian(x, mean5, var5) - gaussian(x, mean6, var6) + gaussian(x, mean7, var7) - gaussian(x, mean8, var8) +\
-        gaussian(x, mean9, var9)
+    y = gaussian(x, mean1, var) - gaussian(x, mean2, var) +\
+        gaussian(x, mean3, var) - gaussian(x, mean4, var) +\
+        gaussian(x, mean5, var) - gaussian(x, mean6, var) +\
+        gaussian(x, mean7, var) - gaussian(x, mean8, var) +\
+        gaussian(x, mean9, var)
 
+    y = scaler(y, a=0, b=1)
     return (x, y)
 
 
-def generate_1D_mixed_gaussion():
+def generate_3D_mixed_gaussian():
     n = 6
     x = np.linspace(0, 1, n)
     x = generate_meshgrid([x, x, x])
