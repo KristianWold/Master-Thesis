@@ -413,11 +413,11 @@ The terms
 \begin{figure}[htp]
 \[ \begin{array}{c}
     \Qcircuit @C=1em @R=1em {
-    \lstick{\ket{0}}& \multigate{3}{{U_{\phi(\boldsymbol{x})}}} & \qw    & \multigate{3}{S_{\boldsymbol{\theta}}} & \qw    & \multigate{3}{{U_{\phi(\boldsymbol{-x})}}} & \qw    &  \\
-    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    & \ghost{S_{\boldsymbol{\theta}}}        & \qw    &\ghost{{U_{\phi(\boldsymbol{-x})}}}        & \qw    &  \\
-    \vdots          & \nghost{{U_{\phi(\boldsymbol{x})}}}       & \vdots & \nghost{S_{\boldsymbol{\theta}}}       & \vdots & \nghost{{U_{\phi(\boldsymbol{-x})}}}       & \vdots &   \\
-    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    & \ghost{S_{\boldsymbol{\theta}}}        & \qw    &\ghost{{U_{\phi(\boldsymbol{-x})}}}        & \qw    &  \\
-                    & \underset{Encoding}{\underbrace{}}        &        &\underset{Splitter}{\underbrace{}}    &        &\underset{Reverse Encoding}{\underbrace{}}        &             
+    \lstick{\ket{0}}& \multigate{3}{{U_{\phi(\boldsymbol{x})}}} & \qw    & \multigate{3}{S_{\boldsymbol{\theta}}} & \qw    & \multigate{3}{{U^{-1}_{\phi(\boldsymbol{x})}}} & \qw    &  \\
+    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    & \ghost{S_{\boldsymbol{\theta}}}        & \qw    &\ghost{{U^{-1}_{\phi(\boldsymbol{x})}}}        & \qw    &  \\
+    \vdots          & \nghost{{U_{\phi(\boldsymbol{x})}}}       & \vdots & \nghost{S_{\boldsymbol{\theta}}}       & \vdots & \nghost{{U^{-1}_{\phi(\boldsymbol{x})}}}       & \vdots &   \\
+    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    & \ghost{S_{\boldsymbol{\theta}}}        & \qw    &\ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    &  \\
+                    & \underset{Encoder}{\underbrace{}}        &        &\underset{Splitter}{\underbrace{}}    &        &\underset{Reverse  Encoding}{\underbrace{}}        &             
     }
     \end{array}\]
 \caption{}
