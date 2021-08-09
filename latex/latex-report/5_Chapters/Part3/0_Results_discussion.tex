@@ -257,17 +257,57 @@ D    & DNN & NA&  4 & 11& 309  \\ \hline
 \label{tab:TL models}
 \end{table}
 
+
+%================================================================
+\subsection{Single Node Expressivity}\label{sec:Single Node Expressivity}
+%================================================================
+To attempt elucidating the discrepancy of expressivity between QCNs and DNNs, we investigate the functional form of node outputs for QCNs and DNNs. To do this, we utilize two 4-qubit QNN with qubit encoding and two repetitions of the simple ansatz. We encode data in two different ways: With the first QNN, we will encode a single feature $x$ to its first. With the second QNN, we pad the samples by repeating the feature  such as $\boldsymbol{x} = (x, x, x, x)$ and encode it in the usual way, creating a tensorial feature map for $x$ as explained in \autoref{sec:Tensorial Feature Mapping}. For comparison, we also feed the padded samples $\boldsymbol{x}$ to a single DNN node with Tanh activation. In \autoref{fig:activations}, we plot the output the different nodes for different parameters realizations and values of $x$.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/activation_qnn_1.pdf}
+        \caption{Lorem ipsum}
+        \label{fig:activations single}
+        
+    \end{subfigure}%
+    \hfill 
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/activation_qnn_4.pdf}
+        \caption{Lorem ipsum}
+        \label{fig:activations tensorial}
+    \end{subfigure}
+    \vskip\baselineskip
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/activation_dnn.pdf}
+        \caption{Lorem ipsum}
+        \label{fig:activations DNN}
+    \end{subfigure}%
+    \caption{Caption place holder}
+    \label{fig:activations}
+\end{figure}
+
+In \autoref{fig:activations single}, we see the output of the QNN encoding a single feature. Since the samples are only encoded once, it doesn't compute a state whose amplitudes represent polynomials of the input. Consequently, the outputs resemble simple trigonometric functions. Seen from \autoref{fig:activations tensorial}, utilizing the tensorial feature mapping enables the QNN to produces a much flexible output, reflecting the polynomial representation of the data in the prepared state. \autoref{fig:activations DNN} shows that the output of the DNN node is constrained to the functional form of the Tanh activation function.   
+
+
+
+
 %================================================================
 \subsection{Discussion}\label{sec:Discussion Expressivity}
 %================================================================
 
-For higher number of qubits, we saw from \autoref{fig:TL_untrained_projection} that the trajectory of untrained QNCs tend to concentrate progressively for each layer they pass through. This is a manifestation of the phenomenon where PQC outputs tends to concentrate around their average value when the number of qubits is increased. Since each node is a QNN, which is a type of PQC, QCN are also subject to this. As the inputs are sequentially transformed by each layer in the QCN, this concentration of the outputs are in fact applied multiple times, causing an exponential decrease of the trajectory length, as seen in \autoref{fig:TL_untrained}.
+For higher number of qubits, we saw from \autoref{fig:TL_untrained_projection} that the trajectory of untrained QNCs tend to concentrate progressively for each layer they pass through. This is a manifestation of the phenomenon where PQC outputs tends to concentrate around their average value when the number of qubits is increased. Since each node is a QNN, which is a type of PQC, QCN are also subject to this. As the inputs are sequentially transformed by each layer in the QCN, this concentration of the outputs is in fact applied multiple times, causing an exponential decrease of the trajectory length, as seen in \autoref{fig:TL_untrained}.
 
 From \autoref{fig:TL_trained} we see that training brought the QCNs into the exponential growth regime, increasing the sensitivity of the node outputs with respect to the inputs. In other words, optimizing the QCNs updates the parameters in a way that brings structure to each of the circuits, moving them away from being random circuits. This causes the outputs to no longer concentrate around the mean, which in turn lets the model compute more complex functions. 
 
-Comparing \autoref{fig:TL_trained_A} and \autoref{fig:TL_trained_B}, we see that the 7-qubit QCN required twice the number of epochs to enter the exponential growth regime compared to the 6-qubit QCN. As discussed in \autoref{sec:Vanishing Gradient Phenomenon}, increasing the number of qubits makes the magnitude of the gradient exponentially smaller. Thus, a larger number of epochs, potentially exponentially so, are required to significantly change the parameters such that the nodes no longer resemble random circuits. This might produce a significant overhead for QCNs with a high number of qubits.
+Comparing \autoref{fig:TL_trained_A} and \autoref{fig:TL_trained_B}, we see that the 7-qubit QCN required twice the number of epochs to enter the exponential growth regime compared to the 6-qubit QCN. As discussed in \autoref{sec:Vanishing Gradient Phenomenon}, increasing the number of qubits makes the magnitude of the gradient exponentially smaller. Thus, a larger number of epochs, potentially exponentially so, are required to significantly change the parameters such that the nodes no longer resemble random circuits. This might produce a significant overhead for QCNs with a high number of qubits, making them very slow to train to be expressive.  
 
-Looking at \autoref{fig:TL_trained_C} and \autoref{fig:TL_trained_D}, we see that the corresponding DNNs fail to enter the exponential growth regime, even after training the models for a number of epochs that result in the same MSE as the QCNs. The DNNs achieve exponential growth first after more than an order magnitude more epochs. This suggests that QCNs can be trained to be more expressive than DNNs of similar number of parameters. How can we explained this increased expressivity? A possible explanation for this is that the mathematical transformation applied by the QCN is in a way more powerful compared to DNNs. Typically, sufficiently deep PQCs are conjectured to be intractable for classical computers to simulate efficiently \cite{abbas2020power}\cite{lloyd2018quantum}. Stated in \autoref{sec:Multiple Qubits}, as the numbers of qubits $n$ increase, the dimensionality of the resulting Hilbert space grows exponentially as $d = 2^n$. It follows that gates applied on this space is mathematically represented as a $d\times d$ matrices, which causes an exponential overhead on classical computers. In this sense, the encoding and unitary transformations of each QCN node constitutes a harder computation than the affine transformation and non-linearity of DNN nodes. Still, even though a computation is harder, it does necessarily result in the computation of a richer, more complicated function. For example, it was shown from \autoref{fig:TL_untrained} that the opposite is true for randomly initialized QCNs. However, the increasing trajectory length seen in \autoref{fig:TL_trained} suggest that(elaborate). 
+Looking at \autoref{fig:TL_trained_C} and \autoref{fig:TL_trained_D}, we see that the corresponding DNNs fail to enter the exponential growth regime, even after training the models for a number of epochs that result in the same MSE as the QCNs. The DNNs approached exponential growth first after more than an order magnitude more epochs. This suggests that QCNs can be trained to be more expressive than DNNs of similar number of parameters. How can we explain this increased expressivity? As discussed in \autoref{sec:Single Node Expressivity}, qubit encoding several features results in a representation of exponentially many interactions in the data, which also results in a more flexible output. The different parameter realizations produce very different functional outputs, enabling the QCN to learn unique activations for each node. This is contrast to the outputs of the DNNs, which is very constrained by the Tanh activation function. 
+
+%A possible explanation for this is that the mathematical transformation applied by the QCN is in a way more powerful compared to DNNs. Typically, sufficiently deep PQCs are conjectured to be intractable for classical computers to simulate efficiently \cite{abbas2020power}\cite{lloyd2018quantum}. Stated in \autoref{sec:Multiple Qubits}, as the numbers of qubits $n$ increase, the dimensionality of the resulting Hilbert space grows exponentially as $d = 2^n$. It follows that gates applied on this space is mathematically represented as a $d\times d$ matrices, which causes an exponential overhead on classical computers. In this sense, the encoding and unitary transformations of each QCN node constitutes a harder computation than the affine transformation and non-linearity of DNN nodes. Still, even though a computation is harder, it does necessarily result in the computation of a richer, more complicated function. For example, it was shown from \autoref{fig:TL_untrained} that the opposite is true for randomly initialized QCNs. However, the increasing trajectory length seen in \autoref{fig:TL_trained} suggest that(elaborate). 
 
 %================================================================
 \section{Training Models on Gaussian Data}\label{sec:Training Models}
@@ -327,11 +367,9 @@ K    & DNN & 3D  & NA    & 3      & 5& 217  \\ \hline
     \label{fig:trained ideal}
 \end{figure}
 
-From \autoref{fig:trained ideal}, we see that the QCNs minimized the MSE quicker than both the QNN and the DNN on the mixed Gaussian data. The QCNs faster optimization compared to the DNNs is not surprising, since this was suggested by the its relatively larger gradient and uniform EFIM spectrum seen in \autoref{sec:Vanishing Gradient Phenomenon} and \autoref{sec:Investigating the Loss Landscape}, respectively. Even though the QNNs also exhibit a relatively uniform EFIM spectrum, \autoref{fig:trained ideal} shows that they are unable to make a good fit on the mixed Gaussian data. This shows that our choice of QNN architecture is insufficient for approximating this data. As explained in \autoref{sec:FeedForward}, our QNNs perform a mostly unitary (and thus linear) transformation of the input, except at the stage of encoding and measurement. This results in a perhaps too constrained functional form, which explains the QNN's inability to fit the data. QCNs, on the other hand, incorporate multiple non-linearities for each layer. This is likely the key to their greater flexibility, as it enables them to compute a larger family of functions. 
+From \autoref{fig:trained ideal}, we see that the QCNs minimize the MSE quicker than both the QNN and the DNN on the mixed Gaussian data. The QCNs faster optimization compared to the DNNs is not surprising, since this was suggested by the its relatively larger gradient and uniform EFIM spectrum seen in \autoref{sec:Vanishing Gradient Phenomenon} and \autoref{sec:Investigating the Loss Landscape}. Even though the QNNs also exhibit a relatively uniform EFIM spectrum, the figure shows that they are unable to make a good fit on the mixed Gaussian data. Further, we see that the optimization of the QCNs with one ansatz repetition exhibit a lot of variance, indicating that the training is very sensitive to parameter initialization and that it is getting stuck in local minima. In contrast, the QCNs with two repetitions tend to converge much faster.
 
-Looking again at \autoref{fig:trained ideal}, we see that the optimization of the QCNs with one ansatz repetition exhibit a lot of variance, indicating that the training is very sensitive to parameter initialization and that it is getting stuck in local minima.   
-
-In \autoref{tab:training models}, the final MSE is 
+In \autoref{tab:training models}, the final MSE after training is displayed for the models defined in \autoref{tab:training models}. In addition, 
 
 \begin{table}[H]
 \centering
@@ -373,13 +411,6 @@ K    & DNN & 3D  &  $1.3\times10^{-2}$  & $3.1\times10^{-3}$  \\ \hline
         \includegraphics[height=1.9in]{latex/figures/2D_gaussian_data_fit.pdf}
         \caption{Lorem ipsum}
     \end{subfigure}
-    \vskip\baselineskip
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \includegraphics[height=1.9in]{latex/figures/3D_gaussian_data_fit.pdf}
-        \caption{Lorem ipsum}
-        
-    \end{subfigure}%
     \caption{Caption place holder}
     \label{fig:trained ideal}
 \end{figure}
@@ -387,4 +418,35 @@ K    & DNN & 3D  &  $1.3\times10^{-2}$  & $3.1\times10^{-3}$  \\ \hline
 
 %================================================================
 \subsection{Discussion}\label{sec:Training Discussion}
+%================================================================
+
+
+This shows that RZZ encoding combined with multiple repetitions of the simple ansatz is insufficient for approximating this data. As explained in \autoref{sec:FeedForward}, our QNNs perform a mostly unitary (and thus linear) transformation of the input, except at the stage of encoding and measurement. This results in a perhaps too constrained functional form, which explains the QNN's inability to fit the data. QCNs, on the other hand, incorporate multiple non-linearities for each layer. This is likely the key to their greater flexibility, as it enables them to compute a larger family of functions. 
+
+
+
+%================================================================
+\section{Boston Housing Data}\label{sec:Boston Housing Data}
+%================================================================
+
+%================================================================
+\subsection{Feature Reduced Data}\label{sec:Feature Reduced Data}
+%================================================================
+
+
+%================================================================
+\subsection{Hybrid Method}\label{sec:Hybrid Method}
+%================================================================
+
+%================================================================
+\subsection{Discussion}\label{sec:Boston Housing Data Discussion}
+%================================================================
+
+
+%================================================================
+\section{Regularized Feature Map}\label{sec:Regularized Feature Map}
+%================================================================
+
+%================================================================
+\subsection{Discussion}\label{sec:Regularized Feature Map Discussion}
 %================================================================
