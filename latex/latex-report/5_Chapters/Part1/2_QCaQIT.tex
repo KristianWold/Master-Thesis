@@ -546,7 +546,10 @@ Depending on the specifics implementation of the hardware, it is not given that 
 
 \autoref{fig:linear_con} applies CNOT gate only on neighboring qubits, which is allowed on a linear architecture. In contrast, \autoref{fig:not_linear_con} can be seen to violate it. However, the circuit in \autoref{fig:linear_con_swap} have the equivalent functionality as the aforementioned circuit, while still respecting linear connection. This was achieved by using SWAP gates to essentially "move qubits around", but at the cost of a greater circuit depth. In order to limit the circuit depth as much as possible, we will often discuss quantum circuits respecting the linear connectivity going forward.
 
-
+%================================================================
+\subsection{Basis Gates}\label{sec:Basis Gates}
+%===============================================================
+Real quantum computers can often not natively implement all of the quantum gates discussed earlier in this thesis. However, they come small set of gates called the \emph{basis gates} which they do implement. The set of basis gates varies from computer to computer, but it is common that these sets are universal. This means that for any gate we would like to implement, there exists a finite number of basis gates that is able to reproduce the our target gate to arbitrary precision. In this way, all quantum computers with universal basis gates are able to implement any conceivable algorithm, as the name suggests. This is of course disregarding any potential noise of the hardware, as discussed earlier. 
 
 
 
