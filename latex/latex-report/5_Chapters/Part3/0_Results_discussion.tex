@@ -310,9 +310,9 @@ Looking at \autoref{fig:TL_trained_C} and \autoref{fig:TL_trained_D}, we see tha
 %A possible explanation for this is that the mathematical transformation applied by the QCN is in a way more powerful compared to DNNs. Typically, sufficiently deep PQCs are conjectured to be intractable for classical computers to simulate efficiently \cite{abbas2020power}\cite{lloyd2018quantum}. Stated in \autoref{sec:Multiple Qubits}, as the numbers of qubits $n$ increase, the dimensionality of the resulting Hilbert space grows exponentially as $d = 2^n$. It follows that gates applied on this space is mathematically represented as a $d\times d$ matrices, which causes an exponential overhead on classical computers. In this sense, the encoding and unitary transformations of each QCN node constitutes a harder computation than the affine transformation and non-linearity of DNN nodes. Still, even though a computation is harder, it does necessarily result in the computation of a richer, more complicated function. For example, it was shown from \autoref{fig:TL_untrained} that the opposite is true for randomly initialized QCNs. However, the increasing trajectory length seen in \autoref{fig:TL_trained} suggest that(elaborate). 
 
 %================================================================
-\section{Training Models on Gaussian Data}\label{sec:Training Models}
+\section{Training Models on Mixed Gaussian Data}\label{sec:Training Models}
 %================================================================
-In this section, we will study various models in a more practical setting, fitting them to mixed Gaussian data in one, two and three dimensions. For more details on the data, see (see). We will train QNNs, QCN and DNNs with varying complexity and use MSE on the training data to evaluate how good the fit is. This will be done first in the ideal case, with exact calculation of outputs. Then, we will repeat the training for all models by simulating the noise model of the Santiago quantum computer(kilde). For a complete description of the models trained in this section, see \autoref{tab:training models}.
+In this section, we will study the ability of various models to fit one, two and three dimensions mixed Gaussian data. For more details on the data, see \autoref{sec:Mixed Gaussian Data}. We will train QNNs, QCN and DNNs with varying complexity and use MSE on the training data to evaluate how good the fit is. This will be done first in the ideal case, with exact calculation of outputs. Then, we will repeat the training for by simulating the noise model of the Santiago quantum computer(kilde). For a complete description of the models trained in this section, see \autoref{tab:training models}.
 
 \begin{table}[H]
 \centering
@@ -332,7 +332,7 @@ J    & QCN & 3D  & 5     & 1&3      & 5& 55  \\ \hline
 K    & QCN & 3D  & 5     & 2&3      & 5& 110  \\ \hline
 K    & DNN & 3D  & NA    & NA&3      & 8& 113  \\ \hline
 \end{tabular}
-\caption{Stuff.} 
+\caption{Hyper-parameters of the different models fitted to the one, two, and three dimensional mixed Gaussian data.} 
 \label{tab:training models}
 \end{table}
 
@@ -340,14 +340,7 @@ K    & DNN & 3D  & NA    & NA&3      & 8& 113  \\ \hline
 %================================================================
 \subsection{Ideal Simulation}\label{sec:Ideal Simulation}
 %================================================================
-\autoref{fig:trained ideal} and \autoref{fig:train QNN ideal} shows the MSE during training for the models defined in \autoref{tab:training models}. In order to produce a more significant result, each model is randomly initialized 10 times and trained separately. The resulting MSE for each model type is then averaged over the 10 runs and plotted with fill corresponding to one standard deviation. In this way, we get to see the average model behaviour during training and how it varies between different runs.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=12cm]{latex/figures/QNN_gaussian_data_fit.pdf}
-    \caption{}
-    \label{fig:train QNN ideal}
-\end{figure}
+\autoref{fig:trained ideal} shows the training of the models defined in \autoref{tab:training models} on the one, two and three dimensional mixed Gaussian data. All models are trained for 100 epochs, using exact and noiseless simulation. In order to produce a more significant result, each model is randomly initialized 10 times and trained separately. The resulting MSE for each model type is then averaged over the 10 runs and plotted with fill corresponding to one standard deviation. In this way, we get to see the average model behaviour during training and how it varies between different runs. \autoref{tab:training models mse} shows the final MSE after 100 epochs for the various models. In addition, the final MSE after $10^4$ epochs is included for the DNNs.   
 
 \begin{figure}[H]
     \centering
@@ -374,31 +367,35 @@ K    & DNN & 3D  & NA    & NA&3      & 8& 113  \\ \hline
     \label{fig:trained ideal}
 \end{figure}
 
-From \autoref{fig:trained ideal}, we see that the QCNs minimize the MSE quicker than both the QNN and the DNN on the mixed Gaussian data. The QCNs faster optimization compared to the DNNs is not surprising, since this was suggested by the its relatively larger gradient and uniform EFIM spectrum seen in \autoref{sec:Vanishing Gradient Phenomenon} and \autoref{sec:Investigating the Loss Landscape}. Even though the QNNs also exhibit a relatively uniform EFIM spectrum, the figure shows that they are unable to make a good fit on the mixed Gaussian data. Further, we see that the optimization of the QCNs with one ansatz repetition exhibit a lot of variance, indicating that the training is very sensitive to parameter initialization and that it is getting stuck in local minima. In contrast, the QCNs with two repetitions tend to converge much faster.
-
-In \autoref{tab:training models}, the final MSE after training is displayed for the models defined in \autoref{tab:training models}. In addition, 
-
 \begin{table}[H]
 \centering
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 Model& Type& Data& MSE, $10^{2}$ Epochs& MSE, $10^{4}$ Epochs \\ \hline
 A    & QNN & 1D  &    & NA   \\ \hline
-B    & QCN & 1D  & $7.5\times 10^{-3}$  & NA \\ \hline
-C    & QCN & 1D  & $2.2\times 10^{-3}$  & NA  \\ \hline
-D    & DNN & 1D  & $1.3\times 10^{-2}$ & $\boldsymbol{5.1\times 10^{-5}}$  \\ \Xhline{2\arrayrulewidth}
+B    & QCN & 1D  & $5.9\times 10^{-3}$  & NA \\ \hline
+C    & QCN & 1D  & $\boldsymbol{8.0\times 10^{-4}}$  & NA  \\ \hline
+D    & DNN & 1D  & $1.1\times 10^{-2}$ & $3.1\times 10^{-2}$  \\ \Xhline{2\arrayrulewidth}
 E    & QNN & 2D  &                    & NA  \\ \hline
-F    & QCN & 2D  &  $1.7\times 10^{-2}$ & NA  \\ \hline
-G    & QCN & 2D  &  $\boldsymbol{4.2\times 10^{-3}}$ & NA  \\ \hline
-H    & DNN & 2D  &  $3.0\times10^{-2}$ & $4.6\times10^{-3}$\\ \Xhline{2\arrayrulewidth}
+F    & QCN & 2D  &  $1.8\times 10^{-2}$ & NA  \\ \hline
+G    & QCN & 2D  &  $\boldsymbol{4.3\times 10^{-3}}$ & NA  \\ \hline
+H    & DNN & 2D  &  $2.5\times10^{-2}$ & $1.6\times10^{-3}$\\ \Xhline{2\arrayrulewidth}
 I    & QNN & 3D  &                    & NA  \\ \hline
 J    & QCN & 3D  &  $4.9\times 10^{-3}$ & NA  \\ \hline
 K    & QCN & 3D  &  $\boldsymbol{2.8\times10^{-3}}$  & NA  \\ \hline
-K    & DNN & 3D  &  $1.3\times10^{-2}$  & $3.1\times10^{-3}$  \\ \hline
+L    & DNN & 3D  &  $1.2\times10^{-2}$  & $1.8\times10^{-3}$  \\ \hline
 \end{tabular}
 \caption{Stuff.} 
-\label{tab:training models}
+\label{tab:training models mse}
 \end{table}
+
+From \autoref{fig:trained ideal}, we see that the QCNs minimize the MSE quicker than both the QNNs and DNNs on the mixed Gaussian data, for any number of dimensions. The QCNs faster optimization relative to the DNNs is not surprising, since this was suggested by the its relatively larger gradient and uniform EFIM spectrum seen in \autoref{sec:Vanishing Gradient Phenomenon} and \autoref{sec:Investigating the Loss Landscape}. Further, even though QNNs were shown to also exhibit uniform EFIM spectrum, we see that QNNs perform overall worst among the models. After initial fast optimization, the models quickly saturate at a relatively high MSE. 
+Comparing the QCNs with one and two ansatz repetitions, we see that former exhibit a lot of variance, indicating that the training is very sensitive to parameter initialization and that it is likely getting stuck in local minima. In contrast, the QCNs with two repetitions tend to converge much faster, and also to a reach a relatively lower minimum. 
+
+
+In \autoref{tab:training models}, the final MSE after training is displayed for the models defined in \autoref{tab:training models}. In addition, 
+
+
 
 %================================================================
 \subsection{Noisy Simulation}\label{sec:Noisy Simulation}
@@ -419,7 +416,7 @@ K    & DNN & 3D  &  $1.3\times10^{-2}$  & $3.1\times10^{-3}$  \\ \hline
         \caption{Lorem ipsum}
     \end{subfigure}
     \caption{Caption place holder}
-    \label{fig:trained ideal}
+    \label{fig:trained noisy}
 \end{figure}
 
 
