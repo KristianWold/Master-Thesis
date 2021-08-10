@@ -115,7 +115,7 @@ class NeuralNetwork():
 
         return delta
 
-    @ property
+    @property
     def weight(self):
         weight_list = []
         for layer in self.layers:
@@ -123,13 +123,13 @@ class NeuralNetwork():
 
         return weight_list
 
-    @ property
+    @property
     def n_inputs(self):
         n_inputs = self.layers[0].n_features
 
         return n_inputs
 
-    @ property
+    @property
     def n_parameters(self):
         n_params = 0
         for layer in self.layers:
