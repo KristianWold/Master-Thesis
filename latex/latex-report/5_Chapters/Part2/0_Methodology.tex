@@ -1,7 +1,7 @@
 %================================================================
 \chapter{Implementation}\label{chap:implementation}
 %================================================================
-In this chapter, we will present details surrounding implementation of algorithms and methods presented in \autoref{part:Theory}. For this thesis, we have developed an elaborate frame work for doing machine learning, capable of implementing dense neural networks(DNN, \autoref{eq:DNN}) and quantum circuit networks(QCN, \autoref{eq:QCN}). In addition, various numerical tools for analysing the models are available. The code base is object-orientated using Python, focusing on flexibility. This grants huge freedom when specifying model architecture, such as setting the number of layers, number of nodes, type of activation functions, loss function and optimizer. The frame work is also capable of implementing hybrid models mixing both DNN and QNC layers. To implement quantum machine learning, the frame work is built around Qiskit\cite{Qiskit}, an IBM-made python-package used for emulating quantum circuits. 
+In this chapter, we will present details surrounding implementation of algorithms and methods presented in \autoref{part:Theory}. For this thesis, we have developed an elaborate frame work for doing machine learning, capable of implementing dense neural networks(DNN, \autoref{eq:DNN}) and quantum circuit networks(QCN, \autoref{eq:QCN}). In addition, various numerical tools for analysing the models are available. The code base is object-orientated using Python, focusing on flexibility. This grants huge freedom when specifying model architecture, such as setting the number of layers, number of nodes, type of activation functions, loss function and optimizer. The frame work is also capable of implementing hybrid models mixing both DNN and QCN layers. To implement quantum machine learning, the frame work is built around Qiskit\cite{Qiskit}, an IBM-made python-package used for emulating quantum circuits. 
 
 All source code developed for this thesis can be found on our GitHub page \url{https://github.com/KristianWold/Master-Thesis}, together with notebooks containing training of models, generation of data, analysis and plotting. For easier reading, all python types referred to in this thesis will be highlighted in \textbf{bold}.
 
@@ -384,19 +384,20 @@ As an example, a \textbf{QLayer} can be instantiated and used on a data in the f
 
 
 \begin{lstlisting}[language=python, numbers=left]
-import qiskit as qk
+import numpy as np
 from layers import QLayer
 backend = qk.Aer.get_backend("qasm_simulator")
 
 x = np.random.normal((4,3))
 
+np.random.seed(42)
 qlayer = QLayer(n_qubits = 3,
                 n_features = 3,
                 n_targets = 2,
                 scale = 2*np.pi,
-                encoder = QubitEncoder(mode = "x"),
-                ansatz = Ansatz(blocks=["entangle", "y"],
-                reps = 2),
+                encoder = Encoder(mode = "x"),
+                ansatz = Ansatz(blocks=["entangle", "ry"],
+                                reps = 2),
                 sampler = Parity(),
                 backend = backend,
                 shots=1000)
@@ -404,7 +405,15 @@ qlayer = QLayer(n_qubits = 3,
 y_pred = qlayer(x)
 print(y_pred)
 \end{lstlisting}
-(skriv output her)
+
+\begin{left}
+\begin{tabular}{ c c c }
+ \rightarrow & [[5.19619425 4.29769875] &   \\ 
+       & [3.84530941 2.14256619] &   \\  
+       & [3.08504399 2.19283167] &  \\    
+       & [4.09663682 2.58867235]] &    
+\end{tabular}
+\end{left}
 
 Here, \textbf{x} is a dataset containing four samples of three features each. By specifying \textbf{n\_targets=2}, the layer consists of two nodes and produces thus two output targets. The layer is callable, and performs inference on the input \textbf{x} sample-wise.
 
@@ -530,15 +539,17 @@ Here, \textbf{activation} specifies the activation of the layer, in this case th
 from layers import Dense, Sigmoid
 
 dense1 = Dense(n_features = 4,
-              n_targets = 3,
-              scale = 1,
-              activation = Sigmoid(),
-              bias = True)
+               n_targets = 3,
+               scale = 1,
+               activation = Sigmoid(),
+               bias = True)
+               
 dense2 = Dense(n_features = 3,
-              n_targets = 2,
-              scale = 1,
-              activation = Sigmoid(),
-              bias = True)
+               n_targets = 2,
+               scale = 1,
+               activation = Sigmoid(),
+               bias = True)
+               
 layers=[dense1, dense2]       
 network = Neuralnetwork(layers)
 \end{lstlisting}
@@ -548,7 +559,7 @@ This opens up for construction of neural networks that consists of an arbitrary 
 %================================================================
 \subsection{Hybrid Models}\label{sec:Hybrid Models}
 %================================================================
-Because of the flexibility of the framework and compatability of the different layers, it is possible to make hybrid models by combining \textbf{Dense} and \textbf{QLayer} layers using
+Because of the flexibility of the framework and compatibility of the different layers, it is possible to make hybrid models by combining \textbf{Dense} and \textbf{QLayer} layers:
 
 \begin{lstlisting}[language=python, numbers=left]
 dense = Dense(n_features = 64,
@@ -562,14 +573,14 @@ qlayer = QLayer(n_qubits = 4,
                 n_targets = 1,
                 encoder = Encoder(),
                 ansatz = Ansatz(blocks=["entangle", "ry"],
-                reps=2),
+                                reps=2),
                 sampler = Parity(),
                 backend = backend,
                 shots = 1000)
 layers=[dense, qlayer]       
 network = Neuralnetwork(layers)
 \end{lstlisting}
-I this code, the initial dense layer is used to reduce 64 feature to 4, a form a learned feature reduction. This may be a beneficial approach which we will study later, as feeding 64 features directly into a QCN would require 64 qubits using qubit encoding. Note that the use of tanh activation and a scaling of $\pi$ ensure that the output of the dense layer is in $[-\pi, \pi]$, which we argue in \autoref{sec:Configuring QCNs and DNNs} is a appropriate scaling for QCNs.
+In this code, the initial \textbf{Dense} layer is used to produce 4 outputs from 64 features, which are then subsequently fed to the following \textbf{QLayer} layer. It may be useful to construct such hybrid models for training on data sets with many features, since feeding 64 features directly to a QCN would require 64 qubits when using qubit encoding. This high amount of qubits is generally not feasible for near-term hardware. Note that the use of tanh activation and a scaling of $\pi$ ensure that the output of the \textbf{Dense} layer is in $[-\pi, \pi]$, which we argue in \autoref{sec:Configuring QCNs and DNNs} is a appropriate scaling for QCNs.
 
 
 %================================================================
@@ -681,9 +692,9 @@ where $n$ is the number nodes in the previous layer.
 %================================================================
 \subsection{Pre-processing Input}\label{sec:Pre-processing Input}
 %================================================================
-For QNNs and QCNs, inputs will be scales such that $x_i \in [0, \pi]$. This is deliberately half the periode of Pauli rotations, which are uses when performing qubit encoding(\autoref{sec:QubitEncoding}). If inputs were rather scaled to one period, i.e. $x_i \in [0, 2\pi]$, extremal inputs would result in the same quantum state after encoding. Since mapping of different data point to the same quantum state can potentially inhibit learning, we opt for the original way of scaling.
+For QNNs and QCNs, inputs will be scales such that $x_i \in [0, \pi]$. This is deliberately half the periode of Pauli rotations, which are used when performing qubit encoding (\autoref{sec:QubitEncoding}). If inputs were rather scaled to one period, i.e. $x_i \in [0, 2\pi]$, extremal inputs would result in the same quantum state after encoding. Since mapping of different data point to the same quantum state can potentially inhibit learning, we opt for the original way of scaling.
 
-For DNNs, we apply standardization of the input by subtracting the mean and dividing by the standard deviation, feature-wise. This is a popular method suggested by various authors \cite{hands-on}\cite{LeCun2012}, meant to speed up convergence.
+For DNNs, we apply standardization of the input by subtracting the mean and dividing by the standard deviation, feature-wise. This is a popular method suggested by various authors \cite{hands-on, LeCun2012}, meant to speed up convergence.
 
 %================================================================
 \subsection{Optimization}\label{sec:Optimization}
@@ -693,9 +704,9 @@ We use Adam, as presented in \autoref{sec:AdamOptimizer}, to optimize all models
 %================================================================
 \subsection{Configuring QCNs and DNNs}\label{sec:Configuring QCNs and DNNs}
 %================================================================
-Unless specified otherwise, the outputs of intermediate layers of QCNs with be scaled to the interval $a_i^{(l)} \in [-\pi, \pi]$. Using the same argument about the periodicity of Pauli rotations from \autoref{sec:Initialization}, this enables(or at least makes it more likely) the outputs of one layer to realize any rotation angle in the next layer. For the last layer, the output will be scaled to $a_i^{(L)} \in [0, 1]$. This is sufficient, given that the target $y$ is scaled to within this interval. 
+Unless specified otherwise, the outputs of intermediate layers of QCNs withwill be scaled to the interval $a_i^{(l)} \in [-\pi, \pi]$. Using the same argument about the periodicity of Pauli rotations from \autoref{sec:Initialization}, this enables(or at least makes it more likely) the outputs of one layer to realize any rotation angle in the next layer. For the last layer, the output will be scaled to $a_i^{(L)} \in [0, 1]$. This is sufficient, given that the target $y$ is scaled to within this interval. 
 
-For DNNs, we will be using Tanh activations on all hidden layers. This is partly because it is a hughly popular choice, known to produce fast-converging neural models\cite{hands-on}. Further, Tanh is also a bounded function, returning values on the interval $[-1, 1]$, unlike the also popular activation ReLu. This results in the outputs of intermediate layers to bounded as well, like for QCNs, making them easier to compare.
+For DNNs, we will be using Tanh activations on all layers, including the output layer. This is partly because it is a hugely popular choice, known to produce fast-converging neural models\cite{hands-on}. Further, tanh is also a bounded function, returning values on the interval $[-1, 1]$, unlike the also popular activation ReLU. This results in the outputs of intermediate layers to bounded as well, like for QCNs, making them easier to compare.
 
 
 

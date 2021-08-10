@@ -41,7 +41,7 @@ In this section, we will introduce two ways of doing feature encoding, namely \e
 %================================================================
 \subsection{Qubit Encoding}\label{sec:QubitEncoding}
 %================================================================
-One popular approach for encoding a feature vector to a quantum state is the often-called method \emph{qubit encoding}\cite{Benedetti_2019}. This encoding requires $p$ qubits, where $p$ is the number of features, and it can be applied at a constant circuit depth. Before the encoding, the data is optionally pre-processed by some function $\phi(x_i)$, for example scaling of the data. Then, the encoding works by performing a Pauli-rotation on each qubit with a rotational angle equal to the corresponding (pre-processed) feature. \autoref{fig:qubitencoding} shows how qubit encoding is implemented using $R_x$, $R_y$ and $R_z$ rotation.
+One popular approach for encoding a feature vector to a quantum state is the method often-called \emph{qubit encoding}\cite{Benedetti_2019}. This encoding requires $p$ qubits, where $p$ is the number of features, and it can be applied at a constant circuit depth. Before the encoding, the data is optionally pre-processed by some function $\phi(x_i)$, for example scaling of the data. Then, the encoding works by performing a Pauli-rotation on each qubit with a rotational angle equal to the corresponding (pre-processed) feature. \autoref{fig:qubitencoding} shows how qubit encoding is implemented using $R_x$, $R_y$ and $R_z$ rotation.
 
 \begin{figure}[H]
      \begin{subfigure}[b]{0.3\textwidth}
@@ -253,7 +253,7 @@ To estimate the expected parity $\bra{\psi_{\boldsymbol{x},\boldsymbol{\theta}}}
     \approx
     \frac{1}{S} \sum_{j=1}^S p_j,
 \end{equation}
-where $S$ is the number of shots used, and $p_j$ is the parity resulting from measurement $ij$.
+where $S$ is the number of shots used, and $p_j$ is the parity resulting from measurement $j$.
 
 
 %================================================================
