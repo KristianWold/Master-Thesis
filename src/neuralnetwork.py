@@ -68,14 +68,19 @@ class NeuralNetwork():
         for layer, grad in zip(self.layers, weight_gradient_modified):
             layer.weight += -self.optimizer.lr * grad
 
-    def train(self, x, y, epochs=100, verbose=False):
+    def train(self, x, y, x_test=None, y_test=None, epochs=100, verbose=False):
         if verbose:
             dec = tqdm
         else:
             dec = identity
 
         self.loss = []
+        self.loss_test = []
         for i in dec(range(epochs)):
+
+            if x_test is not None:
+                y_pred_test = self.predict(x_test)
+                self.loss_test.append(np.mean((y_pred_test - y_test)**2))
 
             self.backward(x, y)
             self.step()
@@ -88,6 +93,13 @@ class NeuralNetwork():
 
         y_pred = self.predict(x)
         self.loss.append(np.mean((y_pred - y)**2))
+
+        if x_test is not None:
+            y_pred_test = self.predict(x_test)
+            self.loss_test.append(np.mean((y_pred_test - y_test)**2))
+
+        if verbose:
+            print(f"epoch: {epochs}, loss: {self.loss[-1]}")
 
     def deriv(self, x):
         self.layers[0].last_layer = False
@@ -103,7 +115,7 @@ class NeuralNetwork():
 
         return delta
 
-    @property
+    @ property
     def weight(self):
         weight_list = []
         for layer in self.layers:
@@ -111,13 +123,13 @@ class NeuralNetwork():
 
         return weight_list
 
-    @property
+    @ property
     def n_inputs(self):
         n_inputs = self.layers[0].n_features
 
         return n_inputs
 
-    @property
+    @ property
     def n_parameters(self):
         n_params = 0
         for layer in self.layers:
@@ -132,12 +144,6 @@ class NeuralNetwork():
     def set_shots(self, shots):
         for layer in self.layers:
             layer.shots = shots
-
-#    def save(self, filename):
-#        pickle.dump(self, open(filename, "wb"))
-
-#    def load(self, filename):
-#        self = pickle.load(open(filename, "rb"))
 
 
 def sequential_qnn(n_qubits=None,
