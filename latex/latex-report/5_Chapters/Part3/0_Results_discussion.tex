@@ -68,16 +68,16 @@ In this section, the total gradient is calculated using the local gradients from
     \label{fig:QNC_vanishing_total}
 \end{figure}
 
-From \autoref{fig:QNC_vanishing_total}, we see that the total gradient for a given layer of the DNN tends to vanish exponentially in the number of layers after it. This is a well-known phenomenon for classical neural networks, often explained by the saturation of the activation function during feed forward\cite{shalevshwartz2017failures}. As the activations tend to be very flat for when saturated, as for the tanh function used here, the gradient tends vanish during back propagation.
+From \autoref{fig:QNC_vanishing_total}, we see that the total gradient for a given layer in the DNN tends to vanish exponentially in the number of layers after it. This is a well-known phenomenon for classical neural networks, often explained by the saturation of the activation function during feed forward\cite{shalevshwartz2017failures}. (Write about this under neural network theory).
 
-As with the DNN, also the QCNs exhibits vanishing total gradient with increasing number of layers, with a strong dependence on the number of qubits in each node. Seen in \autoref{fig:QCN_local_vanishing}, the total gradient vanishes faster for higher number of qubits in each node. This phenomenon can be related to the magnitude of the local gradients. As the error of the QCN is propagated backwards using \autoref{eq:errorQCN}, it accumulates the local gradients $\frac{\partial \boldsymbol{a}^{l+1}_k}{\partial \boldsymbol{a}^{l}_j}$ as factors. In the case that these factors are large, the error will tend to decrease slowly, and hence also the total gradient. This is the case for architectures with few qubits per node, as discussed in \autoref{sec:Vanishing Local Gradients in QCNs}. However, as the number of qubits increase, the local gradients will tend to decrease. Accumulating small factors will causes the error to decrease faster, exponentially so for each layer. In a sense, this vanishing of local gradients with increasing number of qubits is analogous to the saturation of the activations for classical networks.
+As with the DNN, also the QCNs exhibits vanishing total gradient with increasing number of layers, with a strong dependence on the number of qubits in each node. Seen in \autoref{fig:QCN_local_vanishing}, the total gradient vanishes faster for higher number of qubits in each node. This phenomenon can be related to the magnitude of the local gradients. As the error \autoref{eq:lastLayerErrorQCN} of the QCN is propagated backwards using \autoref{eq:errorQCN}, it accumulates the local gradients $\frac{\partial \boldsymbol{a}^{l+1}_k}{\partial \boldsymbol{a}^{l}_j}$ as factors. In the case that these factors are large, the error will tend to decrease slowly, and hence also the total gradient. This is the case for architectures with few qubits per node, as discussed in \autoref{sec:Vanishing Local Gradients in QCNs}. However, as the number of qubits increase, the local gradients will tend to decrease. Accumulating small factors will cause the error to decrease faster, exponentially so for each layer. In a sense, this vanishing of local gradients with increasing number of qubits is analogous to the saturation of the activations for classical networks.
 
 %================================================================
 \subsection{Discussion}\label{sec:Vanishing Gradient Phenomenon Discussion}
 %================================================================
 The results of \autoref{sec:Vanishing Gradient for QNNs} show that up-scaling of QNNs by increasing the number of qubits and repetitions of the ansatz results in an exponential decay of their gradients. As explained in \autoref{sec:BarrenPlateus}, this means that exponentially many shots are required in order to obtain a good signal-to-noise when estimating the gradient. If the gradient is too noisy, optimization using gradient descent and similar methods may result in essentially a random walk in parameter space that fail to converge (kilde). This becomes even more problematic in the presence of addition noise introduced by noisy hardware, as discussed in \autoref{sec:Noisy Simulation}. Ultimately, this indicate that the training of QNNs can become intractable as they are up-scaled to solve harder learning problems.    
 
-In \autoref{sec:Vanishing Local Gradients in QCNs}, we see that the local gradients of QCNs also vanish exponentially in the number of qubits, but are independent of the overall number of layers of the QCN. In other words, the local gradients of any layer are unaffected by outputs produced by the previous layer. This suggests that QCNs can be up-scaled by making them deeper, without affecting the magnitude of the local gradients. Consequently, a constant number of shots can be used for each node during estimation to obtain a certain single-to-noise ratio, making their estimation tractable on a quantum computer. 
+In \autoref{sec:Vanishing Local Gradients in QCNs}, we see that the local gradients of QCNs also vanish exponentially in the number of qubits, but are independent of the overall number of layers of the QCN. In other words, the local gradients of any layer are unaffected by outputs produced by the previous layer. This suggests that QCNs can be up-scaled by making them deeper, without affecting the magnitude of the local gradients. Consequently, a constant number of shots can be used for each node during estimation to obtain a certain signal-to-noise ratio, making their estimation tractable on a quantum computer. 
 
 Even though the magnitude of local gradients of QCNs tends to stay constant in the number of layers, we see in \autoref{sec:Vanishing Total Gradients in QCNs} that back propagation still induce an exponentially vanishing total gradient for sufficiently many qubits. This is due to the accumulation of small factors when the local gradients are combined using back propogation. This behaviour is similar to that of DNNs, with the gradient vanishing faster for initial layers. However, the vanishing was not as severe for a conservative number of qubits. For 4 qubits, the gradient actually tended to increase. For 8 qubits, and presumably above, the gradient vanished faster for QCNs than for similarly sized DNN.  
 
@@ -88,7 +88,7 @@ An interesting observation is that the vanishment caused by back propagation hap
 %================================================================
 \section{Investigating the Loss Landscape}\label{sec:Investigating the Loss Landscape}
 %================================================================
-We explore the geometry of the loss landscape of various models and quantify its degree of distortion and flatness by studying the eigenvalue spectrum of the EFIM. Looking at \autoref{eq:EmpiricalFisher}, we see that the EFIM, unlike the Hessian, is independent of targets $y^{(i)}$. This makes the analysis data agnostic, and serves to characterise the architectures themselves. The input data $\mathcal{X} = \{\boldsymbol{x}^{(1)}, \cdots, \boldsymbol{x}^{(N)}\}$ used for calculating the EFIM is sampled randomly from a standard normal distribution as $\mathcal{X} \sim N(0,1)^{[N,p]}$. This ensures that the input is evenly sampled from feature space and is consistent with the analysis of \citet{abbas2020power}. Here, we use $N=200$ samples and either $p=4$ or $p=6$ inputs, depending on the model. For each model, the EFIM is calculated 10 times for different random initializations of the parameters. The resulting spectrum is then averaged over the 10 initializations to produce more a significant results. For a complete description of the models analysed in this section, see \autoref{tab:FIM models}.
+We explore the geometry of the loss landscape of various models and quantify its degree of distortion and flatness by studying the eigenvalue spectrum of the EFIM \autoref{eq:EmpiricalFisher}. Looking at \autoref{eq:EmpiricalFisher}, we see that the EFIM, unlike the Hessian, is independent of targets $y^{(i)}$. This makes the analysis data agnostic, and serves to characterise the architectures themselves. The input data $\mathcal{X} = \{\boldsymbol{x}^{(1)}, \cdots, \boldsymbol{x}^{(N)}\}$ used for calculating the EFIM is sampled randomly from a standard normal distribution as $\mathcal{X} \sim N(0,1)^{[N,p]}$. This ensures that the input is evenly sampled from feature space and is consistent with the analysis of \citet{abbas2020power}. Here, we use $N=200$ samples and either $p=4$ or $p=6$ inputs, depending on the model. For each model, the EFIM is calculated 10 times for different random initializations of the parameters. The resulting spectrum is then averaged over the 10 initializations to produce more a significant results. For a complete description of the models analysed in this section, see \autoref{tab:FIM models}.
 
 \begin{table}[H]
 \centering
@@ -153,7 +153,7 @@ Moving over to the QCNs, we see from \autoref{fig:FIM Comparison} that the spect
     \label{fig:FIM QCN}
 \end{figure}
 
-\autoref{fig:FIM QCN a} shows that, for 4 qubits, the spectra of the different QCNs exhibit roughly the same uniformity, with the eigenvalues staying within roughly an order of magnitude of each-other. Going up to 6 qubits, \autoref{fig:FIM QCN b} shows that the spectrum tends to concentrate more around zero the more layers the QCN have. This is likely related to the vanishing of the gradient induced by back propagation. For 4 qubits, this is not as big of a problem since the local gradients are relatively big and hence also the total gradient. However, for 6 qubits, the local gradients tend to vanish. This results in the gradient vanishing faster when increasing the number of layers, which in turn results in a flatter landscape. 
+\autoref{fig:FIM QCN a} shows that, for four qubits, the spectra of the different QCNs exhibit roughly the same uniformity as the QNN, with the eigenvalues staying within roughly an order of magnitude of each-other. Going up to six qubits, \autoref{fig:FIM QCN b} shows that the spectrum tends to concentrate more around zero for increasing number of layers. This is likely related to the vanishing of the gradient induced by back propagation. For four qubits, this is not as big of a problem since the local gradients are relatively big and hence also the total gradient. However, for six qubits, the local gradients tend to vanish. This results in the gradient vanishing faster when increasing the number of layers, which in turn results in a flatter landscape. 
 
 
 %================================================================
@@ -163,7 +163,7 @@ The highly uneven EFIM spectrum of DNNs indicates a loss landscape that is stron
 
 For the QNNs, we found the EFIM spectrum to be much more uniform than that of a comparable DNN. \citet{abbas2020power} came to the same conclusion for their QNN models, and argued that this uniformity of the spectrum meant that landscape was more well-condition for optimization, and thus should train faster. They strengthened this hypothesis by showing experimentally that QNNs reduced error faster than DNNs for equal number of training iterations. 
 
-We found that few layered exhibited similar uniformity of the EFIM spectrum as QNNs. The spectrum became increasingly more skewed for increasing number of layers and qubits. However, they still showed several order of magnitude larger eigenvalues that DNNs, suggesting that small-scale QCNs should train comparably faster than DNNs, like QNNs.
+We found that QCNs with four qubits exhibit similar uniformity of the EFIM spectrum as QNNs. For six qubits, the spectrum became increasingly more skewed, with a worsening effect for more layers. However, they still showed several order of magnitude larger eigenvalues that DNNs, suggesting that small-scale QCNs should train comparably faster than DNNs, like QNNs.
 
 %================================================================
 \section{Expressivity}\label{sec:Expressivity}
@@ -430,13 +430,30 @@ This shows that RZZ encoding combined with multiple repetitions of the simple an
 
 
 %================================================================
-\section{Boston Housing Data}\label{sec:Boston Housing Data}
+\section{Real Data}\label{sec:Real Data}
 %================================================================
 
 %================================================================
 \subsection{Feature Reduced Data}\label{sec:Feature Reduced Data}
 %================================================================
 
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/}
+        \caption{Lorem ipsum}
+        
+    \end{subfigure}%
+    \hfill 
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.9in]{latex/figures/2D_gaussian_data_fit.pdf}
+        \caption{Lorem ipsum}
+    \end{subfigure}
+    \caption{Caption place holder}
+    \label{fig:trained noisy}
+\end{figure}
 
 %================================================================
 \subsection{Hybrid Method}\label{sec:Hybrid Method}
@@ -445,7 +462,6 @@ This shows that RZZ encoding combined with multiple repetitions of the simple an
 %================================================================
 \subsection{Discussion}\label{sec:Boston Housing Data Discussion}
 %================================================================
-
 
 %================================================================
 \section{Regularized Feature Map}\label{sec:Regularized Feature Map}
