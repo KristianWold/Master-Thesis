@@ -96,6 +96,11 @@ def r2(models, x, y):
     return sum(r2_scores) / len(r2_scores)
 
 
+def accuracy(y_pred, y):
+    acc = np.mean(np.round(y_pred) == y)
+    return acc
+
+
 def generate_1D_mixed_gaussian():
     n = 100
     x = np.linspace(0, 1, n).reshape(-1, 1)
