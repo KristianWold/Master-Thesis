@@ -44,13 +44,6 @@ The choice of loss function is very problem dependent, and there is a vast colle
 Fitting the model using MSE as loss function is often referred to as the \emph{least squares approach}.
 
 %================================================================
-\section{Generalizability}\label{sec:Generalizability}
-%================================================================
-If we obtain a low loss, are we assured that the resulting model is good and useful? It depends on the use-case, but if we want to use the model for predicting on new data, we often don't want the model to fit the training data too hard. As explained earlier, the main goal of the model is to approximate the underlying mechanism $f(\boldsymbol{x})$. If the model fits the data too hard, it will also pick up details of the noise $\epsilon$ in the training data. The problem with this is that if we gather a new data set, a \emph{test set} $y' = f(\boldsymbol{x}) + \epsilon'$, the noise $\epsilon'$ will be different from the noise in the training data seen by the model because of its random nature. This phenomenon is called \emph{overfitting}, and will cause the model to perform badly on new data, even though its performance on the training data is good. By fitting the model less hard, by i.e. reducing its complexity, the model may resemble $f(\boldsymbol{x})$  more closely, and make accurate predictions on values of $\boldsymbol{x}$ not seen in the training set. In this sense, the model \emph{generalizes} to unseen data. To uncover overfitting, it is standard to prepare an independent training and test data set $\mathcal{T}_{Train}$ and $\mathcal{T}_{Test}$, and train the model on the former set and test its performance on the latter. 
-
-
-
-%================================================================
 \section{Optimization}\label{sec:Optimization}
 %================================================================
 Finding the optimal parameters $\hat{\boldsymbol{\theta}}$ with respect to a chosen loss function $L$ can be formulated as
@@ -234,3 +227,27 @@ The final gradient, over all samples, is then the average of all the single-samp
     \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^N \nabla_{\boldsymbol{\theta}} L(\hat{y}^{(i)}, y^{(i)}),
 \end{equation}
 which can be used to optimize the neural network with a gradient-based method as discussed earlier.
+
+
+%================================================================
+\section{Generalizability}\label{sec:Generalizability}
+%================================================================
+If we obtain a low loss on the training data after fitting a model, can we assume that the resulting model is good and useful? It depends on what we want to use the model for, but if we want to use the model for predicting on new data (data that was not seen during training), we often don't want train the model too much. As explained earlier, the main goal of a model is to approximate the underlying mechanism $f(\boldsymbol{x})$ producing the data. If the model fits the data too hard, it might also pick up details of the noise $\epsilon$ in the training data, which is called \emph{overfitting}. The problem with this is that if we gather a new data set, a \emph{test set} $y' = f(\boldsymbol{x}) + \epsilon'$, the noise $\epsilon'$ will be different from the noise in the training data because of its random nature. Since the overfitted model is very affected by the noise in the training data, it will likely perform badly on new data where the noise is different, even though its performance on the training data is good. Typically, the more complex and flexible a model is, the more likely it is to overfit the training data. This is because it has a greater capacity to fit the noise present in the training data. By restricting the complexity of the model, one often ends up with a model that resembles $f(\boldsymbol{x})$ more closely. In turn, this results in a model
+that \emph{generalizes} better, which means that it makes accurate predictions on values of $\boldsymbol{x}$ not seen in the training set. On the other hand, if the model is made not complex enough, it might not be sufficiently flexible to recreate $f(\boldsymbol{x})$, causing \emph{underfitting}.
+
+To uncover overfitting, it is standard procedure to prepare independent training and test data sets $\mathcal{T}_{Train}$ and $\mathcal{T}_{Test}$, and train the model on the former set and test its performance on the latter. 
+
+
+%================================================================
+\section{Pre-processing Features}\label{sec:Pre-processing Features Theory}
+%================================================================
+In this section, we will discuss 
+
+%================================================================
+\subsection{Standardization}\label{sec:Standardization}
+%================================================================
+For data sets gathered for real world applications, it is often the case that the different features 
+
+%================================================================
+\subsection{Principal Component Analysis}\label{sec:Principal Component Analysis}
+%================================================================
