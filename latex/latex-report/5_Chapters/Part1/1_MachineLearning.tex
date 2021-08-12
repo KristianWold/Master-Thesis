@@ -235,26 +235,47 @@ which can be used to optimize the neural network with a gradient-based method as
 If we obtain a low loss on the training data after fitting a model, can we assume that the resulting model is good and useful? It depends on what we want to use the model for, but if we want to use the model for predicting on new data (data that was not seen during training), we often don't want train the model too much. As explained earlier, the main goal of a model is to approximate the underlying mechanism $f(\boldsymbol{x})$ of \autoref{eq:data} producing the data. If the model fits the data too hard, it might also pick up details of the noise $\epsilon$ in the training data, which is called \emph{overfitting}. The problem with this is that if we gather a new data set, a \emph{test set} $y' = f(\boldsymbol{x}) + \epsilon'$, the noise $\epsilon'$ will be different from the noise in the training data because of its random nature. Since the overfitted model is very affected by the noise in the training data, it will likely perform badly on new data where the noise is different, even though its performance on the training data is good. Typically, the more complex and flexible a model is, the more likely it is to overfit the training data. This is because it has a greater capacity to fit the noise present in the training data. By restricting the complexity of the model, one often ends up with a model that resembles $f(\boldsymbol{x})$ more closely. In turn, this results in a model
 that \emph{generalizes} better, which means that it makes accurate predictions on values of $\boldsymbol{x}$ not seen in the training set. On the other hand, if the model is not complex enough, it might not be sufficiently flexible to recreate $f(\boldsymbol{x})$, causing \emph{underfitting}.
 
-To uncover overfitting, it is standard procedure to prepare independent training and test sets $\mathcal{T}_{Train}$ and $\mathcal{T}_{Test}$, and train the model on the former set and test its performance on the latter. The behaviour of the prediction error, i.e. MSE, on the training and test set is expected to 
+To uncover overfitting, it is standard procedure to prepare independent training and test sets $\mathcal{T}_{Train}$ and $\mathcal{T}_{Test}$, and train the model on the former set and test its performance on the latter. The behaviour of the prediction error, e.g. MSE, on the training and test set is expected to behave as in \autoref{fig:train_test}. For models that are optimized iterativly, like neural networks, "model complexity" can be associated with the number of optimization steps. For increasing number of steps, the training error is strictly decreasing, since it is the purpose of training to reduce this quantity. However, the test error has a minimum for which the model shows best generalization. Training beyond this point increases the test error, resulting in overfitting. 
 
-\begin{figure}[htp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=10cm]{latex/figures/train.png}
-    \caption{ The figure is retrieved from \citet{géron2017hands-on.}}
-    \label{fig:localMinima}
+    \includegraphics[width=10cm]{latex/figures/train_test.png}
+    \caption{Training and test error as a function of model complexity. For models trained iterativly, like neural networks, "Model Complexity" can be associated with the number of optimization steps. The figure is retrieved from \citet{hastie01statisticallearning}.}
+    \label{fig:train_test}
 \end{figure}
 
 
 %================================================================
-\section{Pre-processing Features}\label{sec:Pre-processing Features Theory}
+\section{Pre-processing Data}\label{sec:Pre-processing Features Theory}
 %================================================================
-In this section, we will discuss 
+In this section, we will discuss common techniques for preparing and processing features and data before training models, generally known as \emph{pre-processing}. We start by presenting two methods of scaling features, \emph{standardization} and \emph{min-max scaling}, meant for improving the performance of models. Then, we will present \emph{principal component analysis} (PCA), a technique for reducing the number of features and speeding up training of models. 
 
 %================================================================
-\subsection{Standardization}\label{sec:Standardization}
+\subsection{Scaling Features}\label{sec:Scaling Features}
 %================================================================
-For data sets gathered for real world applications, it is often the case that the different features 
+For data sets gathered for real world applications, it is often the case that the different features have very different units and numerical scales. E.g., a data set detailing health habits may include features such as \emph{age} in the range $0-80$, and \emph{caloric intake} of order $2000$. Many models, such as neural networks, are sensitive to the scales of the of the features and may perform badly if they are very different \cite{hands-on}. Therefore, it is typical to scale the features in a way that bring a them to roughly the same scale. 
+
+\subsubsection*{Standardization}
+For neural networks of the type presented in \autoref{sec:DenseNeuralNetwork}, features are often scaled using standardization to improve performance \cite{LeCun2012}. Mathematically, this involves subtracting the mean and divide by the standard deviation over the data set, for each feature:
+
+\begin{equation}
+    x_j^{(i)} \rightarrow \frac{x_j^{(i)} - \Bar{x}_j}{\sigma(x_j)},
+\end{equation}
+where $\Bar{x}_j$ and $\sigma(x_j)$ is the mean and standard deviation of the feature $x_j$, respectively. This ensures that each feature has zero mean and unit standard deviation.
+
+\subsubsection*{Min-Max Scaling}
+An alternative to standardization is min-max scaling, useful for when we want the features to lie in a certain interval. To scale the feature $x_j$ to the interval $[a, b]$, we can apply the transformation
+
+\begin{equation}
+\begin{aligned}
+    x_j^{(i)} \rightarrow x_j^{(i)} - \min(x_j)\\
+    x_j^{(i)} \rightarrow x_j^{(i)}/\max(x_j)\\ 
+    x_j^{(i)} \rightarrow (b-a) x_j^{(i)} + a,
+\end{aligned}  
+\end{equation}
+where $\min(x_j)$ and $\max(x_j)$ return the minimum and maximum value of $x_j$ over the data set, respectively.
 
 %================================================================
 \subsection{Principal Component Analysis}\label{sec:Principal Component Analysis}
 %================================================================
+For data sets with many features, training models may become computationally expensive. Because of this, we often want to reduce the number of features without losing the too much of the information of data that may be important for prediction. One way of accomplishing this is with the use of principal component analysis, which applies a linear transformation on the features $x_j$ to derive new features $z_j$ called principal components. The property of the principal components is that they determine the directions in feature space that capture the largest amount of variance in the data, and hence information. The first component $z_1$ is the direction of largest variance, $z_2$ the direction of second largest, etc. By performing PCA and keeping the first few components, the number of features can be greatly reduced while keeping most of the variance and information of the data.
