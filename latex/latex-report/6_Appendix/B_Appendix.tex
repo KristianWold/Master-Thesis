@@ -29,9 +29,9 @@ x3, y3 = generate_1D_mixed_gaussian()
 \begin{tabular}{|l|l|l|l|l|}
 \hline
  Name& \#Samples&  \# Features& Feature Type& Target Type \\ \hline
- 1D Mixed Gaussian&  100&  1& $x_i \in [0,1]$ & $y \in [0,1]$  \\ \hline
- 2D Mixed Gaussian&  144&  2& $x_i \in [0,1]$ & $y \in [0,1]$ \\ \hline
- 3D Mixed Gaussian&  216&  3& $x_i \in [0,1]$ & $y \in [0,1]$ \\ \hline
+ 1D mixed Gaussian&  100&  1& $x_i \in [0,1]$ & $y \in [0,1]$  \\ \hline
+ 2D mixed Gaussian&  144&  2& $x_i \in [0,1]$ & $y \in [0,1]$ \\ \hline
+ 3D mixed Gaussian&  216&  3& $x_i \in [0,1]$ & $y \in [0,1]$ \\ \hline
 \end{tabular}
 \caption{Details on the various mixed Gaussian data sets. For a complete description on how to produce it, see \url{https://github.com/KristianWold/Master-Thesis/blob/main/src/utils.py}}
 \label{tab:MixedGaussianData}
@@ -74,9 +74,14 @@ x3, y3 = generate_1D_mixed_gaussian()
 
 
 %================================================================
-\section{Boston Housing Data}\label{sec:Boston Housing Data}
+\section{Real Data}\label{sec:Real Data}
 %================================================================
-The Boston Housing data set is a popular data used for regression, readily available though the scikit-learn python package\cite{scikit-learn}. The data set can be loaded using the following code:
+For benchmarking the dense neural networks (DNNs) and quantum circuit networks (QCNs) implemented in this thesis against realistic data sets, and for investigating how they generalize to unseen data, we will be using the popular Boston Housing data (kilde) and Breast Cancer Wisconsin data (kilde). In this section, we will presents details about these data sets. 
+
+%================================================================
+\subsection{Boston Housing Data}\label{sec:Boston Housing Data}
+%================================================================
+The Boston Housing data is a popular data set used for regression, readily available though the scikit-learn python package\cite{scikit-learn}. The data set can be loaded using the following code:
 
 \begin{lstlisting}[language=python, numbers=left]
 from sklearn.datasets import load_boston
@@ -85,7 +90,7 @@ x = data.data
 y = data.target
 \end{lstlisting}
 
-The targets $y$ of the Boston Housing data set are \emph{median of owner-occupied homes by town}, in \textbackslash \$1000, suitable for regression problems. Some of the features include quantities such as \emph{per capita crime rate by town}, \emph{average number of rooms per dwelling} and \emph{pupil-teacher ratio by town}. For a complete description of the features, see \url{https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html}. For some general details of the data set, see \autoref{tab:Boston}.
+The targets $y$ of the Boston Housing data are \emph{median of owner-occupied homes by town}, in \$1000, which can be predicted using for regression methods. Some of the features include quantities such as \emph{per capita crime rate by town}, \emph{average number of rooms per dwelling} and \emph{pupil-teacher ratio by town}. For a complete description of the features, see \url{https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html}. For some general details of the data set, see \autoref{tab:Boston}.
 
 \begin{table}[H]
 \begin{tabular}{|l|l|l|l|l|}
@@ -99,15 +104,41 @@ The targets $y$ of the Boston Housing data set are \emph{median of owner-occupie
 \label{tab:Boston}
 \end{table}
 
+%================================================================
+\subsection{Breast Cancer Wisconsin Data}\label{sec:Breast Cancer Data}
+%================================================================
+
+The Breast Cancer Wisconsin data set is another popular data accessible through scikit-learn. The data set can be loaded using the following code:
+
+\begin{lstlisting}[language=python, numbers=left]
+from sklearn.datasets import load_breast_cancer
+data = load_breast_cancer()
+x = data.data
+y = data.target
+\end{lstlisting}
+
+The targets $y$ of the data set are binary values indicating whether breast tissue is malignant or benign, suitable for classification methods. Some of the features include quantities such as \emph{mean radius}, \emph{mean area} and \emph{mean smoothness} describing the breast tissue. For a complete description of the features, see \url{https://www.kaggle.com/uciml/breast-cancer-wisconsin-datal}. For some general details of the data set, see \autoref{tab:Cancer}.
+
+\begin{table}[H]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+ Name& \#Samples&  \# Features& Feature Type& Target Type \\ \hline
+ Breast Cancer Wisconsin&  569&  30& $x_i \in \mathbb{R}$ & $y \in \{0,1\}$  \\ 
+ \hline
+ 
+\end{tabular}
+\caption{Some details on the Breast Cancer Wisconsin data set.}
+\label{tab:Cancer}
+\end{table}
+
 
 %================================================================
-\subsection{Feature Reduction with PCA}\label{sec:Feature Reduction wit PCA}
+\subsection{Feature Reduction with PCA}\label{sec:Feature Reduction with PCA}
 %================================================================
-Training a QNN or QCN on the Boston Housing data using qubit encoding would requires circuits with $13$ qubits, one for each feature. Since this would introduce an intractable overhead when simulated on our classical computer, we wish to reduce the number of features to a more manageable number. To do this, we will apply \emph{principle component analysis} using scikit-learn for decomposing the features 
-
+For both the Boston Housing data and the Breast Cancer Wisconsin data, we will perform a principal component analysis (PCA) to reduce the number of features from $13$ and $30$ to four, respectively. This is for making the training of QCNs more feasible, as a high number of features also require a high number of qubits when using qubit encoding. For more details, see \autoref{sec:Principal Component Analysis} and \autoref{sec:Feature Reduction with PCA}.
 
 %================================================================
-\section{Sparse Data Set}\label{sec:Spare Data Set}
+%\section{Sparse Data Set}\label{sec:Spare Data Set}
 %================================================================
 
 
