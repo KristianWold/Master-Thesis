@@ -2,7 +2,7 @@
 \chapter{Supervised Learning}\label{chap:SupervisedLearning}
 %================================================================
 
-This chapter introduces the fundamentals of supervised learning, optimization and neural networks. The content of this chapter is mainly based on the material in \cite{SupervisedwquantumComputers}, \cite{hastie01statisticallearning} and \cite{nielsenneural}.
+This chapter introduces the fundamentals of supervised learning, optimization and neural networks. The content of this chapter is mainly based on the material in \citet{SupervisedwquantumComputers}, \citet{hastie01statisticallearning} and \citet{nielsenneural}.
 
 The goal of \emph{supervised learning}, one of the big branches of machine learning, is to obtain a function for predicting an output $y$ from an input $\boldsymbol{x}$. This is done by learning from input-output pairs $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, known as the training set. The domain of the input and output depends on the specific learning problem. The output y, also called the target or the response, is often either of a quantitative or qualitative character. These two cases constitutes two big paradigms in supervised learning: \emph{regression} and \emph{classification}, respectively. In the case of regression, the goal of the learning task is to predict a real-valued target y from the input $\boldsymbol{x}$. Typical examples of targets to regress on are \emph{temperature}, \emph{weight} and \emph{number of people}, which have in common a natural notion of distance measure in the sense that instances close in numerical value are also close in nature. E.g., two fish weighing $12.1$ kg and $12.2$ kg are similar, while a third fish weighing $24.0$kg is notably different.
 
@@ -35,10 +35,10 @@ where $\hat{y}$ is the predicted value, $f(\cdot; \cdot)$ defines a \emph{family
 
 The loss function returns a scalar value that indicates how good your model fits the training data for a particular set of parameters. In general, a lower value indicates a better model. This formulates the task of training the model as an optimization problem. In the next section, we will discuss different ways of training parameterized models, in particular with the use of gradient-based methods.
 
-The choice of loss function is very problem dependent, and there is a vast collection of different choices in the machine learning literature \citet{hastie01statisticallearning}. In this thesis we focus on the popular Mean Squared Error(MSE) when training supervised learning models. This loss function is suitable for regression problems since it implements a natural distance measure between prediction and target. It is formulated as
+The choice of loss function is very problem dependent, and there is a vast collection of different choices in the machine learning literature \cite{hastie01statisticallearning}. In this thesis we focus on the popular Mean Squared Error(MSE) when training supervised learning models. This loss function is suitable for regression problems since it implements a natural distance measure between prediction and target. It is formulated as
 
 \begin{equation}\label{eq:MSE}
-    MSE = \frac{1}{2N}\sum_{i=1}^{N} (f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) - y^{(i)})^2.
+    MSE = \frac{1}{N}\sum_{i=1}^{N} (f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) - y^{(i)})^2.
 \end{equation}
 
 Fitting the model using MSE as loss function is often referred to as the \emph{least squares approach}.
@@ -108,7 +108,7 @@ Even though batch gradient descent is intuitively simple and sometimes sufficien
 \begin{figure}[htp]
     \centering
     \includegraphics[width=10cm]{latex/figures/local_minimum_saddle_point.png}
-    \caption{One-dimensional representation of the loss landscape for a parameterized model, showcasing the phenomenon of getting stuck in local minima, and slow convergence induced by plateaus. The figure is retrieved from \citet{géron2017hands-on.}}
+    \caption{One-dimensional representation of the loss landscape for a parameterized model, showcasing the phenomenon of getting stuck in local minima, and slow convergence induced by plateaus. The figure is retrieved from \citet{hands-on}.}
     \label{fig:localMinima}
 \end{figure}
 
@@ -150,7 +150,7 @@ $\theta_t \gets \theta_{t-1} - \alpha \hat{m}_t/(\sqrt{\hat{v}_t} + \epsilon)$
 
 \autoref{alg:Adam} updates moving averages of the gradient $m_t$ and its square $v_t$, picking up information about the gradient from earlier update events. In particular, if the gradient tend to flip sign for certain directions, the averaging over previous iterations tends to dampen these oscillations. Likewise, directions of persistent sign tends to accumulate magnitude, making the optimisation gain "momentum" in these directions. This is a good property for overcoming thin valleys and plateaus. Also, the effect of momentum may also help avoid getting stuck in local minima by gracing over them. Further, the moving average of the gradient and its square is rendered unbiased as $\hat{m}_t = m_t/(1-\beta_1)$ and $\hat{v}_t = v_t/(1-\beta_2)$. Since the averages are initialized as zero, they are biased downward. Finally, the parameters are shifted by the quantity $\alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}$. Here, the rescaling term $\sqrt{\hat{v}_t}$ serves to decrease the step size in directions where the gradient has a large magnitude and increase it where it is small. This effectively implements a variable learning rate for each direction, depending on whether big or small steps are needed. 
 
-Adam is a hugely successful algorithm for optimizing machine learning models. In popular machine learning frames such as scikit-learn \cite{scikit-learn} and pyTorch \cite{NEURIPS2019_9015}, it is a default optimizer. Lately, Adam has also been used for optimizing quantum machine learning models \cite{abbas2020power} \cite{skolik2020layerwise}. Pointed out by its authors, Adam requires very little tuning of hyper-parameters to be efficient, making attractive and easy to use. Adam is also suited for noisy gradients, which will be relevant for the work in this thesis. 
+Adam is a hugely successful algorithm for optimizing machine learning models. In popular machine learning frames such as scikit-learn \cite{scikit-learn} and pyTorch \cite{pytorch}, it is a default optimizer. Lately, Adam has also been used for optimizing quantum machine learning models \cite{abbas2020power, skolik2020layerwise}. Pointed out by its authors, Adam requires very little tuning of hyper-parameters to be efficient, making attractive and easy to use. Adam is also suited for noisy gradients, which will be relevant for the work in this thesis. 
 
 
 
@@ -178,7 +178,9 @@ where $\boldsymbol{a}^{l-1}$ is the activation of the previous layer with the ex
 \begin{equation}\label{eq:DNN}
     \hat{y} = f_{DNN}(x;\boldsymbol{\theta}) = \boldsymbol{a}^{L},
 \end{equation}
-where $\boldsymbol{\theta} = [W^1, \boldsymbol{b}^1, \cdots, W^L,  \boldsymbol{b}^L]$. This defines the whole forward procedure of a neural network, and also highlights the role of the functions $f^l(\cdot)$, often called the \emph{non-linearities}. If set to identity, $f^l(x) = x$, the recursive application of \autoref{eq:FeedforwardDNN} would simply apply repeated affine transformations, which is an affine transformation in itself. In other words, increasing the number of layers would not increase the expressiveness of the network, as all the layers would collapse into a single layer. Therefore, introducing non-linear transformations is necessary to increase the flexibility of the neural network(kilde?). 
+where $\boldsymbol{\theta} = [W^1, \boldsymbol{b}^1, \cdots, W^L,  \boldsymbol{b}^L]$. This defines the whole forward procedure of a neural network, and also highlights the role of the functions $f^l(\cdot)$, often called the \emph{non-linearities}. If set to identity, $f^l(x) = x$, the recursive application of \autoref{eq:FeedforwardDNN} would simply apply repeated affine transformations, which is an affine transformation in itself. In other words, increasing the number of layers would not increase the expressiveness of the network, as all the layers would collapse into a single layer. Therefore, introducing non-linear transformations is necessary to increase the flexibility of the neural network. 
+
+(Write about activation functions)
 
 %================================================================
 \subsection{Backpropagation}\label{sec:BackpropogationDNN}
@@ -186,15 +188,13 @@ where $\boldsymbol{\theta} = [W^1, \boldsymbol{b}^1, \cdots, W^L,  \boldsymbol{b
 
 %Neural networks are typically trained using gradient-based methods, such as Batch Gradient Descent and Adam, both previously discussed. Adam is particularly efficient, as the optimization of neural network architectures tend to be plagued by many local minima and plateaus(kilde).  
 
-Assume that $f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$ is a dense neural network as described by \autoref{eq:FeedforwardDNN} and \autoref{eq:DNN}. In order to use gradient-based methods, one needs to calculate the derivative of the loss-function \autoref{eq:LossDerivateWRTparameter} for an arbitrary parameter $\boldsymbol{\theta}_k$, which could be any of the weights $W^l$ or biases $\boldsymbol{b}^l$ in the various layers. This is not trivial given the sequential structure of the neural network. Often attributed to \citet{Rumelhart}, the \emph{backpropagation algorithm} calculates the gradient in a sequential manner, starting with the last layers first. Calculating on a single sample, the algorithm starts by calculating the \emph{error} of the last layer
+Assume that $f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$ is a dense neural network as described by \autoref{eq:FeedforwardDNN} and \autoref{eq:DNN}. In order to use gradient-based methods, one needs to calculate the derivative of the loss-function \autoref{eq:LossDerivateWRTparameter} for an arbitrary parameter $\boldsymbol{\theta}_k$, which could be any of the weights $W^l$ or biases $\boldsymbol{b}^l$ in the various layers. This is not trivial given the sequential structure of the neural network. Often attributed to \citet{Rumelhart}, the \emph{backpropagation algorithm} calculates the gradient in a sequential manner, starting with the last layers first. Calculating for a single sample, the algorithm starts by calculating the \emph{error} of the last layer
 
 
 \begin{equation}\label{eq:lastLayerError}
     \delta^L_k = \frac{\partial L(\hat{y}, y)}{\partial \boldsymbol{a}^L_k},
 \end{equation}
-where $k$ indicates the node.
-
-This error can be defined for any layer recursively by repeated application of the chain-rule:
+where $k$ indicates the node. This error can be defined for any layer recursively by repeated application of the chain-rule:
 \begin{equation}\label{eq:error}
     \delta^l_j = \frac{\partial L(\hat{y}, y)}{\partial \boldsymbol{a}^l_j} 
     = \sum_k \frac{\partial L(\hat{y}, y)}{\partial \boldsymbol{a}^{l+1}_k} \frac{\partial \boldsymbol{a}^{l+1}_k}{\partial \boldsymbol{a}^{l}_j}
@@ -235,7 +235,7 @@ which can be used to optimize the neural network with a gradient-based method as
 If we obtain a low loss on the training data after fitting a model, can we assume that the resulting model is good and useful? It depends on what we want to use the model for, but if we want to use the model for predicting on new data (data that was not seen during training), we often don't want train the model too much. As explained earlier, the main goal of a model is to approximate the underlying mechanism $f(\boldsymbol{x})$ of \autoref{eq:data} producing the data. If the model fits the data too hard, it might also pick up details of the noise $\epsilon$ in the training data, which is called \emph{overfitting}. The problem with this is that if we gather a new data set, a \emph{test set} $y' = f(\boldsymbol{x}) + \epsilon'$, the noise $\epsilon'$ will be different from the noise in the training data because of its random nature. Since the overfitted model is very affected by the noise in the training data, it will likely perform badly on new data where the noise is different, even though its performance on the training data is good. Typically, the more complex and flexible a model is, the more likely it is to overfit the training data. This is because it has a greater capacity to fit the noise present in the training data. By restricting the complexity of the model, one often ends up with a model that resembles $f(\boldsymbol{x})$ more closely. In turn, this results in a model
 that \emph{generalizes} better, which means that it makes accurate predictions on values of $\boldsymbol{x}$ not seen in the training set. On the other hand, if the model is not complex enough, it might not be sufficiently flexible to recreate $f(\boldsymbol{x})$, causing \emph{underfitting}.
 
-To uncover overfitting, it is standard procedure to prepare independent training and test sets $\mathcal{T}_{Train}$ and $\mathcal{T}_{Test}$, and train the model on the former set and test its performance on the latter. The behaviour of the prediction error, e.g. MSE, on the training and test set is expected to behave as in \autoref{fig:train_test}. For models that are optimized iterativly, like neural networks, "model complexity" can be associated with the number of optimization steps. For increasing number of steps, the training error is strictly decreasing, since it is the purpose of training to reduce this quantity. However, the test error has a minimum for which the model shows best generalization. Training beyond this point increases the test error, resulting in overfitting. 
+To uncover overfitting, it is standard procedure to prepare independent training and test sets $\mathcal{T}_{Train}$ and $\mathcal{T}_{Test}$, and train the model on the former set and test its performance on the latter. The behaviour of the prediction error, e.g. MSE, on the training and test set is expected to behave as in \autoref{fig:train_test}. For models that are optimized iterativly, like neural networks, "model complexity" can be associated with the number of optimization steps. For increasing number of steps, the training error is strictly decreasing, since it is the purpose of training to reduce this quantity. However, the test error has a minimum for which the model shows best generalization. Training beyond this point cause overfitting, increasing the test error. 
 
 \begin{figure}[H]
     \centering
@@ -278,4 +278,11 @@ where $\min(x_j)$ and $\max(x_j)$ return the minimum and maximum value of $x_j$ 
 %================================================================
 \subsection{Principal Component Analysis}\label{sec:Principal Component Analysis}
 %================================================================
-For data sets with many features, training models may become computationally expensive. Because of this, we often want to reduce the number of features without losing the too much of the information of data that may be important for prediction. One way of accomplishing this is with the use of principal component analysis, which applies a linear transformation on the features $x_j$ to derive new features $z_j$ called principal components. The property of the principal components is that they determine the directions in feature space that capture the largest amount of variance in the data, and hence information. The first component $z_1$ is the direction of largest variance, $z_2$ the direction of second largest, etc. By performing PCA and keeping the first few components, the number of features can be greatly reduced while keeping most of the variance and information of the data.
+For data sets with many features, training models may become computationally expensive. Because of this, we often want to reduce the number of features without losing the too much of the information of data that may be important for prediction. One way of accomplishing this is with the use of principal component analysis, which applies a linear transformation on the features $x_j$ to derive new features $z_j$ called principal components. The property of the principal components is that they determine the directions in feature space that capture the largest amount of variance in the data, and hence information. The first component $z_1$ is the direction of largest variance, $z_2$ the second largest, etc. In \autoref{fig:pca}, the resulting two principal components are visualized for for a data set with two features. For a data set where the features are highly correlated, which is typical for real data sets, performing PCA and keeping the first few components can greatly reduce the number of features without losing too much of the information of the data.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{latex/figures/pca.png}
+    \caption{The two principal components resulting from PCA applied to a data set with two features $x_1$ and $x_2$. The components give the directions in feature space with most and second most variance in the data. The figure is retrieved from \citet{hastie01statisticallearning}.}
+    \label{fig:pca}
+\end{figure}

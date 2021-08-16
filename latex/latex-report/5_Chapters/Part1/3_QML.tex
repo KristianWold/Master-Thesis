@@ -407,22 +407,22 @@ The terms
 \end{equation}  The calculation of the gradient allows us to leverage more information of the loss function and enables for gradient-based optimisation. Potentially, this could mean faster optimization relative to derivative-free optimization, such as Nelder-Mead's algorithm which was originally used to optimize QCN(kilde). However, as explained in \autoref{sec:GradientDescent}, gradient-based methods such as gradient descent are prone to getting stuck in local minima, potentially causing slow optimization.    
 
 %================================================================
-\subsection{Regularized Feature Map}\label{sec:Regularized Feature map}
+%\subsection{Regularized Feature Map}\label{sec:Regularized Feature map}
 %================================================================
 
-\begin{figure}[htp]
-\[ \begin{array}{c}
-    \Qcircuit @C=1em @R=1em {
-    \lstick{\ket{0}}& \multigate{3}{{U_{\phi(\boldsymbol{x})}}} & \qw    & \multigate{3}{S_{\boldsymbol{\theta}}} & \qw    & \multigate{3}{{U^{-1}_{\phi(\boldsymbol{x})}}} & \qw    &  \\
-    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    & \ghost{S_{\boldsymbol{\theta}}}        & \qw    &\ghost{{U^{-1}_{\phi(\boldsymbol{x})}}}        & \qw    &  \\
-    \vdots          & \nghost{{U_{\phi(\boldsymbol{x})}}}       & \vdots & \nghost{S_{\boldsymbol{\theta}}}       & \vdots & \nghost{{U^{-1}_{\phi(\boldsymbol{x})}}}       & \vdots &   \\
-    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    & \ghost{S_{\boldsymbol{\theta}}}        & \qw    &\ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    &  \\
-                    & \underset{Encoder}{\underbrace{}}        &        &\underset{Splitter}{\underbrace{}}    &        &\underset{Reverse  Encoding}{\underbrace{}}        &             
-    }
-    \end{array}\]
-\caption{}
-\label{fig:QNN}
-\end{figure}
+%\begin{figure}[htp]
+%\[ \begin{array}{c}
+%    \Qcircuit @C=1em @R=1em {
+%    \lstick{\ket{0}}& \multigate{3}{{U_{\phi(\boldsymbol{x})}}} & \qw    & %\multigate{3}{S_{\boldsymbol{\theta}}} & \qw    & %\multigate{3}{{U^{-1}_{\phi(\boldsymbol{x})}}} & \qw    &  \\
+%    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    & %\ghost{S_{\boldsymbol{\theta}}}        & \qw    %&\ghost{{U^{-1}_{\phi(\boldsymbol{x})}}}        & \qw    &  \\
+%    \vdots          & \nghost{{U_{\phi(\boldsymbol{x})}}}       & \vdots & %\nghost{S_{\boldsymbol{\theta}}}       & \vdots & %\nghost{{U^{-1}_{\phi(\boldsymbol{x})}}}       & \vdots &   \\
+%    \lstick{\ket{0}}& \ghost{{U_{\phi(\boldsymbol{x})}}}        & \qw    & %\ghost{S_{\boldsymbol{\theta}}}        & \qw    &\ghost{{U_{\phi(\boldsymbol{x})}}}    %    & \qw    &  \\
+%                    & \underset{Encoder}{\underbrace{}}        &        %&\underset{Splitter}{\underbrace{}}    &        &\underset{Reverse  %Encoding}{\underbrace{}}        &             
+%    }
+%    \end{array}\]
+%\caption{}
+%\label{fig:QNN}
+%\end{figure}
 
 
 
