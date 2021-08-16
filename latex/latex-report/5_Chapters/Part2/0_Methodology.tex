@@ -690,11 +690,40 @@ For DNNs, we will use the popular Xavier initialization \cite{xavier}, which is 
 where $n$ is the number nodes in the previous layer. 
 
 %================================================================
-\subsection{Pre-processing Input}\label{sec:Pre-processing Input}
+\subsection{Pre-processing Data}\label{sec:Pre-processing Input}
 %================================================================
-For QNNs and QCNs, inputs will be scales such that $x_i \in [0, \pi]$. This is deliberately half the periode of Pauli rotations, which are used when performing qubit encoding (\autoref{sec:QubitEncoding}). If inputs were rather scaled to one period, i.e. $x_i \in [0, 2\pi]$, extremal inputs would result in the same quantum state after encoding. Since mapping of different data point to the same quantum state can potentially inhibit learning, we opt for the original way of scaling.
+For QNNs and QCNs, features will be min-max scaled such that $x_i \in [-\frac{\pi}{2}, \frac{\pi}{2}]$. This is deliberately half the periode of Pauli rotations, which are used when performing qubit encoding (\autoref{sec:QubitEncoding}). If inputs were rather scaled to one period, i.e. $x_i \in [-\pi, \pi]$, extremal inputs would result in the same quantum state after encoding. Since mapping of different data point to the same quantum state can potentially inhibit learning, we opt for the original way of scaling. 
+For DNNs, we apply standardization of the input, as explained in \autoref{sec:Scaling Features} by subtracting the mean and dividing by the standard deviation, feature-wise.
 
-For DNNs, we apply standardization of the input by subtracting the mean and dividing by the standard deviation, feature-wise. This is a popular method suggested by various authors \cite{hands-on, LeCun2012}, meant to speed up convergence.
+To scale the data, we use the scalers included in scikit-learn's \cite{scikit-learn}. They can be applied the following way:
+\begin{lstlisting}[language=python, numbers=left]
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+standard = StandardScaler()
+x_train_standard = standard.fit_transform(x_train)
+x_test_standard = standard.transform(x_test)
+
+minmax = MinMaxScaler(feature_range=(-np.pi/2, np.pi/2))
+x_train_minmax = standard.fit_transform(x_train)
+x_test_minmax = standard.transform(x_test)
+\end{lstlisting}
+Note that when using a training and test set \textbf{x\_train} and \textbf{x\_test}, like in the above code, the test set must be scaled after the training data. In practice, it should not be scaled together with the training data, as it is usually not available when training the model.
+
+To perform feature reduction using PCA, as described in \autoref{sec:Principal Component Analysis}, we will again use scikit-learn. It can be implemented using:
+
+\begin{lstlisting}[language=python, numbers=left]
+from sklearn.decomposition import PCA
+
+standard = StandardScaler()
+x_train = standard.fit_transform(x_train)
+x_test = standard.transform(x_test)
+
+pca = PCA(n_components=4)
+x_train = pca.fit_transform(x_train)
+x_test = pca.fit_transform(x_test)
+\end{lstlisting}
+Note that we first perform a standardization of the data. This is to insure that the amount of variance the features contribute is not affected their units and scaling.
+
 
 %================================================================
 \subsection{Optimization}\label{sec:Optimization}

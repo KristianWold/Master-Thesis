@@ -312,7 +312,7 @@ Looking at \autoref{fig:TL_trained_C} and \autoref{fig:TL_trained_D}, we see tha
 %================================================================
 \section{Training Models on Mixed Gaussian Data}\label{sec:Training Models}
 %================================================================
-In this section, we will study the ability of various models to fit one, two and three dimensions mixed Gaussian data. For more details on the data, see \autoref{sec:Mixed Gaussian Data}. We will train QNNs, QCN and DNNs with varying complexity and use MSE on the training data to evaluate how good the fit is. This will be done first in the ideal case, with exact calculation of outputs. Then, we will repeat the training for by simulating the noise model of the Santiago quantum computer(kilde). For a complete description of the models trained in this section, see \autoref{tab:training models}.
+In this section, we will study the ability of various models to fit one, two and three dimensions mixed Gaussian data. For more details on the data, see \autoref{sec:Mixed Gaussian Data}. We will train QNNs, QCN and DNNs with varying complexity and use MSE on the training data to evaluate how good the fit is. This will be done first in the ideal case, with exact calculation of outputs. Then, we will repeat the training using the  simulated the noise model of the Santiago quantum computer(kilde). The hyper parameters, such as number of layers, nodes and qubits, are chosen by trial and error such that the results QCNs are relatively small in number of parameters, but still fit the data sufficiently. The QNNs and DNNs are then chosen such that thay have similar number of parameters as the QCNs. For a complete description of the models trained in this section, see \autoref{tab:training models}.
 
 \begin{table}[H]
 \centering
@@ -330,7 +330,7 @@ H    & DNN & 2D  & NA    & NA&3      & 7& 85  \\ \Xhline{3\arrayrulewidth}
 I    & QNN & 3D  & 5     & 11&NA     & NA& 55  \\ \hline
 J    & QCN & 3D  & 5     & 1&3      & 5& 55  \\ \hline
 K    & QCN & 3D  & 5     & 2&3      & 5& 110  \\ \hline
-K    & DNN & 3D  & NA    & NA&3      & 8& 113  \\ \hline
+L    & DNN & 3D  & NA    & NA&3      & 8& 113  \\ \hline
 \end{tabular}
 \caption{Hyper-parameters of the different models fitted to the one, two, and three dimensional mixed Gaussian data.} 
 \label{tab:training models}
@@ -389,11 +389,10 @@ L    & DNN & 3D  &  $1.2\times10^{-2}$  & $1.8\times10^{-3}$  \\ \hline
 \label{tab:training models mse}
 \end{table}
 
-From \autoref{fig:trained ideal}, we see that the QCNs minimize the MSE quicker than both the QNNs and DNNs on the mixed Gaussian data, for any number of dimensions. The QCNs faster optimization relative to the DNNs is not surprising, since this was suggested by the its relatively larger gradient and uniform EFIM spectrum seen in \autoref{sec:Vanishing Gradient Phenomenon} and \autoref{sec:Investigating the Loss Landscape}. Further, even though QNNs were shown to also exhibit uniform EFIM spectrum, we see that QNNs perform overall worst among the models. After initial fast optimization, the models quickly saturate at a relatively high MSE. 
+From \autoref{fig:trained ideal}, we see that the QCNs minimize the MSE quicker than both the QNNs and DNNs on the mixed Gaussian data, for any number of dimensions. The QCNs faster optimization relative to the DNNs is not surprising, since this was suggested by the its relatively larger gradient and uniform EFIM spectrum seen in \autoref{sec:Vanishing Gradient Phenomenon} and \autoref{sec:Investigating the Loss Landscape}. Further, even though QNNs were shown to also exhibit a uniform EFIM spectrum, we see that QNNs perform overall worst among the models. After initially fast optimization, the models quickly saturate at a relatively high MSE. 
 Comparing the QCNs with one and two ansatz repetitions, we see that former exhibit a lot of variance, indicating that the training is very sensitive to parameter initialization and that it is likely getting stuck in local minima. In contrast, the QCNs with two repetitions tend to converge much faster, and also to a reach a relatively lower minimum. 
 
-
-In \autoref{tab:training models}, the final MSE after training is displayed for the models defined in \autoref{tab:training models}. In addition, 
+In \autoref{tab:training models}, the final MSE after training is displayed for the models defined in \autoref{tab:training models}. 
 
 
 
@@ -432,10 +431,30 @@ This shows that RZZ encoding combined with multiple repetitions of the simple an
 %================================================================
 \section{Real Data}\label{sec:Real Data}
 %================================================================
+In this this section, we compare the performance QCNs and DNNs by performing regression on the Boston Housing data (kilde) and classification on the Breast Cancer Wisconsin data (kilde). See \autoref{sec:Appendix B} for more information. Since these data originate from real world experiments, they are noisy and don't represent a deterministic relationship $y = f(\boldsymbol{x})$ between the target and the features. This is in contrast to the the mixed Gaussian data sets studied earlier, and should provide a more realistic benchmark of the methods for practical problems. In addition to evaluating the models using MSE on the training data, we will also investigate how they generalize to unseen data by evaluating the MSE on an independent test set, as explained in \autoref{sec:Generalizability}. For the Breast Cancer Wisconsin data, we will also investigate the accuracy of the models. 
+
+In \autoref{sec:Feature Reduced Data}, we will reduce the number of features for data sets to four (down from $13$ and $30$) by using principal component analysis, as described in \autoref{sec:Principal Component Analysis}. This is done in order to produce smaller, more manage QCNs, as qubit encoding generally requires one qubit for each feature. 
+
+In \autoref{sec:Hybrid Method}, we will repeat the experiments of \autoref{sec:Feature Reduced Data} on the full data sets, without feature reduction. To avoid QCNs with overly many qubits, we will use an initial dense layer to reduce the features from $13$ and $30$ to four. This creates a DNN/QCN hybrid model, where the initial dense layer learns derived features on which the QCN part makes predictions. See \autoref{sec:Hybrid Models} for details. 
 
 %================================================================
 \subsection{Feature Reduced Data}\label{sec:Feature Reduced Data}
 %================================================================
+In this section, we split the data sets into a training and test sets at random, each with $N=100$ samples. The sets are then reduced to four features using PCA and scaled appropriately depending on the model, as explained in \autoref{sec:Pre-processing Input}. 
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+Model& Type& Data& Qubits& Reps& Layers & Nodes &$n_{\theta}$ \\ \hline
+A    & QCN & Boston Housing Data  & 4     & 2  &2     & 4& 40   \\ \hline
+B    & DNN & Boston Housing Data  & NA    & NA &2     & 6& 37 \\ \Xhline{2\arrayrulewidth}
+C    & QCN & Breast Cancer        & 4     & 2  &2     & 4& 40  \\ \hline
+D    & DNN & Breast Cancer        & NA    & NA &2     & 6& 37  \\ \hline
+\end{tabular}
+\caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
+\label{tab:training models PCA}
+\end{table}
 
 \begin{figure}[H]
     \centering
@@ -455,9 +474,43 @@ This shows that RZZ encoding combined with multiple repetitions of the simple an
     \label{fig:}
 \end{figure}
 
+
+\begin{table}[H]
+\centering
+\caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+Model& Type& Data& MSE (train/test)& Accuracy  \\ \hline
+A    & QCN & BHD  & 0.004/$\boldsymbol{0.043}$ & NA    \\ \hline
+B    & DNN & BHD  & 0.006/0.052                & NA  \\ 
+\Xhline{2\arrayrulewidth}
+C    & QCN & Breast Cancer        & 0.028/0.058                & 0.989/0.947    \\ \hline
+D    & DNN & Breast Cancer        & 0.001/\boldsymbol{$0.032$} & 1.000/\boldsymbol{$0.965$}  \\ \hline
+\end{tabular}
+
+\label{tab:results PCA}
+\end{table}
+
+
 %================================================================
 \subsection{Hybrid Method}\label{sec:Hybrid Method}
 %================================================================
+
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+Model& Type& Data& Qubits& Reps& Layers & Nodes &$n_{\theta}$ \\ \hline
+E    & Hybrid & Boston Housing Data  & 4     & 2&3      & 4& 96   \\ \hline
+F    & DNN & Boston Housing Data  & NA    & NA&3      & 5& 106 \\ \Xhline{2\arrayrulewidth}
+G    & Hybrid & Breast Cancer        & 4     & 2&3      & 4& 164  \\ \hline
+H    & DNN & Breast Cancer        & NA    & NA&3      & 5& 191  \\ \hline
+\end{tabular}
+\caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
+\label{tab:training models Hybrid}
+\end{table}
 
 \begin{figure}[H]
     \centering
@@ -477,6 +530,21 @@ This shows that RZZ encoding combined with multiple repetitions of the simple an
     \label{fig:}
 \end{figure}
 
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+Model& Type& Data& MSE (train/test) & Accuracy (train/test) \\ \hline
+E    & Hybrid & BHD  & 0.004/0.021 & NA    \\ \hline
+F    & DNN & BHD     & 0.002/$\boldsymbol{0.011}$  & NA  \\ \Xhline{2\arrayrulewidth}
+G    & Hybrid & BCD        & 0.035/0.102  & 1.000/0.875    \\ \hline
+H    & DNN & BCD           & 0.000/$\boldsymbol{0.030}$  & 1.000/$\boldsymbol{0.954}$  \\ \hline
+\end{tabular}
+\caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
+\label{tab:results PCA}
+\end{table}
+
+
 
 %================================================================
 \subsection{Discussion}\label{sec:Boston Housing Data Discussion}
@@ -484,11 +552,11 @@ This shows that RZZ encoding combined with multiple repetitions of the simple an
 Stuff
 
 %================================================================
-\section{Regularized Feature Map}\label{sec:Regularized Feature Map}
+%\section{Regularized Feature Map}\label{sec:Regularized Feature Map}
 %================================================================
-Stuff
+%Stuff
 
 %================================================================
-\subsection{Discussion}\label{sec:Regularized Feature Map Discussion}
+%\subsection{Discussion}\label{sec:Regularized Feature Map Discussion}
 %================================================================
-Stuff
+%Stuff
