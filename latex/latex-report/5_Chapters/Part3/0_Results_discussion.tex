@@ -394,9 +394,7 @@ L    & DNN & 3D  &  $1.2\times10^{-2}$  & $1.8\times10^{-3}$  \\ \hline
 \label{tab:training models mse}
 \end{table}
 
-From \autoref{fig:trained ideal}, we see that the QCNs minimize the MSE quicker than both the QNNs and DNNs on the mixed Gaussian data, for any number of dimensions. The QCNs faster optimization relative to the DNNs was anticipated, since this was suggested by the its relatively larger gradient and uniform EFIM spectrum seen in \autoref{sec:Vanishing Gradient Phenomenon} and \autoref{sec:Investigating the Loss Landscape}. Further, even though the QNNs were shown to also exhibit a uniform EFIM spectrum, we see that QNNs perform overall worst among the models. After initially fast optimization, the models quickly saturate at a relatively high MSE, struggling to obtain a good fit. 
-
-Comparing the QCNs with one and two ansatz repetitions, we see that former exhibit a lot of variance, indicating that the training is very sensitive to parameter initialization and that it is likely getting stuck in local minima. In contrast, the QCNs with two repetitions tend to converge much faster, and also to a reach a relatively lower minimum. 
+From \autoref{fig:trained ideal}, we see that the QCNs minimize the MSE quicker than both the QNNs and DNNs on the mixed Gaussian data, for any number of dimensions. The QCNs with the two ansatz repetitons also trained faster than those with just one. Further, we see that QNNs perform overall worst among the models. After initially fast optimization, the models quickly flatten out at a relatively high MSE, struggling to obtain a good fit. 
 
 From \autoref{tab:training models}, we see that the DNNs obtains the lowest MSE among all models when trained until saturation, after $10^4$ epochs. The one exception to this was for the 1D mixed Gaussian data, where the MSE actually increased after the additional training for the DNN. This is likely due to heavy overparameterization for this model, having 13 nodes to achieve $20$ parameters, causing it to become very unstable.
 
@@ -445,35 +443,41 @@ H    & DNN & 2D  &  $2.5\times10^{-2}$ & $1.6\times10^{-3}$\\\hline
 \label{tab:training models mse noisy}
 \end{table}
 
-Comparing \autoref{fig:trained noisy} and \autoref{fig:trained ideal}, we see that the QNNs and QCNs trained on noisy hardware train slower and obtain a overall higher final MSE after 100 epochs, compared to the ideal simulation. This is not surprising, since the simulation of real hardware and the low number of 1024 shots cause a significant amount of noise to be added to the outputs of the QNNs and QCNs. The slowdown of the training is likely a caused by the noise added to the calculation of the gradient. This causes it to misalign with the direction of steepest descent, as discussed in \autoref{sec:BarrenPlateus}. This can potentially slow down optimization, as each update of the parameters may fail to bring the model closer to a minimum because of the random component added to the gradient.
-
+Comparing \autoref{fig:trained noisy} and \autoref{fig:trained ideal}, we see that the QNNs and QCNs trained on noisy hardware train slower and obtain a overall higher final MSE after 100 epochs, compared to the ideal simulation. 
 
 
 %================================================================
 \subsection{Discussion}\label{sec:Training Discussion}
 %================================================================
+In \autoref{sec:Vanishing Gradient Phenomenon} and \autoref{sec:Investigating the Loss Landscape}, it was suggested that QCNs of few qubits and layers would train faster than DNNs with similar number of parameters, due to their relatively larger gradient and more uniform EFIM spectrum. As we see from \autoref{fig:trained ideal}, this is indeed the case when training on the mixed Gaussian data using exact and noiseless simulation.
+Further, we see that the QCNs with two ansatz repetitions show faster training and less variance than those with only one repetition. This shows that QCNs can be made more flexible by adding additional complexity to each node in the form of additional repetitions. 
 
+In \autoref{sec:Expressivity}, it was suggested that QCNs are more expressive and flexible than DNNs with similar number of parameters. Looking at \autoref{tab:training models mse}, we see that the final MSE obtained by the QCNs with two repetitions is within the same order of magnitude as the final MSE obtained by the DNNs. This is despite the fact that the QCNs were only trained for 100 epochs, while the DNNs where allowed to train for $10^4$ epochs (basically until saturation, i.e. the lowest possible MSE for that particular model). In light of this, it is not unlikely that the QCNs would eventually reach a lower MSE than the DNNs if given the opportunity to train for more epochs. This suggests that it is possible for QCNs to fit complicated data more easily than DNNs, and hence are more flexible. However, this is speculative, as we are unable to train the QCNs much further due to limited computational resources.    
 
-This shows that RZZ encoding combined with multiple repetitions of the simple ansatz is insufficient for approximating this data. As explained in \autoref{sec:FeedForward}, our QNNs perform a mostly unitary (and thus linear) transformation of the input, except at the stage of encoding and measurement. This results in a perhaps too constrained functional form, which explains the QNN's inability to fit the data. QCNs, on the other hand, incorporate multiple non-linearities for each layer. This is likely the key to their greater flexibility, as it enables them to compute a larger family of functions. 
+Even though QNNs with RZZ encoding were shown to also exhibit a relatively uniform EFIM spectrum in \autoref{sec:Investigating the Loss Landscape}, we see in \autoref{fig:trained ideal} that they struggle to obtain a good fit on the mixed Gaussian data, even though they have a similar number of parameters as the QCNs with one ansatz repetition. This shows that RZZ encoding combined with multiple repetitions of the simple ansatz is insufficient for fitting this data. As explained in \autoref{sec:FeedForward}, our QNNs perform a mostly unitary (and thus linear) transformation of the input, except at the stage of encoding and measurement. This results in a perhaps too constrained model, which might explain the QNNs' inability to fit the data. QCNs, on the other hand, incorporate multiple non-linearities for each layer as a result of measurements done to estimate the output of each node, as explained in \autoref{sec:Quantum Circuit Network}. As with DNNs, this is likely the key to their greater flexibility, as it enables them to compute a larger family of functions. 
 
+Moving over to the training using the simulated noisy hardware, we see from \autoref{fig:trained noisy} that the QNN and QCN models performed overall worse than in the ideal case. This is not surprising, since the simulation of real hardware and the low number of 1024 shots cause a significant amount of noise to be added to the outputs of the QNNs and QCNs. The slowdown of the training is likely a due to noise being added to the calculation of the gradient. This causes it to misalign with the direction of steepest descent, as discussed in \autoref{sec:BarrenPlateus}, and which results in the optimization slowing down. However, the QCNs with two ansatz repetitions still obtained a lower MSE than the DNNs after 100 epochs, even in using the noisy simulation. This shows that QCNs have the ability to outperform DNNs on some data sets, even on noisy quantum hardware with few shots. 
 
 
 %================================================================
 \section{Real Data}\label{sec:Real Data}
 %================================================================
-In this this section, we compare the performance QCNs and DNNs by performing regression on the Boston Housing data (kilde) and classification on the Breast Cancer Wisconsin data (kilde). See \autoref{sec:Appendix B} for more information. Since these data originate from real world experiments, they are noisy and don't represent a deterministic relationship $y = f(\boldsymbol{x})$ between the target and the features. This is in contrast to the the mixed Gaussian data sets studied earlier, and should provide a more realistic benchmark of the methods for practical problems. In addition to evaluating the models using MSE on the training data, we will also investigate how they generalize to unseen data by evaluating the MSE on an independent test set, as explained in \autoref{sec:Generalizability}. For the Breast Cancer Wisconsin data, we will also investigate the accuracy of the models. 
+In this this section, we compare the performance QCNs and DNNs by performing regression on the Boston Housing data (kilde) and classification on the Breast Cancer Wisconsin data (kilde). See \autoref{sec:Appendix B} for more information about the data sets. Since these data originate from real world experiments, they are noisy and don't represent a deterministic relationship $y = f(\boldsymbol{x})$ between the target and the features. This is in contrast to the the mixed Gaussian data sets studied earlier, and should provide a more practical benchmark of the methods. In addition to evaluating the models using MSE on the training data, we will also investigate how they generalize to unseen data by evaluating the MSE on an independent test set, as explained in \autoref{sec:Generalizability}. For the Breast Cancer Wisconsin data, we will also investigate the training and test accuracy of the models.
 
-In \autoref{sec:Feature Reduced Data}, we will reduce the number of features for data sets to four (down from $13$ and $30$) by using principal component analysis, as described in \autoref{sec:Principal Component Analysis}. This is done in order to produce smaller, more manage QCNs, as qubit encoding generally requires one qubit for each feature. 
+In \autoref{sec:Feature Reduced Data}, we will reduce the number of features for data sets to four (down from $13$ and $30$, respectively) by using principal component analysis, as described in \autoref{sec:Principal Component Analysis}. This is done in order to produce smaller, more manage QCNs, as qubit encoding generally requires one qubit for each feature. The QCNs models are chosen to have four qubits in each circuit, and only two layers. This is done to obtain a model that has a large gradient due to low number of qubits, as discussed in \autoref{sec:Vanishing Gradient Phenomenon Discussion}, and are thus easy to train. The DNNs are chosen such that the number of parameters approximatly match that of the QCNs. 
 
-In \autoref{sec:Hybrid Method}, we will repeat the experiments of \autoref{sec:Feature Reduced Data} on the full data sets, without feature reduction. To avoid QCNs with overly many qubits, we will use an initial dense layer to reduce the features from $13$ and $30$ to four. This creates a DNN/QCN hybrid model, where the initial dense layer learns derived features on which the QCN part makes predictions. See \autoref{sec:Hybrid Models} for details. 
+In \autoref{sec:Hybrid Method}, we will repeat the experiments of \autoref{sec:Feature Reduced Data} on the data sets with all features present, i.e. without feature reduction. To avoid QCNs with overly many qubits, we will use an initial dense layer to reduce the features from $13$ and $30$ to four. This creates a DNN/QCN hybrid model, where the initial dense layer learns derived features on which the QCN part makes predictions. See \autoref{sec:Hybrid Models} for details. 
+
+For both the feature reduced and full data set, we will split the data sets into independent training and test sets at random, each with $N=100$ samples. 
 
 %================================================================
 \subsection{Feature Reduced Data}\label{sec:Feature Reduced Data}
 %================================================================
-In this section, we split the data sets into a training and test sets at random, each with $N=100$ samples. The sets are then reduced to four features using PCA and scaled appropriately depending on the model, as explained in \autoref{sec:Pre-processing Input}. 
+To reduce the number of features, the training and test data sets are each reduced to four features using PCA and scaled appropriately depending on the model, as explained in \autoref{sec:Pre-processing Input}. The hyperparameters of the various models trained on the feature reduced data is listed in \autoref{tab:training models PCA}.
 
 \begin{table}[H]
 \centering
+\caption{Hyperparameters of the various models fitted to the feature reduced Boston Housing data and Breast Cancer data.} 
 \begin{tabular}{|l|l|l|l|l|l|l|l|}
 \hline
 Model& Type& Data& Qubits& Reps& Layers & Nodes &$n_{\theta}$ \\ \hline
@@ -482,29 +486,31 @@ B    & DNN & Boston Housing Data  & NA    & NA &2     & 6& 37 \\ \Xhline{2\array
 C    & QCN & Breast Cancer        & 4     & 2  &2     & 4& 40  \\ \hline
 D    & DNN & Breast Cancer        & NA    & NA &2     & 6& 37  \\ \hline
 \end{tabular}
-\caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
+
 \label{tab:training models PCA}
 \end{table}
 
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \includegraphics[height=1.9in]{latex/figures/Boston_PCA.pdf}
-        \caption{Lorem ipsum}
-        
-    \end{subfigure}%
-    \hfill 
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \includegraphics[height=1.9in]{latex/figures/Cancer_PCA.pdf}
-        \caption{Lorem ipsum}
-    \end{subfigure}
-    \caption{Caption place holder}
-    \label{fig:}
-\end{figure}
+%\autoref{fig:train PCA} shows the training and test MSE of the models defined in \autoref{tab:training models PCA} as they are fitted to the feature reduced Boston Housing data and Breast Cancer data. Each model is initialized ten times with different parameters, and trained individually for 100 epochs. The resulting MSE is averaged.
 
+%\begin{figure}[H]
+%    \centering
+%    \begin{subfigure}[t]{0.5\textwidth}
+%        \centering
+ %       \includegraphics[height=1.9in]{latex/figures/Boston_PCA.%pdf}
+%        \caption{Lorem ipsum}
+%        
+%    \end{subfigure}%
+%    \hfill 
+%    \begin{subfigure}[t]{0.5\textwidth}
+%        \centering
+%        \includegraphics[height=1.9in]{latex/figures/Cancer_PCA.%pdf}
+%        \caption{Lorem ipsum}
+%    \end{subfigure}
+%    \caption{Caption place holder}
+%    \label{fig:train PCA}
+%\end{figure}
 
+The models defined in \autoref{tab:training models PCA} are trained for 100 epochs, ten times each for different random initializations of parameters.  In \autoref{tab:results PCA}, we see the average minimum training and test MSE for each model obtained during training. In addition, the final average training and test accuracy is included for the models trained on the Breast Cancer data. We see that the training MSE is strictly lower than the test MSE, i.e., both the QCN and DNN does not perform as good on the test set as on the training set. As explained in \autoref{sec:Generalizability}, we know that since the models are optimized with respect to the training set, its performance on the independent test set will always be worse. Comparing the models trained on the Boston Housing data, we see that the QCN has a lower test MSE than the DNN, meaning it generalizes better to unseen data. The same is however not true for the Breast Cancer data, where the QCN obtained almost twice the test MSE compared to the DNN. This indicates that the QCN is struggling to produce the correct labels $y^{(i)} \in \{0, 1\}$ which are the targets of the Breast Cancer data. Hence, both the train and test accuracies are lower for the QCN compared to the DNN. 
 \begin{table}[H]
 \centering
 \caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
@@ -525,7 +531,7 @@ D    & DNN & Breast Cancer        & 0.001/\boldsymbol{$0.032$} & 1.000/\boldsymb
 %================================================================
 \subsection{Hybrid Method}\label{sec:Hybrid Method}
 %================================================================
-
+Using PCA for feature reduction enabled us to train feasibly small QCNs on the data, but in turn, we lost some of the information of the features. To enable us retain all the information of the data and train on all the features, we implement a hybrid model with an initial dense of the type \autoref{eq:FeedforwardSingle}. This layer  
 
 
 \begin{table}[H]
@@ -542,23 +548,23 @@ H    & DNN & Breast Cancer        & NA    & NA&3      & 5& 191  \\ \hline
 \label{tab:training models Hybrid}
 \end{table}
 
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \includegraphics[height=1.9in]{latex/figures/Boston_Hybrid.pdf}
-        \caption{Lorem ipsum}
-        
-    \end{subfigure}%
-    \hfill 
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \includegraphics[height=1.9in]{latex/figures/Cancer_Hybrid.pdf}
-        \caption{Lorem ipsum}
-    \end{subfigure}
-    \caption{Caption place holder}
-    \label{fig:}
-\end{figure}
+%\begin{figure}[H]
+%    \centering
+%    \begin{subfigure}[t]{0.5\textwidth}
+%        \centering
+%        \includegraphics[height=1.9in]{latex/figures/Boston_Hyb%rid.pdf}
+%        \caption{Lorem ipsum}
+%        
+%    \end{subfigure}%
+%    \hfill 
+%    \begin{subfigure}[t]{0.5\textwidth}
+%        \centering
+%        \includegraphics[height=1.9in]{latex/figures/Cancer_Hyb%rid.pdf}
+%        \caption{Lorem ipsum}
+%    \end{subfigure}
+%    \caption{Caption place holder}
+%    \label{fig:}
+%\end{figure}
 
 \begin{table}[H]
 \centering
@@ -573,13 +579,6 @@ H    & DNN & BCD           & 0.000/$\boldsymbol{0.030}$  & 1.000/$\boldsymbol{0.
 \caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
 \label{tab:results PCA}
 \end{table}
-
-
-
-%================================================================
-\subsection{Discussion}\label{sec:Boston Housing Data Discussion}
-%================================================================
-Stuff
 
 %================================================================
 %\section{Regularized Feature Map}\label{sec:Regularized Feature Map}
