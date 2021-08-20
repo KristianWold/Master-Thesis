@@ -162,7 +162,7 @@ Originally inspired by the network structure of the brain(kilde?), artificial ne
 %================================================================
 \subsection{Feedforward}\label{sec:FeedforwardDNN}
 %================================================================
-Dense Neural Networks work by sequentially transforming input data by passing them through one or more \emph{layers}, which each applies a parameterized and often non-linear transformation. The result of the first layer of the neural network can be formulated as
+Dense Neural Networks (DNNs) work by sequentially transforming input data by passing them through one or more \emph{layers}, which each applies a parameterized and often non-linear transformation. The result of the first layer of the neural network can be formulated as
 
 \begin{equation}\label{eq:FeedforwardSingle}
     \boldsymbol{a}^1 = f^1(\boldsymbol{z}^1) = f^1(W^1 \boldsymbol{x} + \boldsymbol{b}^1),
@@ -180,7 +180,18 @@ where $\boldsymbol{a}^{l-1}$ is the activation of the previous layer with the ex
 \end{equation}
 where $\boldsymbol{\theta} = [W^1, \boldsymbol{b}^1, \cdots, W^L,  \boldsymbol{b}^L]$. This defines the whole forward procedure of a neural network, and also highlights the role of the functions $f^l(\cdot)$, often called the \emph{non-linearities}. If set to identity, $f^l(x) = x$, the recursive application of \autoref{eq:FeedforwardDNN} would simply apply repeated affine transformations, which is an affine transformation in itself. In other words, increasing the number of layers would not increase the expressiveness of the network, as all the layers would collapse into a single layer. Therefore, introducing non-linear transformations is necessary to increase the flexibility of the neural network. 
 
-(Write about activation functions)
+%================================================================
+\subsection{Activation Functions}\label{sec:Activation Functions}
+%================================================================
+
+Activation functions are important for introducing nonlinearities to the layers of DNNs, but what are some popular choices from the literature? 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{latex/figures/acti}
+    \caption{}
+    \label{fig:activation function}
+\end{figure}
 
 %================================================================
 \subsection{Backpropagation}\label{sec:BackpropogationDNN}
@@ -228,6 +239,10 @@ The final gradient, over all samples, is then the average of all the single-samp
 \end{equation}
 which can be used to optimize the neural network with a gradient-based method as discussed earlier.
 
+%================================================================
+\subsection{Hyperparameters}\label{sec:Hyperparameters}
+%================================================================
+
 
 %================================================================
 \section{Generalizability}\label{sec:Generalizability}
@@ -268,9 +283,7 @@ An alternative to standardization is min-max scaling, useful for when we want th
 
 \begin{equation}
 \begin{aligned}
-    x_j^{(i)} \rightarrow x_j^{(i)} - \min(x_j)\\
-    x_j^{(i)} \rightarrow x_j^{(i)}/\max(x_j)\\ 
-    x_j^{(i)} \rightarrow (b-a) x_j^{(i)} + a,
+    x_j^{(i)} \rightarrow (b-a)\frac{x_j^{(i)} - \min(x_j)}{\max(x_j) - \min(x_j)} - a\\
 \end{aligned}  
 \end{equation}
 where $\min(x_j)$ and $\max(x_j)$ return the minimum and maximum value of $x_j$ over the data set, respectively.
