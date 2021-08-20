@@ -26,7 +26,7 @@ We start by investigating the magnitude of the gradient of QNNs for different nu
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{latex/figures/vanishing_gradient_QNN.pdf}
-    \caption{Average magnitude of gradients for QNNs with different ansatz repetitons and number of qubits. The QNNs utilize qubit encoding with $R_y$ rotations, the simple ansatz for processing, and parity sampling to derive an output. The QNNs are fed $N=100$ points of uniformly sampled samples, where the number of features is set equal the number of qubits. }
+    \caption{Average magnitude of gradients for QNNs with different ansatz repetitions and number of qubits. The QNNs utilize qubit encoding with $R_y$ rotations, the simple ansatz for processing, and parity sampling to derive an output. The QNNs are fed $N=100$ points of uniformly sampled points, where the number of features is set equal the number of qubits. }
     \label{fig:QNN_vanishing}
 \end{figure}
 
@@ -136,16 +136,16 @@ Moving over to the QCNs, we see from \autoref{fig:FIM Comparison} that the spect
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.5\textwidth}
+    \begin{subfigure}[t]{0.45\textwidth}
         \centering
-        \includegraphics[height=1.9in]{latex/figures/FIM_qubits_4_comparison.pdf}
+        \includegraphics[height=1.8in]{latex/figures/FIM_qubits_4_comparison.pdf}
         \caption{Comparison of the EFIM eigenvalue spectrum for different 4-qubit QNNs and QCNs.}
         \label{fig:FIM QCN a}
     \end{subfigure}%
     ~ 
-    \begin{subfigure}[t]{0.5\textwidth}
+    \begin{subfigure}[t]{0.45\textwidth}
         \centering
-        \includegraphics[height=1.9in]{latex/figures/FIM_qubits_6_comparison.pdf}
+        \includegraphics[height=1.8in]{latex/figures/FIM_qubits_6_comparison.pdf}
         \caption{Comparison of the EFIM eigenvalue spectrum for different 6-qubit QNNs and QCNs.}
         \label{fig:FIM QCN b}
     \end{subfigure}
@@ -337,7 +337,7 @@ L    & DNN & 3D  & NA    & NA&3      & 8& 113  \\ \hline
 \label{tab:training models}
 \end{table}
 
-For the QNNs trained in this section, we will utilize RZZ encoding \autoref{fig:Rzzencoding} in an effort to increase the flexibility of the model. From \autoref{sec:RZZencoding}, we know that the depth of this encoding scales as $\mathcal{O}(p^2)$, where $p$ is the number of features. To get a constant depth across the 1D, 2D and 3D Gaussian data, we will repeat features until all the data sets have the same number of features: For the 1D data, we repeat the one feature three times: $(x_1) \rightarrow (x_1, x_2, x_3)$. For the 2D data, we repeat the first feature once: $(x_1, x_2) \rightarrow (x_1, x_2, x_1)$. The 3D data is left unchanged, since it already has three features. In this way, RZZ encoding prepares similarly complicated encoding for all data sets. 
+For the QNNs trained in this section, we will utilize RZZ encoding \autoref{fig:Rzzencoding} in an effort to increase the flexibility of the model. From \autoref{sec:RZZencoding}, we know that the circuit depth of this encoding scales as $\mathcal{O}(p^2)$, where $p$ is the number of features. To get a constant depth across the 1D, 2D and 3D Gaussian data, we will repeat features until all the data sets have the same number of features: For the 1D data, we repeat the one feature three times: $(x_1) \rightarrow (x_1, x_2, x_3)$. For the 2D data, we repeat the first feature once: $(x_1, x_2) \rightarrow (x_1, x_2, x_1)$. The 3D data is left unchanged, since it already has three features. In this way, RZZ encoding prepares similarly complicated encoding for all data sets. 
 
 
 %================================================================
