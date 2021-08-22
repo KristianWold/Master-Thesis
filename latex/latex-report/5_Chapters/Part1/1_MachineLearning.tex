@@ -4,9 +4,9 @@
 
 This chapter introduces the fundamentals of supervised learning, optimization and neural networks. The content of this chapter is mainly based on the material in \citet{SupervisedwquantumComputers}, \citet{hastie01statisticallearning} and \citet{nielsenneural}.
 
-The goal of \emph{supervised learning}, one of the big branches of machine learning, is to obtain a function for predicting an output $y$ from an input $\boldsymbol{x}$. This is done by learning from input-output pairs $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, known as the training set. The domain of the input and output depends on the specific learning problem. The output y, also called the target or the response, is often either of a quantitative or qualitative character. These two cases constitutes two big paradigms in supervised learning: \emph{regression} and \emph{classification}, respectively. In the case of regression, the goal of the learning task is to predict a real-valued target y from the input $\boldsymbol{x}$. Typical examples of targets to regress on are \emph{temperature}, \emph{weight} and \emph{number of people}, which have in common a natural notion of distance measure in the sense that instances close in numerical value are also close in nature. E.g., two fish weighing $12.1$ kg and $12.2$ kg are similar, while a third fish weighing $24.0$kg is notably different.
+The goal of \emph{supervised learning}, one of the big branches of machine learning, is to obtain a function for predicting an output $y$ from an input $\boldsymbol{x}$. This is done by learning from input-output pairs $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, known as the training set. The domain of the input and output depends on the specific learning problem. The output y, also called the target or the response, is often either of a quantitative or qualitative character. These two cases constitute two big paradigms in supervised learning: \emph{regression} and \emph{classification}, respectively. For regression, the goal of the learning task is to predict a real-valued target y from the input $\boldsymbol{x}$. Typical examples of targets to regress on are \emph{temperature}, \emph{weight} and \emph{number of people}, which have in common a natural notion of distance measure in the sense that instances close in numerical value are also similar in nature. E.g., two fish weighing $12.1$ kg and $12.2$ kg are similar, while a third fish weighing $24.0$kg is notably different.
 
-For classification, the goal is to predict one or more \emph{classes} from an input $\boldsymbol{x}$. In this setting, the target $y$ is discrete and categorical, such as \emph{color}, \emph{dead/alive} and \emph{type of animal}. In contrast to quantitative targets, qualitative targets lack a natural distance measure, in the sense that it is not meaningful to compare the distance between \emph{dog} and \emph{cat}, and \emph{dog} and \emph{seagull}. They are simply mutually exclusive classes.
+For classification, the goal is to predict one or more \emph{classes} from an input $\boldsymbol{x}$. In this setting, the target $y$ is discrete and categorical, such as \emph{color}, \emph{dead/alive} and \emph{animal species}. In contrast to quantitative targets, qualitative targets lack a natural distance measure, in the sense that it is not meaningful to compare the distance between \emph{dog} and \emph{cat}, and \emph{dog} and \emph{seagull}. They are simply mutually exclusive classes.
 
 The input $\boldsymbol{x}$ is a vector consisting of elements $(x_1, \cdots, x_p)$ often called features and predictors. Each feature $x_i$ can either be quantitative or qualitative in the same manner as with the target previously discussed. In this thesis, we will investigate quantitative features $\boldsymbol{x} \in \mathbb{R}^{p}$.
 
@@ -14,7 +14,7 @@ The input $\boldsymbol{x}$ is a vector consisting of elements $(x_1, \cdots, x_p
 %================================================================
 \section{Parametric Models}\label{sec:ParametricModels}
 %================================================================
-The approach of supervised learning often starts by acquiring a training set $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, where $N$ is the number of samples in the training set. This is called labeled data, since the samples of features $\boldsymbol{x}^{(i)}$ are accompanied by the ground truth target $y^{(i)}$(the labels of the samples) that we would like to predict. One often hypothesizes that the acquired training data was produced by some mechanism or process that we can mathematically express as
+The approach of supervised learning often starts by acquiring a training set $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, where $N$ is the number of samples in the training set. This is called labeled data, since the samples of features $\boldsymbol{x}^{(i)}$ are accompanied by the ground truth target $y^{(i)}$ (the labels of the samples) that we want to predict. One often hypothesizes that the acquired training data was produced by some mechanism or process that we can mathematically express as
 
 \begin{equation}\label{eq:data}
     y = f(\boldsymbol{x}) + \epsilon,
@@ -27,7 +27,7 @@ The goal is to approximate the underlying mechanism $f(\boldsymbol{x})$. To do t
     \hat{y} = f(\boldsymbol{x}; \boldsymbol{\theta}),
 \end{equation*}
 
-where $\hat{y}$ is the predicted value, $f(\cdot; \cdot)$ defines a \emph{family} of models, and $\boldsymbol{\theta}$ is a specific vector of parameters that defines a specific model from the family. Training the model involves finding the parameters $\boldsymbol{\theta}$ such that the model best reproduces the target from the features found in the training data set. To quantify what is meant by "best" in this context, it is common to introduce a \emph{loss function} that measures the quality of the model with respect to the training data set:
+where $\hat{y}$ is the predicted value, $f(\cdot; \cdot)$ defines a \emph{family} of models, and $\boldsymbol{\theta}$ is a specific vector of parameters that defines a specific model from the family. Training (or fitting) the model involves finding the parameters $\boldsymbol{\theta}$ such that the model best reproduces the target from the features found in the training data set. To quantify what is meant by "best" in this context, it is common to introduce a \emph{loss function} that measures the quality of the model with respect to the training data set:
 
 \begin{equation}\label{eq:LossFunction}
     L(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^{N} L(f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) , y^{(i)}),
@@ -35,13 +35,35 @@ where $\hat{y}$ is the predicted value, $f(\cdot; \cdot)$ defines a \emph{family
 
 The loss function returns a scalar value that indicates how good your model fits the training data for a particular set of parameters. In general, a lower value indicates a better model. This formulates the task of training the model as an optimization problem. In the next section, we will discuss different ways of training parameterized models, in particular with the use of gradient-based methods.
 
-The choice of loss function is very problem dependent, and there is a vast collection of different choices in the machine learning literature \cite{hastie01statisticallearning}. In this thesis we focus on the popular Mean Squared Error(MSE) when training supervised learning models. This loss function is suitable for regression problems since it implements a natural distance measure between prediction and target. It is formulated as
+%================================================================
+\subsection{Regression}\label{sec:Regression}
+%================================================================
+
+The choice of loss function is highly problem dependent, and there is a vast collection of different choices in the machine learning literature \cite{hastie01statisticallearning}. A common loss function used for training supervised models on regression problems is the Mean Squared Error (MSE). This loss function is suitable since it implements a natural distance measure between prediction and target. It is formulated as
 
 \begin{equation}\label{eq:MSE}
     MSE = \frac{1}{N}\sum_{i=1}^{N} (f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) - y^{(i)})^2.
 \end{equation}
 
-Fitting the model using MSE as loss function is often referred to as the \emph{least squares approach}.
+From this formulation, we see that the closer the predicted targets $\hat{y}^{(i)} = f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$ are to the real targets $y^{(i)}$, the smaller the MSE will be. In other words, a model with lower MSE than some other model fits the data better. Fitting the model using MSE as loss function is often referred to as the \emph{least squares approach}.
+
+%================================================================
+\subsection{Classification}\label{sec:Classifcation}
+%================================================================
+In this thesis, we will be concerned with \emph{binary classification}, where the targets of the data are one of two different classes we want to predict. Typically, the different classes represented by discrete values, such as $y \in \{0,1\}$. Here $0$ and $1$ corresponds to the first and second class, respectively. When parametric models are trained on such discrete labels, by i.e.  minimizing the MSE loss, they tend to produce output values in the range $f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) \in [0,1]$. The continuous value of $f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$ are often interpreted as the probability that sample $\boldsymbol{x}^{(i)}$ belongs to the second class. As an example, say $f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) = 0.8$ for a particular sample $\boldsymbol{x}^{(i)}$. This tells us that it belongs to the second class with $80\%$ probability, and to class $0$ with $20\%$ probability. A class can then be predicted from the  sample by implementing a \emph{threshold value} $c$, such as
+\begin{equation}
+    \hat{y}^{(i)} = I(f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) > c),
+\end{equation}
+where $I()$ returns one if $f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) > c$ is true, and otherwise zero. Typically, a threshold value $c = 0.5$ is used, as this causes the most probable class to be picked  
+
+Whereas MSE can be used to asses how closely regression models fits the data, a more suitable metric for assessing classification models is \emph{accuracy}. The accuracy can be expressed as 
+
+\begin{equation}\label{eq:accuracy}
+    \text{accuracy} = \frac{1}{N}\sum_{i=1}^{N} I(\hat{y}^{(i)} = y^{(i)}).
+\end{equation}
+
+From \autoref{eq:accuracy}, we see that the accuracy of a model is the average numbers of targets it classifies correctly.  
+
 
 %================================================================
 \section{Optimization}\label{sec:Optimization}
@@ -52,7 +74,7 @@ Finding the optimal parameters $\hat{\boldsymbol{\theta}}$ with respect to a cho
     \hat{\boldsymbol{\theta}} = \underset{\boldsymbol{\theta}}{\argmin} \frac{1}{N}\sum_{i=1}^{N} L(f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) , y^{(i)}).
 \end{equation}
 
-This optimization problem is generally not trivial, and depends highly on the choice of loss function and parametric model. Aside from a few exceptions, like the case of linear regression, \autoref{eq:Optimization} does not generally have an analytical solution. More over, many popular parametric models result in non-convex optimisation problems, meaning the \emph{loss landscape} exhibit several local minima. In practice, such optimization problems can't be solved efficiently \cite{Vava:book}. However, it is important to realize that an exact, or close to exact, minimization of the loss function is seldom needed or even favourable. What is ultimately interesting is whether the trained model has sufficient ability to predict. Over the years, several cheap and approximate methods for optimization have been invented to train machine learning models. We will discuss two such methods that implement gradient-based optimization. 
+This optimization problem is generally not trivial, and depends highly on the choice of loss function and parametric model. Aside from a few exceptions, like the case of linear regression, \autoref{eq:Optimization} does not generally have an analytical solution. Moreover, many popular parametric models result in non-convex optimization problems, meaning the \emph{loss landscape} exhibit several local minima. In practice, such optimization problems can't be solved efficiently \cite{Vava:book}. However, it is important to realize that an exact, or close to exact, minimization of the loss function is seldom needed or even favorable. What is ultimately interesting is whether the trained model has sufficient ability to predict. Over the years, several cheap and approximate methods for optimization have been invented to train machine learning models. We will discuss two such methods that implement gradient-based optimization. 
 
 %================================================================
 %\subsection{Matrix Inversion}\label{sec:MatrixInvertion}
@@ -86,7 +108,7 @@ In the absence of an analytical expression that minimizes the loss function, \em
     \frac{1}{N}\sum_{i=1}^{N} \frac{\partial}{\partial \hat{y}^{(i)}} L( \hat{y}^{(i)}, y^{(i)})
     \frac{\partial}{\partial \boldsymbol{\theta}_k}\hat{y}^{(i)}
 \end{equation}
-where $\boldsymbol{\theta}_k$ is the k'th model parameter, and  $\hat{y}^{(i)} = f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$. To arrive at this expression, the chain rule was used under the assumption that the loss function $L(\hat{y}^{(i)}, y^{(i)})$ and model output $\hat{y}^{(i)}$ are differentiable with respect to $\hat{y}^{(i)}$ and $\boldsymbol{\theta}_k$, respectively. Notice that the derivative is calculated with respect to the entire training set, i.e. the whole \emph{batch}, hence the name. The gradient is then constructed simply as a vector quantity containing the derivatives with respect to each model parameter:
+where $\boldsymbol{\theta}_k$ is the k'th model parameter, and  $\hat{y}^{(i)} = f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$. To arrive at this expression, the chain rule was used under the assumption that the loss function $L(\hat{y}^{(i)}, y^{(i)})$ and model output $\hat{y}^{(i)}$ are differentiable with respect to $\hat{y}^{(i)}$ and $\boldsymbol{\theta}_k$, respectively. Note that the derivative is calculated with respect to the entire training set, i.e. the whole \emph{batch}, hence the name. The gradient is then constructed simply as a vector quantity containing the derivatives with respect to each model parameter:
 
 \begin{equation}\label{eq:Gradient}
     \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta})= 
@@ -100,9 +122,9 @@ The gradient \autoref{eq:Gradient} can be geometrically interpreted as the direc
 \begin{equation}\label{eq:ParameterUpdate}
     \boldsymbol{\theta}_{t} = \boldsymbol{\theta}_{t-1} - \mu \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta}_{t-1})
 \end{equation}
-for $t=1, \cdots, T$. Here, $T$ is the total number of iterations, and $\mu$ is some small positive value, often called the \emph{learning rate}. Usually, some initial choice of parameters $\boldsymbol{\theta}_{0}$ is chosen at random. The proceeding recalculation of the gradient and repeated adjustment of the parameters result in a gradual descent in the the loss landscape, analogous to walking down a mountain. This is the heart of gradient descent.
+for $t=1, \cdots, T$. Here, $T$ is the total number of iterations, and $\mu$ is some small positive value, often called the \emph{learning rate}. Usually, some initial choice of parameters $\boldsymbol{\theta}_{0}$ is chosen at random. Analogous to walking down a mountain, the proceeding recalculation of the gradient and repeated adjustment of the parameters result in a gradual descent in the loss landscape. This is the heart of gradient descent.
 
-Even though batch gradient descent is intuitively simple and sometimes sufficiently effective for training some models, it has several flaws that should be addressed when suggesting better methods of optimization. A common problem with batch gradient descent is that optimization can have a tendency of getting stuck in local minima, as only local information in the loss landscape is used when updating the parameters. In addition, the presence of \emph{plateaus}, areas of particular flatness in the loss landscape, tend to induce slow convergence. The two aforementioned phenomena is illustrated in \autoref{fig:localMinima}. Further more, the presence of high degree of distortions in certain directions in parameter space, so called  \emph{thin valleys}, can lead to oscillations and inefficient optimization. This is exemplified in \autoref{fig:thinValley}. We will discuss how the particularly popular \emph{Adam optimizer}, which was used in this thesis, addresses these problems. 
+Even though batch gradient descent is intuitively simple and sometimes sufficiently effective for training some models, it has several flaws that should be addressed when suggesting better methods of optimization. A common problem with batch gradient descent is that optimization has a tendency of getting stuck in local minima, as only local information in the loss landscape is used when updating the parameters. In addition, the presence of \emph{plateaus}, areas of particular flatness in the loss landscape, tend to induce slow convergence. The two aforementioned phenomena are illustrated in \autoref{fig:localMinima}. Further more, the presence of high degree of distortions in certain directions in parameter space, so called  \emph{thin valleys}, can lead to oscillations and inefficient optimization. This is exemplified in \autoref{fig:thinValley}. We will discuss how the popular \emph{Adam optimizer}, which was used in this thesis, addresses these problems. 
 
 
 \begin{figure}[htp]
@@ -148,50 +170,37 @@ $\theta_t \gets \theta_{t-1} - \alpha \hat{m}_t/(\sqrt{\hat{v}_t} + \epsilon)$
 \caption{\emph{Adam}, \cite{kingma2017adam}. The authors suggest default hyperparameters $\alpha = 0.001$, $\beta_1 = 0.9$, $\beta_2 = 0.999$ and $\epsilon = 10^{-8}$. The algorithm is applied parameter-wise.}
 \end{algorithm}
 
-\autoref{alg:Adam} updates moving averages of the gradient $m_t$ and its square $v_t$, picking up information about the gradient from earlier update events. In particular, if the gradient tend to flip sign for certain directions, the averaging over previous iterations tends to dampen these oscillations. Likewise, directions of persistent sign tends to accumulate magnitude, making the optimisation gain "momentum" in these directions. This is a good property for overcoming thin valleys and plateaus. Also, the effect of momentum may also help avoid getting stuck in local minima by gracing over them. Further, the moving average of the gradient and its square is rendered unbiased as $\hat{m}_t = m_t/(1-\beta_1)$ and $\hat{v}_t = v_t/(1-\beta_2)$. Since the averages are initialized as zero, they are biased downward. Finally, the parameters are shifted by the quantity $\alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}$. Here, the rescaling term $\sqrt{\hat{v}_t}$ serves to decrease the step size in directions where the gradient has a large magnitude and increase it where it is small. This effectively implements a variable learning rate for each direction, depending on whether big or small steps are needed. 
+\autoref{alg:Adam} updates moving averages of the gradient $m_t$ and its square $v_t$, picking up information about the gradient from earlier update events. In particular, if the gradient tends to flip sign in certain directions, the averaging over previous iterations tends to dampen these oscillations. Likewise, directions of persistent sign tend to accumulate magnitude, making the optimisation gain "momentum" in these directions. This property helps the model overcoming thin valleys and plateaus. Also, the effect of momentum may also avoid getting stuck in local minima by gracing over them. Further, the moving average of the gradient and its square is rendered unbiased as $\hat{m}_t = m_t/(1-\beta_1)$ and $\hat{v}_t = v_t/(1-\beta_2)$. Since the averages are initialized as zero, they are biased downward. Finally, the parameters are shifted by the quantity $\alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}$. Here, the rescaling term $\sqrt{\hat{v}_t}$ serves to decrease the step size in directions where the gradient has a large magnitude and increase it where it is small. This effectively implements a variable learning rate for each direction, depending on whether big or small steps are needed. 
 
-Adam is a hugely successful algorithm for optimizing machine learning models. In popular machine learning frames such as scikit-learn \cite{scikit-learn} and pyTorch \cite{pytorch}, it is a default optimizer. Lately, Adam has also been used for optimizing quantum machine learning models \cite{abbas2020power, skolik2020layerwise}. Pointed out by its authors, Adam requires very little tuning of hyper-parameters to be efficient, making attractive and easy to use. Adam is also suited for noisy gradients, which will be relevant for the work in this thesis. 
-
-
+Adam is a highly successful algorithm for optimizing machine learning models. In popular machine learning frames such as scikit-learn \cite{scikit-learn} and pyTorch \cite{pytorch}, it is a default optimizer. Lately, Adam has also been used for optimizing quantum machine learning models \cite{abbas2020power, skolik2020layerwise}. As pointed out by its authors, Adam requires very little tuning of hyperparameters to be efficient, making attractive and easy to use. Adam is also suited for noisy gradients, which will be relevant for the work in this thesis. 
 
 %================================================================
 \section{Dense Neural Network}\label{sec:DenseNeuralNetwork}
 %================================================================
-Originally inspired by the network structure of the brain(kilde?), artificial neural networks are powerful parameterized machine learning models that have proved to extremely useful for a vast number of applications. Over the years, a comprehensive collection of different network architectures have been developed to target specific problems, such as \emph{Recurrent Neural Networks} for predicting time series data and \emph{Convolutional Neural Networks} for image classification. In this thesis, we focus on \emph{Dense Neural Networks}, which is a type of simple \emph{feedforward network}, meaning the information is processed in a forward fashion without any loops that direct information backwards.
+Originally inspired by the network structure of the brain(kilde?), artificial neural networks are powerful parameterized machine learning models that have proven extremely useful for a vast number of applications. Over the years, a comprehensive collection of different network architectures has been developed to target specific problems, such as \emph{Recurrent Neural Networks} for predicting time series data and \emph{Convolutional Neural Networks} for image classification. In this thesis, we focus on \emph{Dense Neural Networks}, which is a type of simple \emph{feedforward network}, meaning the information is processed in a forward fashion without any loops that direct information backwards.
 
 %================================================================
 \subsection{Feedforward}\label{sec:FeedforwardDNN}
 %================================================================
-Dense Neural Networks (DNNs) work by sequentially transforming input data by passing them through one or more \emph{layers}, which each applies a parameterized and often non-linear transformation. The result of the first layer of the neural network can be formulated as
+Dense Neural Networks (DNNs) work by sequentially transforming input data by passing them through one or more \emph{layers}, which each applies a parameterized and often nonlinear transformation. The result of the first layer of the neural network can be formulated as
 
 \begin{equation}\label{eq:FeedforwardSingle}
     \boldsymbol{a}^1 = f^1(\boldsymbol{z}^1) = f^1(W^1 \boldsymbol{x} + \boldsymbol{b}^1),
 \end{equation}
-Here, $\boldsymbol{x} \in \mathbb{R}^p$ is a single sample of $p$ features. $W^1 \in \mathbb{R}^{m \times p}$ and $\boldsymbol{b}^1 \in \mathbb{R}^{m}$ are a matrix and a vector of parameters called the \emph{weights} and \emph{biases}, respectively. The operations $W^1 \boldsymbol{x} + \boldsymbol{b}^1$ applies an affine transformation of the features resulting in $m$ new derived features, each identified as a \emph{node} in the specific layer. Further, $f^1(\cdot)$ is a layer-specific function, often monotonous and non-linear, applied element-wise on the derived features. This finally results in the output of the layer, $\boldsymbol{a}^1$, called the \emph{activation}.
+Here, $\boldsymbol{x} \in \mathbb{R}^p$ is a single sample of $p$ features. $W^1 \in \mathbb{R}^{m \times p}$ and $\boldsymbol{b}^1 \in \mathbb{R}^{m}$ are a matrix and a vector of parameters called the \emph{weights} and \emph{biases}, respectively. The operations $W^1 \boldsymbol{x} + \boldsymbol{b}^1$ apply an affine transformation of the features resulting in $m$ new derived features, each identified as a \emph{node} in the specific layer. Further, $f^1(\cdot)$ is a layer-specific function, often monotonous and nonlinear, applied element-wise on the derived features. This finally results in the output of the layer, $\boldsymbol{a}^1$, called the \emph{activation}.
 
-We will now generalize \autoref{eq:FeedforwardSingle} to an arbitrary layer. For a neural network with $L$ layers, the feedforward procedure for layer $l$  can be formulated as 
+We will now generalize \autoref{eq:FeedforwardSingle} to an arbitrary layer. For a neural network with $L$ layers, the feedforward procedure for layer $l$ can be formulated as 
 
 \begin{equation}\label{eq:FeedforwardDNN}
-    \boldsymbol{a}^l = f^l(\boldsymbol{z}^l) = f^1(W^l \boldsymbol{a^{l-1}} + \boldsymbol{b}^l),
+    \boldsymbol{a}^l = f^l(\boldsymbol{z}^l) = f^l(W^l \boldsymbol{a^{l-1}} + \boldsymbol{b}^l),
 \end{equation}
 where $\boldsymbol{a}^{l-1}$ is the activation of the previous layer with the exception $\boldsymbol{a}^{0} = \boldsymbol{x}$. The output of the network is then the activation of the last layer, namely 
 \begin{equation}\label{eq:DNN}
     \hat{y} = f_{DNN}(x;\boldsymbol{\theta}) = \boldsymbol{a}^{L},
 \end{equation}
-where $\boldsymbol{\theta} = [W^1, \boldsymbol{b}^1, \cdots, W^L,  \boldsymbol{b}^L]$. This defines the whole forward procedure of a neural network, and also highlights the role of the functions $f^l(\cdot)$, often called the \emph{non-linearities}. If set to identity, $f^l(x) = x$, the recursive application of \autoref{eq:FeedforwardDNN} would simply apply repeated affine transformations, which is an affine transformation in itself. In other words, increasing the number of layers would not increase the expressiveness of the network, as all the layers would collapse into a single layer. Therefore, introducing non-linear transformations is necessary to increase the flexibility of the neural network. 
+where $\boldsymbol{\theta} = [W^1, \boldsymbol{b}^1, \cdots, W^L,  \boldsymbol{b}^L]$. Using the recursive relation \autoref{eq:FeedforwardDNN}, one is free the choose an arbitrary number of layers, and nodes for each layer, so long that the dimension of the input of one layer matches the shape out the output of the preceding. Typically, the initial input $\boldsymbol{a}^0 = \bold{x}$ is called the input layer, while the last layer $\boldsymbol{a}^L$ is called the output layer. All intermediate layers are called \emph{hidden layers}, since we usually don't observe the internal transformations a neural network does.
 
-%================================================================
-\subsection{Activation Functions}\label{sec:Activation Functions}
-%================================================================
-
-Activation functions are important for introducing nonlinearities to the layers of DNNs, but what are some popular choices from the literature? 
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=10cm]{latex/figures/acti}
-    \caption{}
-    \label{fig:activation function}
-\end{figure}
+\autoref{eq:FeedforwardDNN} and \autoref{eq:DNN} defines the whole forward procedure of a neural network, and also highlights the role of the functions $f^l(\cdot)$, often called the \emph{nonlinearities}. If set to identity, $f^l(x) = x$, the recursive application of \autoref{eq:FeedforwardDNN} would simply apply repeated affine transformations, which is an affine transformation in itself. In other words, increasing the number of layers would not increase the expressiveness of the network, as all the layers would collapse into a single layer. Therefore, introducing nonlinear transformations is necessary to increase the flexibility of the neural network. 
 
 %================================================================
 \subsection{Backpropagation}\label{sec:BackpropogationDNN}
@@ -240,17 +249,28 @@ The final gradient, over all samples, is then the average of all the single-samp
 which can be used to optimize the neural network with a gradient-based method as discussed earlier.
 
 %================================================================
-\subsection{Hyperparameters}\label{sec:Hyperparameters}
+\subsection{Activation Functions}\label{sec:Activation Functions}
 %================================================================
+
+Activation functions are important for introducing nonlinearities to the layers of DNNs, but what are some popular choices from the literature? A comprehensive list can be found in \autoref{fig:activations}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=12cm]{latex/figures/activations.png}
+    \caption{List of popularly used activation functions for DNNs and other neural networks. The figure is retrieved from \citet{DBLP:journals/corr/abs-2105-04026}.}
+    \label{fig:activation function}
+\end{figure}
+
+In this thesis, we will be mainly concerned with the activation functions \emph{linear}, \emph{sigmoid} and \emph{tanh}. The linear activation function, or identity function, applies no transformation to the output $W^l \boldsymbol{a}^{l-1} + \boldsymbol{b}^l$. This activation function is usually applied to the output layer only, and is useful when we don't want to transform the final output of the DNN into any particular shape. This is usually the case for regression, where the targets we want to predict can be any real value. The sigmoid activation function constraints the output to be in the interval $a^l \in [0, 1]$. This activation is often used on the output layer when doing classification, as the target labels are (in the binary case) $y \in \{0,1\}$. For all hidden layers, we will use tanh activation. This choice is discussed in \autoref{sec:Configuring QCNs and DNNs}. 
 
 
 %================================================================
 \section{Generalizability}\label{sec:Generalizability}
 %================================================================
-If we obtain a low loss on the training data after fitting a model, can we assume that the resulting model is good and useful? It depends on what we want to use the model for, but if we want to use the model for predicting on new data (data that was not seen during training), we often don't want train the model too much. As explained earlier, the main goal of a model is to approximate the underlying mechanism $f(\boldsymbol{x})$ of \autoref{eq:data} producing the data. If the model fits the data too hard, it might also pick up details of the noise $\epsilon$ in the training data, which is called \emph{overfitting}. The problem with this is that if we gather a new data set, a \emph{test set} $y' = f(\boldsymbol{x}) + \epsilon'$, the noise $\epsilon'$ will be different from the noise in the training data because of its random nature. Since the overfitted model is very affected by the noise in the training data, it will likely perform badly on new data where the noise is different, even though its performance on the training data is good. Typically, the more complex and flexible a model is, the more likely it is to overfit the training data. This is because it has a greater capacity to fit the noise present in the training data. By restricting the complexity of the model, one often ends up with a model that resembles $f(\boldsymbol{x})$ more closely. In turn, this results in a model
-that \emph{generalizes} better, which means that it makes accurate predictions on values of $\boldsymbol{x}$ not seen in the training set. On the other hand, if the model is not complex enough, it might not be sufficiently flexible to recreate $f(\boldsymbol{x})$, causing \emph{underfitting}.
+If we obtain a low loss on the training data after fitting a model, can we assume that the resulting model is good and useful? It depends on what we want to use the model for, but if we want to use the model for predicting on new data (data that was not seen during training), we often don't want train the model too much. As explained earlier, the main goal of a model is to approximate the underlying mechanism $f(\boldsymbol{x})$ of \autoref{eq:data} producing the data. If the model fits the data too hard, it might also pick up details of the noise $\epsilon$ in the training data, which is called \emph{overfitting}. The problem with this is that if we gather a new data set, a \emph{test set} $y' = f(\boldsymbol{x}) + \epsilon'$, the noise $\epsilon'$ will be different from the noise in the training data because of its random nature. Since the overfitted model is very affected by the noise in the training data, it will likely perform poorly on new data where the noise is different, even though it performs well on the training data. Typically, the more complex and flexible a model is, the more likely it is to overfit the training data. This is because it has a greater capacity to fit the noise present in the training data. By restricting the complexity of the model, one often ends up with a model that resembles $f(\boldsymbol{x})$ more closely. In turn, this results in a model
+that \emph{generalizes} better, which means that it makes accurate predictions on values of $\boldsymbol{x}$ not present in the training set. On the other hand, if the model is not complex enough, it might not be sufficiently flexible to recreate $f(\boldsymbol{x})$, causing \emph{underfitting}.
 
-To uncover overfitting, it is standard procedure to prepare independent training and test sets $\mathcal{T}_{Train}$ and $\mathcal{T}_{Test}$, and train the model on the former set and test its performance on the latter. The behaviour of the prediction error, e.g. MSE, on the training and test set is expected to behave as in \autoref{fig:train_test}. For models that are optimized iterativly, like neural networks, "model complexity" can be associated with the number of optimization steps. For increasing number of steps, the training error is strictly decreasing, since it is the purpose of training to reduce this quantity. However, the test error has a minimum for which the model shows best generalization. Training beyond this point cause overfitting, increasing the test error. 
+To uncover overfitting, the standard procedure is to prepare independent training and test sets $\mathcal{T}_{Train}$ and $\mathcal{T}_{Test}$, and train the model on the former set and test its performance on the latter. The behaviour of the prediction error, e.g. MSE, on the training and test set is expected to behave as in \autoref{fig:train_test}. For models that are optimized iterativly, like neural networks, "model complexity" can be associated with the number of optimization steps. For increasing number of steps, the training error is strictly decreasing, since it is the purpose of training to reduce this quantity. However, the test error has a minimum for which the model shows best generalization. Training beyond this point cause overfitting, increasing the test error. 
 
 \begin{figure}[H]
     \centering
@@ -268,7 +288,7 @@ In this section, we will discuss common techniques for preparing and processing 
 %================================================================
 \subsection{Scaling Features}\label{sec:Scaling Features}
 %================================================================
-For data sets gathered for real world applications, it is often the case that the different features have very different units and numerical scales. E.g., a data set detailing health habits may include features such as \emph{age} in the range $0-80$, and \emph{caloric intake} of order $2000$. Many models, such as neural networks, are sensitive to the scales of the of the features and may perform badly if they are very different \cite{hands-on}. Therefore, it is typical to scale the features in a way that bring a them to roughly the same scale. 
+For data sets gathered for real world applications, it is often the case that the different features have very different units and numerical scales. E.g., a data set detailing health habits may include features such as \emph{age} in the range $0-80$, and \emph{caloric intake} of order $2000$. Many models, such as neural networks, are sensitive to the scales of the of the features and may perform poorly if they are very different \cite{hands-on}. Therefore, it is typical to scale the features in a way that bring a them to roughly the same scale. 
 
 \subsubsection*{Standardization}
 For neural networks of the type presented in \autoref{sec:DenseNeuralNetwork}, features are often scaled using standardization to improve performance \cite{LeCun2012}. Mathematically, this involves subtracting the mean and divide by the standard deviation over the data set, for each feature:
