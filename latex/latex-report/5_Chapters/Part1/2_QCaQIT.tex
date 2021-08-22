@@ -7,7 +7,7 @@ This chapter introduces the fundamentals of quantum computing. The content of th
 %================================================================
 \section{States in Quantum Mechanics}\label{sec:IntroQM}
 %===============================================================
-In quantum mechanics, isolated physical systems are completely described by its \emph{state vector}, which lives in a complex vector space. In this thesis, we will focus on finite vector spaces $\mathbb{C}^n$, where states are n-tuples of complex numbers $(z_1, \cdots, z_n)$ called \emph{amplitudes}. Adopting Dirac notation, a state is denoted as 
+In quantum mechanics, isolated physical systems are described completely by its \emph{state vector}, which lives in a complex vector space. In this thesis, we will focus on finite vector spaces $\mathbb{C}^n$, where states are n-tuples of complex numbers $(z_1, \cdots, z_n)$ called \emph{amplitudes}. Adopting Dirac notation, a state is denoted as 
 \begin{equation}
     \ket{\psi} \sim \begin{bmatrix}
            z_{1} \\
@@ -41,33 +41,33 @@ where $z^*$ indicates the complex conjugate, i.e. if $z = a + ib$, we have that 
 %================================================================
 \subsection{The Qubit}\label{sec:TheQubit}
 %===============================================================
-As is common in quantum computing, we will be focusing on perhaps the simplest possible quantum system, the \emph{qubit}, which is a two-level system defined on $\mathbb{C}^2$.  There are multiple ways of implementing qubits in hardware, some of which will be discussed later, although  the specific physical realization is not necessary to account for when discussing quantum computing. In abstract terms, the state of a qubit can be formulated as
+As is common in quantum computing, we will focus on perhaps the simplest possible quantum system, the \emph{qubit}, which is a two-level system defined on $\mathbb{C}^2$.  There are multiple ways of implementing qubits in hardware, some of which will be discussed later, although  the specific physical realization is not necessary to account for when discussing quantum computing. In abstract terms, the state of a qubit can be formulated as
 
 \begin{equation}
 \ket{\psi} = \alpha \ket{0} + \beta \ket{1},
 \end{equation}
-where $\alpha$ and $\beta$ are complex numbers, and $\ket{0}$ and $\ket{1}$ are orthonormal states known as the \emph{computational basis states} and are specially defined by the implementation of the hardware. This linear combination of states is an important principle of quantum mechanics and is called \emph{superposition}; the system is in neither state $\ket{0}$ nor $\ket{1}$, but both at the same time(unless either $\alpha$ or $\beta$ is zero). In general, if states $\ket{\psi}$ and $\ket{\phi}$ are allowed, then so is the linear combination $\alpha \ket{\psi} + \beta \ket{\phi}$, where $|\alpha|^2 + |\beta|^2 = 1$.
+where $\alpha$ and $\beta$ are complex numbers, and $\ket{0}$ and $\ket{1}$ are orthonormal states known as the \emph{computational basis states} and are defined by the implementation of the hardware. This linear combination of states is an important principle of quantum mechanics and is called \emph{superposition}; the system is in neither state $\ket{0}$ nor $\ket{1}$, but both at the same time(unless either $\alpha$ or $\beta$ is zero). In general, if states $\ket{\psi}$ and $\ket{\phi}$ are allowed, then so is the linear combination $\alpha \ket{\psi} + \beta \ket{\phi}$, where $|\alpha|^2 + |\beta|^2 = 1$.
 
-Being the "atom" of quantum computing, the qubit is very reminiscent of the classical bit, which is always definitely "0" or "1". However, as we have seen, the qubit also may assume any normalized linear combination of the two states.
+Being the "atom" of quantum computing, the qubit is reminiscent of the classical bit, which is always definitely "0" or "1". However, as we have seen, the qubit also may assume any normalized linear combination of the two states.
 %================================================================
 \subsection{Multiple Qubits}\label{sec:Multiple Qubits}
 %===============================================================
-As a central property of quantum mechanics, it is possible to create composit systems by combining several smaller quantum systems. This can be used to construct systems of multiple qubits, whose state can be expressed, if the qubits are independent, as
+As a central property of quantum mechanics, it is possible to create composit systems by combining several smaller quantum systems. This can be used to construct systems of multiple qubits, whose collective state can be expressed, if the qubits are independent, as
 
 \begin{equation}\label{eq:tensorProductState}
 \ket{\psi_1 \psi_2 \cdots \psi_n} \equiv \ket{\psi_1} \otimes \ket{\psi_2} \otimes \cdots \ket{\psi_n}.
 \end{equation}
-Here, the tensor product "$\otimes$" was used to indicate that each state $\ket{\psi_i}$ lives in its own $\mathbb{C}^2$ space. Using the principle of superpostion, one may make a linear combination of several multi-qubit states, where each $\ket{\psi_i}$ is either $\ket{0}$ or $\ket{1}$. In general, this can be written as
+Here, the tensor product "$\otimes$" was used to indicate that each state $\ket{\psi_i}$ lives in its own $\mathbb{C}^2$ space. Using the principle of superposition, one may make a linear combination of several multi-qubit states, where each $\ket{\psi_i}$ is either $\ket{0}$ or $\ket{1}$. In general, this can be written as
 
 \begin{equation}\label{eq:MultiQubitState}
 \ket{\psi} = \sum_{\boldsymbol{v}}c_{\boldsymbol{v}}\ket{\boldsymbol{v}_1} \otimes \ket{\boldsymbol{v}_2} \otimes \cdots \ket{\boldsymbol{v}_n},
 \end{equation}
-where $\boldsymbol{v} \in \{0,1\}^n$ sums over all possible binary strings of length $n$. As there are $2^n$ unique strings, we arrive at the remarkable result that one also needs $2^n$ amplitudes $c_{\boldsymbol{v}}$ to describe the state of $n$ qubits in general. In other words, the information stored in the quantum state of $n$ qubits in exponential in $n$, as opposed to the linear information of a equivalent classical system of classical bits. In a sense, the quantum information is "larger" than the classical information. This is a fascinating property of the  capabilities of quantum computing, which we will return to when discussing the usefulness of quantum computing in relation to machine learning.
+where $\boldsymbol{v} \in \{0,1\}^n$ sums over all possible binary strings of length $n$. As there are $2^n$ unique strings, we arrive at the remarkable result that one also needs $2^n$ amplitudes $c_{\boldsymbol{v}}$ to describe the state of $n$ qubits in general. In other words, the information stored in the quantum state of $n$ qubits is exponential in $n$, as opposed to the linear information of an equivalent classical system of classical bits. In a sense, the quantum information is "larger" than the classical information. This is a fascinating property of the  capabilities of quantum computing, which we will return to when discussing the usefulness of quantum computing in relation to machine learning.
 
 %================================================================
 \subsection{Measuring Qubits}\label{sec:MeasuringState}
 %===============================================================
-It appears the information encoded in quantum systems is much greater than the information in a corresponding classical system, at least in the case of qubits versus bits. How can one interact with this information? Unlike classical bits, whose state can always be measured exactly, the state of one or multiple qubits can not be measured and determined. Returning to the single qubit example, one can choose to perform a measurement in the computational basis on a qubit in the state $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$. The measurement will result in  \emph{either} $\ket{0}$ \emph{or} $\ket{1}$, with probability $|\alpha|^2$ and $|\beta|^2$, respectively. For multiple qubits in a general state \autoref{eq:MultiQubitState}, a measurement on all qubits will grant a state in the computational basis, i.e. $\ket{\boldsymbol{v}_1} \otimes \ket{\boldsymbol{v}_2} \otimes \cdots \ket{\boldsymbol{v}_n}$ for some binary string $\boldsymbol{v} \in \{0,1\}^n$, with probability $|c_{\boldsymbol{v}}|^2$. This motivates why states in quantum mechanics needs to have unity norm, i.e
+It appears the information encoded in quantum systems is much greater than the information in a corresponding classical system, at least in the case of qubits versus bits. How can one interact with this information? Unlike classical bits, whose state can always be measured exactly, the state of one or multiple qubits cannot be measured and determined. Returning to the single qubit example, one can choose to perform a measurement in the computational basis on a qubit in the state $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$. The measurement will result in  \emph{either} $\ket{0}$ \emph{or} $\ket{1}$, with probabilities $|\alpha|^2$ and $|\beta|^2$, respectively. For multiple qubits in a general state \autoref{eq:MultiQubitState}, a measurement on all qubits will grant a state in the computational basis, i.e. $\ket{\boldsymbol{v}_1} \otimes \ket{\boldsymbol{v}_2} \otimes \cdots \ket{\boldsymbol{v}_n}$ for some binary string $\boldsymbol{v} \in \{0,1\}^n$, with probability $|c_{\boldsymbol{v}}|^2$. This motivates why states in quantum mechanics need to have unity norm, i.e
 \begin{equation}\label{eq:MultiQubitState}
 \sum_{\boldsymbol{v}}|c_{\boldsymbol{v}}|^2 = 1,
 \end{equation} 
@@ -76,21 +76,21 @@ as the probabilities of any outcome must sum to $1$.
 %================================================================
 \section{Quantum Circuits}\label{sec:QuantumCircuits}
 %===============================================================
-We have until now looked into how quantum states can encode information, and how information can be interacted with via measurement. How then can quantum mechanics be used for computation? To do computations, it is necessary to introduce some dynamical transformation of the quantum state. In quantum mechanics, transformations can be formulated as 
+We have discussed how quantum states can encode information, and how to interact with information through measuring the state. How then can quantum mechanics be used for computation? In order to perform computations, it is necessary to introduce some dynamical transformation of the quantum state. In quantum mechanics, transformations can be formulated as 
 
 \begin{equation}\label{eq:UnitaryEvolution}
  \ket{\phi} = U\ket{\psi},
 \end{equation}
-where $U$ is a \emph{unitary} operator that acts on the vector space where $\ket{\psi}$ and $\ket{\phi}$ lives. Unitary means that the operator $U$ is linear with the property that $U^{\dagger} = U^{-1}$, that is, the Hermitian conjugate is equal to its inverse. This is a necessary property of linear operators in quantum mechanics as to ensure that the state stays normalized to 1:
+where $U$ is a \emph{unitary} operator that acts on the vector space where $\ket{\psi}$ and $\ket{\phi}$ live. "Unitary" means that the operator $U$ is linear with the property that $U^{\dagger} = U^{-1}$, that is, the Hermitian conjugate is equal to its inverse. This is a necessary property of linear operators in quantum mechanics as to ensure that the state stays normalized to 1:
 
 \begin{equation}\label{eq:UnitaryEvolution}
  \braket{\phi}{\phi} = \bra{\psi}\underset{I}{\underbrace{U^{\dagger}U}}\ket{\psi} = \bra{\psi}\ket{\psi} =1.
 \end{equation}
 Assuming $\ket{\psi}$ is initially normalized, so is $\ket{\phi}$ after a unitary transformation.
 
-By construction, quantum computers allow for the application of carefully selected sequences of operators that transforms the state in a desired way, often called a \emph{quantum circuit}. Typical operators used in quantum computing, often called quantum gates, act on either on one or multiple qubits, and bear resemblance to logical operations in the classical context. 
+By construction, quantum computers allow for the application of carefully selected sequences of operators that transforms the state in a desired way, often called a \emph{quantum circuit}. Typical operators used in quantum computing, often called quantum gates, act on one or multiple qubits, and are analogous to logical operations in the classical context. 
 
-\autoref{fig:exampleCircuit} illustrates an example of a quantum circuit. Going from left to right indicates the chronological order of application of the different quantum gates. Note that the exact passing of time is not seen in this schematic, and is highly dependent on the implementation of physical hardware. The horizontal lines, called wires, each symbolize a qubit. From the notation on the left hand, it can be seen that all qubits are initialized in the zero state. Then, various gates are applied to the qubits, acting on one, two or three qubits. Lastly, illustrated by the gauge symbol, each qubit is measured in the computational basis, yielding either $0$ or $1$. This information is then stored in the classical register $c$, indicated by the double line. 
+\autoref{fig:exampleCircuit} illustrates an example of a quantum circuit. Going from left to right indicates the chronological order of application of the different quantum gates. Note that the exact passing of time is not shown in this schematic, and is highly dependent on the implementation of physical hardware. The horizontal lines, called wires, each symbolize a qubit. The qubits are initialized in the zero state, as shown by the notation on the left-hand side. Then, various gates are applied to the qubits, acting on one, two or three qubits. Lastly, illustrated by the gauge symbol, each qubit is measured in the computational basis, yielding either $0$ or $1$. This information is then stored in the classical register $c$, indicated by the double line. 
 
 \begin{figure}[htp]
     \centering
@@ -127,7 +127,7 @@ Likewise, linear operators acting on a single qubit can in general be represente
         c_{21} & c_{22}
     \end{bmatrix},
 \end{equation}
-which is unitary. A highly interesting single qubit quantum gate is the Hadamard gate, which is formulated as 
+which is unitary. A particularly interesting single qubit quantum gate is the Hadamard gate, which is formulated as 
 
 \begin{equation}\label{eq:matrixRepresentation}
     H = \frac{1}{\sqrt{2}}\begin{bmatrix}
@@ -141,12 +141,12 @@ Acting on the computational basis, the Hadamard gate can be seen to produce supe
     H\ket{0} = \frac{1}{\sqrt{2}}\ket{0} +\frac{1}{\sqrt{2}}\ket{1}\\
     H\ket{1} = \frac{1}{\sqrt{2}}\ket{0} -\frac{1}{\sqrt{2}}\ket{1},
 \end{align*}
-which will lead to a $50\%$ chance to yield either $0$ or $1$ upon measuring. In a sense, this is the quantum mechanical equivalent to a coin toss. However, it is actually much more interesting. If applied a second time, we actually return to the original state, "unscrambling" the coin, or qubit:
+which gives a $50\%$ chance to yield either $0$ or $1$ upon measuring. In a sense, this is the quantum mechanical equivalent to a coin toss. Contrary to a coin toss, if applied a second time, we return to the original state, "unscrambling" the coin, or qubit:
 
 \begin{equation}\label{eq:unscramble}
     HH\ket{0} = \frac{1}{\sqrt{2}}H\ket{0} +\frac{1}{\sqrt{2}}H\ket{1} = \frac{1}{2}(\ket{0} + \ket{0}) + \frac{1}{2}(\ket{1} - \ket{1}) = \ket{0}.
 \end{equation}
-Pointed out in \citet{SupervisedwquantumComputers}, this has no classical equivalent. If one has a classical procedure of scrambling a coin, e.g. shaking it in your hands, a second shaking will not leave it unscrambled, but scrambled still. Quantum computation is able to reverse this because quantum mechanics is fundamentally not a theory of probabilities; Probabilities can be derived from the theory, but the underlying description revolves around amplitudes, as explained earlier. Whereas probabilities must be positive or zero, amplitudes can be positive or negative(and complex in general), allowing for destructive interference. This can be seen in \autoref{eq:unscramble}, where the last term $\frac{1}{2}(\ket{1} - \ket{1})$ is cancelled out. In addition to the exponential large size of Hilbert space, this is also an interesting property of quantum computing when discussing its capabilities over classical computing.
+Pointed out in \citet{SupervisedwquantumComputers}, this phenomenon has no classical equivalent. If one has a classical procedure of scrambling a coin, e.g. shaking it in your hands, a second shaking will not leave it unscrambled, but scrambled still. Quantum computation is able to reverse this because quantum mechanics is fundamentally not a theory of probabilities; Probabilities can be derived from the theory, but the underlying description revolves around amplitudes, as explained earlier. Whereas probabilities must be positive or zero, amplitudes can be positive or negative(and complex in general), which allows destructive interference. This can be seen in \autoref{eq:unscramble}, where the last term $\frac{1}{2}(\ket{1} - \ket{1})$ is cancelled out. In addition to the exponentially large size of Hilbert space, this is also an interesting property of quantum computing when discussing its capabilities over classical computing.
 
 Further, a much-used set of single qubit gates are the Pauli operators:
 
@@ -173,7 +173,7 @@ Further, a much-used set of single qubit gates are the Pauli operators:
 \end{aligned}    
 \end{equation}
 
-To visualize what these operators do, it is useful to introduce a graphical picture called the \emph{Bloch sphere}, illustrated in \autoref{fig:blochsphere}. Rewriting the state of a qubit to 
+To visualize what these operators do, it is useful to introduce a geometrical representation called the \emph{Bloch sphere}, illustrated in \autoref{fig:blochsphere}. Rewriting the state of a qubit to 
 
 \begin{equation}\label{eq:blochsphere}
     \ket{\psi} = \alpha \ket{0} + \beta \ket{1} = e^{i\gamma}(\cos{\frac{\theta}{2}}\ket{0} + e^{i\phi}\sin{\frac{\theta}{2}}\ket{1}) \sim 
@@ -184,11 +184,11 @@ the new parameters $\theta$ and $\phi$ can be identified as the azimuthal and po
 \begin{figure}[htp]
     \centering
     \includegraphics[width=10cm]{latex/figures/Blochsphere.PNG}
-    \caption{Graphical picture visualizing the state of a qubit, called the Bloch sphere. The figure is retrieved from \cite{NielsenQuantum}.}
+    \caption{Geometrical representation of the state of a qubit, called the Bloch sphere. The figure is retrieved from \citet{NielsenQuantum}.}
     \label{fig:blochsphere}
 \end{figure}
 
-The Pauli-gates represent $180^{\circ}$ rotation of the state around the corresponding axis. Particlularly, the $X$ gate, often called the \emph{flip gate}, acts on the basis states as
+The Pauli-gates represent a $180^{\circ}$ rotation of the state around the corresponding axis. Particularly, the $X$ gate, often called the \emph{flip gate}, acts on the basis states as
 
 \begin{equation}
 \begin{aligned}
@@ -199,7 +199,7 @@ The Pauli-gates represent $180^{\circ}$ rotation of the state around the corresp
 \end{equation}
 Much like how the classical NOT-gate flips the bit, the X gate flips the qubit.
 
-Another set of gates extremely important for quantum machine learning, which can be derived from the aforementioned Pauli gates, are the \emph{Pauli rotations}. They are formulated as exponentiated Pauli gates in the following way:
+Another essential set of gates used for quantum machine learning, which can be derived from the aforementioned Pauli gates, are the \emph{Pauli rotations}. They are formulated as exponentiated Pauli gates in the following way:
 
 \begin{equation}\label{eq:PauliRotations}
 \begin{aligned}
@@ -224,15 +224,7 @@ Another set of gates extremely important for quantum machine learning, which can
 \end{aligned}    
 \end{equation}
 
-These action of these gates on any state is to rotate it on the Bloch sphere around the corresponding axis, for an amount of $\theta$ radians. As $\theta$ can be any real number, these gates can be though of as being quantum gates parameterized by $\theta$, which will be an essential component when we will construct \emph{parameterized quantum circuits} later.  
-
-
-
-
-
-
-
-
+The action of a gate $R_j(\theta)$ on a state, for $j \in \{x,y,z\}$, is to rotate the state around the j-axis on the Bloch sphere, for an amount of $\theta$ radians. As $\theta$ can be any real number, these gates can be viewed as being quantum gates parameterized by $\theta$, which will be an essential component when we will construct \emph{parameterized quantum circuits} later.
 
 %================================================================
 \subsection{Multi-Qubit Operators}\label{sec:ControlledOperations}
@@ -269,9 +261,9 @@ where we have also included its formulation in Dirac notation. Looking at the ci
     \frac{1}{\sqrt{2}}(\ket{0}\otimes I\ket{0} + \ket{1}\otimes X\ket{0}) =
     \frac{1}{\sqrt{2}}(\ket{0}\otimes \ket{0} + \ket{1}\otimes \ket{1}).
 \end{equation}
-This is a well-known state called a \emph{Bell state}. It has the interesting property that the qubits are correlated: When the first qubit is measured to be in either state $0$ or $1$, the second qubit will also be found in the same state, and vice versa. This is known as an entangled state, which cannot be expressed as a product of independent single qubit states, such as \autoref{eq:tensorProductState}. By introducing controlled gates, we have increased the space of states possible to access.
+This is a well-known state called a \emph{Bell state}. It has the interesting property that the qubits are correlated: When the first qubit is measured to be in either state $0$ or $1$, the second qubit will be found in the same state, and vice versa. This is known as an entangled state, which cannot be expressed as a product of independent single qubit states, such as \autoref{eq:tensorProductState}. By introducing controlled gates, we have increased the space of accessible states.
 
-\subsubsection*{Multi-controlled Controlled Gate}
+\subsubsection*{Multi-Controlled Gate}
 The CNOT gate is just one example of a controlled quantum gate. In general, we can have a controlled gate on the form 
 
 \begin{equation}
@@ -296,7 +288,7 @@ where U is any single qubit gate. Moreover, there also exists \emph{multi-contro
     }
     \end{array}.
 \end{equation}
-This gate applies $U$ to the target qubit if and only if all three control qubits(in general $n$ control qubits) are in state $\ket{1}$. It is also possible to condition on the control qubits being in state $\ket{0}$ rather that $\ket{1}$. This can be done by applying an $X$ gate before and after the controlled operation to the qubit one wishes to invert, such as  
+This gate applies $U$ to the target qubit if, and only if, all three control qubits(in general $n$ control qubits) are in state $\ket{1}$. It is also possible to condition on the control qubits being in state $\ket{0}$ rather that $\ket{1}$. This can be done by applying an $X$ gate before and after the controlled operation to the qubit one wishes to invert, such as  
 
 \begin{equation}
     \begin{array}{c}
@@ -337,7 +329,7 @@ A well-known two-qubit gate is the SWAP gate. As the name indicates, the SWAP ga
     }
     \end{array},
 \end{equation}
-For a two-qubit system, where the first qubit is in the state $\ket{\psi}$ and the other is in $\ket{\phi}$, the swap gate has the following function:
+For a two-qubit system, where the first qubit is in the state $\ket{\psi}$ and the second is in $\ket{\phi}$, the swap gate has the following function:
 
 \begin{equation}
     \begin{array}{c}
@@ -354,7 +346,7 @@ For a two-qubit system, where the first qubit is in the state $\ket{\psi}$ and t
 %================================================================
 \subsection{Observables}\label{sec:Observables}
 %===============================================================
-In \autoref{sec:MeasuringState}, we shortly introduced the process of measurement. We will now generalize this by introducing \emph{quantum observables}. In quantum mechanics, an observable is an operator that acts on the state space of the system being measured. It can be expressed as
+In \autoref{sec:MeasuringState}, we introduced the process of measurement. We will now generalize this by introducing \emph{quantum observables}. In quantum mechanics, an observable is an operator that acts on the state space of the system being measured. It can be expressed as
 \begin{equation}\label{eq:observable}
     \hat{O} = \sum_m m P_m,
 \end{equation}
@@ -375,7 +367,7 @@ where the scaling factor ensures that the new state is still normalized. Using t
     \sigma_z = \ket{0}\bra{0} - \ket{1}\bra{1}
 \end{equation}
 
-For the general single qubit state $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$, we see that probability of measuring $m=1$ and $m=-1$ are respectively
+For the general single qubit state $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$, we see that probabilities of measuring $m=1$ and $m=-1$ are respectively
 
 \begin{equation}
 \begin{aligned}
@@ -407,20 +399,20 @@ What is the average value of an observable for a given state $\ket{\psi}$? Using
     \mathbb{E}(m) = \sum_m m p(m) = \sum_m m \bra{\psi}P_m\ket{\psi} = \bra{\psi}\sum_m m P_m\ket{\psi} = \bra{\psi}\hat{O}\ket{\psi}
 \end{equation}
 
-$\bra{\psi}\hat{O}\ket{\psi}$ is a recurring expression in quantum mechanics, often denoted simply as $\langle \hat{O} \rangle$. The expectation value is very important as it serves as a method for extracting a deterministic value from a quantum state. Whereas the quantum information of a state is inaccessible to us as a whole, estimating the expectation value for some desired observable is possible for retrieving an output of a quantum algorithm. Hopefully, this output serves as a solution to the problem we wished to solve. Looking at the expected value \autoref{eq:ExpectedValue}, it is easy to see why global phases of the state are physically insignificant. How does the expected value of an arbitrary observable change when we add a global phase $\ket{\psi} \rightarrow e^{i\gamma}\ket{\psi}$? We get
+$\bra{\psi}\hat{O}\ket{\psi}$ is a recurring expression in quantum mechanics, often denoted simply as $\langle \hat{O} \rangle$. The expectation value is crucial for quantum computing as it serves as a method for extracting a deterministic value from a quantum state. Whereas the total quantum information of a state is inaccessible to us, estimating the expectation value for some desired observable is possible for retrieving an output of a quantum algorithm. Desirably, this output serves as a solution to the problem one wishes to solve. Looking at the expected value \autoref{eq:ExpectedValue}, it is easy to see why global phases of the state are physically insignificant. How does the expected value of an arbitrary observable change when we add a global phase $\ket{\psi} \rightarrow e^{i\gamma}\ket{\psi}$? We get
 
 \begin{equation}\label{eq:ExpectedValue}
     \bra{\psi}e^{-i\gamma}
     \hat{O}e^{i\gamma}\ket{\psi} =\bra{\psi}e^{i(\gamma-\gamma) }\hat{O}\ket{\psi} = 
     \bra{\psi}\hat{O}\ket{\psi}.
 \end{equation}
-The above results shows that whatever measurement we do on the state, we can not determine if the global phase is present or not. Therefore, we can assume two state that differ by a global phase are physically identical, as was assumed in \autoref{eq:blochsphere} and \autoref{eq:CompBasisMeasurement}.
+The above results show that whatever measurement we do on the state, we cannot determine if the global phase is present or not. Therefore, we can assume two state that differ by a global phase are physically identical, as was assumed in \autoref{eq:blochsphere} and \autoref{eq:CompBasisMeasurement}.
 
 %================================================================
 \subsection{Estimating Expectation Values}\label{sec:EstimatingExpectationValues}
 %===============================================================
 
-How do we practically calculate or estimate expectation values? For all observables that will be relevant in this thesis, we are able to express them as a spectral decomposition of the computational basis, meaning we can write them in the form 
+How do we practically calculate or estimate expectation values? For all observables to this thesis, we are able to express them as a spectral decomposition of the computational basis, meaning we can write them in the form 
 
 \begin{equation}\label{eq:ExpectedValue}
     \hat{O} = \sum_{i=1} \lambda_i\ket{i}\bra{i},
@@ -431,7 +423,7 @@ where $i$ sums over all computational basis vectors $\ket{i}$, and $\lambda_i$ a
     \bra{\psi}\hat{O}\ket{\psi} = \sum_{i} \alpha_i^*\bra{i}(\sum_{j} \lambda_j\ket{j}\bra{j})\sum_{k} \alpha_k\ket{k} = \sum_{i} |\alpha_i|^2\lambda_i.
 \end{equation}
 
-Given that we know the eigenvalues $\lambda_i$, all we need to do is estimate $|\alpha_i|^2$. Even though we don't have direct access to the amplitudes of a state, $|\alpha_i|^2$ coincide with probability of measuring the corresponding basis state. We can introduce a Bernoulli random variable $y_{ij}$ such that $P(y_{ij} = 0) = 1-|\alpha_i|^2$ and $P(y_{ij} = 1) = |\alpha_i|^2$. By repeatedly preparing the state $\ket{\psi}$ and measure it in the computational basis, called performing several \emph{shots}, one can gather $S$ such samples $\{y_{i1}, \cdots y_{iS}\}$. As pointed out in \citet{SupervisedwquantumComputers}, $|\alpha_i|^2$ can be estimated with a \emph{frequentist estimator} $\hat{p}_i$ given by
+Given that we know the eigenvalues $\lambda_i$, all we need to do is estimate $|\alpha_i|^2$. Even though we don't have direct access to the amplitudes of a state, $|\alpha_i|^2$ coincide with probability of measuring the corresponding basis state. We can introduce a Bernoulli random variable $y_{ij}$ such that $P(y_{ij} = 0) = 1-|\alpha_i|^2$ and $P(y_{ij} = 1) = |\alpha_i|^2$. By repeatedly preparing the state $\ket{\psi}$ and measuring it in the computational basis, called performing several \emph{shots}, one can gather $S$ such samples $\{y_{i1}, \cdots y_{iS}\}$. As pointed out in \citet{SupervisedwquantumComputers}, $|\alpha_i|^2$ can be estimated with a \emph{frequentist estimator} $\hat{p}_i$ given by
 
 \begin{equation}
     |\alpha_i|^2 \approx \hat{p}_i = \frac{1}{S}\sum_{j=1}^S y_{ij}.
@@ -451,7 +443,7 @@ The expectation values can be estimated by inserting the estimates $\hat{p}_i$ i
     \bra{\psi}\hat{O}\ket{\psi} \approx \sum_{i} \hat{p}_i\lambda_i.
 \end{equation}
 
-From this expression, it can be seen that also the error of the expectation value goes as $O(1/\sqrt{S})$. This is a very costly aspect of quantum computing, since a reduction of error by a factor 10  requires a factor 100 more shots. In practice, the output of quantum circuits tends to be noisy because of the use of finite number of shots. In the case the quantity one tries to estimate is very small, the number of shots required to overcome bad signal-to-noise ratio can become prohibitively large.
+From this expression, it can be seen that also the error of the expectation value goes as $O(1/\sqrt{S})$. This is a computationally expensive aspect of quantum computing, since a reduction of error by a factor 10 requires a factor 100 more shots. In practice, the output of quantum circuits tends to be noisy because of the use of a finite number of shots. When one tries to estimate vanishingly small quantities, the number of shots required to overcome bad signal-to-noise ratio can become prohibitively high. 
 
 %In the context of quantum machine learning that we will get into in the next chapter, we will connect expectation values of observables to model outputs of the form 
 
@@ -486,23 +478,23 @@ From this expression, it can be seen that also the error of the expectation valu
 %================================================================
 \section{Noisy Intermediate-Scale Quantum Computing}\label{sec:Nisq}
 %===============================================================
-So far, we have introduced abstract and rather idealized aspects of quantum mechanics in the context of quantum computing. We have not yet discussed how quantum algorithms are implemented in practice on quantum hardware, and what potential drawbacks such implementation might bring. Even in the ideal case, we saw in \autoref{sec:EstimatingExpectationValues} that outputs of quantum circuits are noisy as a result of finite shots. Quantum computing on near-term quantum hardware, so-called \emph{noisy intermediate-scale quantum computing}(NISQ)\cite{Preskill_2018}, is characterized by few available qubits, low-fidelity computations and other restrictions. These are aspects that tend to make performing quantum computing even more challenging, and will be frequently discussed when we later motivate different ways of implementing quantum machine learning. The content of this section is mainly based on \cite{SupervisedwquantumComputers} and \cite{Preskill_2018}.
+So far, we have introduced abstract and rather idealized aspects of quantum mechanics in the context of quantum computing. We have not yet discussed how quantum algorithms are implemented on quantum hardware in practice, and what drawbacks such implementation might bring. Even in the ideal case, we saw in \autoref{sec:EstimatingExpectationValues} that outputs of quantum circuits are noisy as a result of finite shots. Quantum computing on near-term quantum hardware, so-called \emph{noisy intermediate-scale quantum computing}(NISQ)\cite{Preskill_2018}, is characterized by few available qubits, low-fidelity computations and other restrictions. These aspects tend to make performing quantum computing even more challenging, and will be frequently discussed when we later motivate different ways of implementing quantum machine learning. The content of this section is mainly based on \citet{SupervisedwquantumComputers} and \citet{Preskill_2018}.
 
 
 %================================================================
 \subsection{Gate Fidelity}\label{sec:GateFidelity}
 %===============================================================
-In physical quantum computers, it is important to implement ways to precisely control qubits and interactions between them in order to execute various quantum gates. One of the more promising implementation of qubits, \emph{super-conducting qubits}, uses pulses of microwaves to control the qubits. Using this technique, \citet{Barends_2014} is able to implement quantum gates with as low as $1\%$ measurement error probability, but oftentimes also higher. In addition, it is unclear whether such low error can be maintained when the quantum computer is scaled up. In practice, the application of multiple noisy gates results in accumulation of error that will render the outcome useless\cite{Preskill_2018}. Because of this, the number of gates should be kept low in order to minimize error of the quantum algorithm. 
+In physical quantum computers, it is important to implement ways to precisely control qubits and interactions between them in order to execute various quantum gates. One of the more promising implementations of qubits, \emph{super-conducting qubits}, uses pulses of microwaves to control the qubits. Using this technique, \citet{Barends_2014} was able to implement quantum gates with as low as $1\%$ measurement error probability, although oftentimes higher. In addition, it is unclear whether such low error can be maintained when the quantum computer is scaled up. In practice, the application of multiple noisy gates results in the accumulation of error rendering the outcome useless\cite{Preskill_2018}. Consequentially, the number of gates should be kept low in order to minimize error of the quantum algorithm. 
 
 %================================================================
-\subsection{Decoherence}\label{sec:DaEC}
+\subsection{Quantum Decoherence}\label{sec:DaEC}
 %===============================================================
-In addition to the error introduced by imprecision of the gates, the qubits themselves are susceptible to outside disturbance, causing \emph{decoherence} of the state. In \autoref{sec:IntroQM} and \autoref{sec:QuantumCircuits}, we talked about states of isolated systems and how they transform under unitary operators. In this context, \emph{isolated} means that the system of qubits is not affected by any external sources, with the exception of the mechanisms that implement quantum gates. In practise, quantum computers are only approximately isolated, as vibrations and external fields tends to leak into the system, degrading the information stored in the state(kilde?). This effect tends to worsen the longer the computation takes, and places another restriction on how many gates one can implement. Specifically, decoherence limits the \emph{circuit depth}, which refers to the number of gates applied in sequence. 
+In addition to the error introduced by the imprecision of the gates, the qubits themselves are susceptible to outside disturbance, causing \emph{decoherence} of the state. In \autoref{sec:IntroQM} and \autoref{sec:QuantumCircuits}, we talked about states of isolated systems and how they transform under unitary operators. In this context, "isolated" means that the system of qubits is not affected by any external sources, with the exception of the mechanisms that implement quantum gates. In practice, quantum computers are only approximately isolated, as vibrations and external fields tends to leak into the system, degrading the information stored in the state. This effect tends to strengthen the longer the computation takes, and places another restriction on how many gates one can implement. Specifically, decoherence limits the \emph{circuit depth}, which refers to the number of gates applied in sequence. 
 
 %================================================================
 \subsection{Coupling of Qubits}\label{sec:CoQ}
 %===============================================================
-Depending on the specifics implementation of the hardware, it is not given that a two-qubit gate can be applied on any two qubits. Typical for near-term quantum computers, the qubits are arranged in a \emph{linear array}\cite{Holmes_2020}. This means two-qubit gates may only be applied on neighboring qubits, i.e. they are linearly connected. \autoref{fig:connectivity} gives examples on quantum circuits that either respect or violate the linear connectivity of qubits.     
+Depending on the specific implementation of the hardware, it is not given that a two-qubit gate can be applied on any two qubits. Typical for near-term quantum computers, the qubits are arranged in a \emph{linear array}\cite{Holmes_2020}. This means that two-qubit gates may only be applied on neighboring qubits, i.e. they are linearly connected. \autoref{fig:connectivity} gives examples on quantum circuits that either respect or violate the linear connectivity of qubits.     
 
 \begin{figure}[H]
      \begin{subfigure}[b]{0.3\textwidth}
@@ -544,12 +536,12 @@ Depending on the specifics implementation of the hardware, it is not given that 
         \label{fig:connectivity}
 \end{figure}
 
-\autoref{fig:linear_con} applies CNOT gate only on neighboring qubits, which is allowed on a linear architecture. In contrast, \autoref{fig:not_linear_con} can be seen to violate it. However, the circuit in \autoref{fig:linear_con_swap} have the equivalent functionality as the aforementioned circuit, while still respecting linear connection. This was achieved by using SWAP gates to essentially "move qubits around", but at the cost of a greater circuit depth. In order to limit the circuit depth as much as possible, we will often discuss quantum circuits respecting the linear connectivity going forward.
+\autoref{fig:linear_con} applies CNOT gate only on neighboring qubits, which is allowed on a linear architecture. In contrast, \autoref{fig:not_linear_con} shows a violation of this. However, the circuit in \autoref{fig:linear_con_swap} has the equivalent functionality as the aforementioned circuit, while still respecting linear connection. This was achieved by using SWAP gates to essentially "move qubits around", but at the cost of a greater circuit depth. In order to limit the circuit depth as much as possible, we will often discuss quantum circuits respecting the linear connectivity going forward.
 
 %================================================================
 \subsection{Basis Gates}\label{sec:Basis Gates}
 %===============================================================
-Real quantum computers can often not natively implement all of the quantum gates discussed earlier in this thesis. However, they come small set of gates called the \emph{basis gates} which they do implement. The set of basis gates varies from computer to computer, but it is common that these sets are universal. This means that for any gate we would like to implement, there exists a finite number of basis gates that is able to reproduce the our target gate to arbitrary precision. In this way, all quantum computers with universal basis gates are able to implement any conceivable algorithm, as the name suggests. This is of course disregarding any potential noise of the hardware, as discussed earlier. 
+Real quantum computers can rarely implement all of the quantum gates discussed earlier in this thesis directly. They often implement a small set of gates called the \emph{basis gates}. This set of basis gates varies from computer to computer, but it is common that these sets are universal. This means that for any gate we would like to implement, there exists a finite number of basis gates that is able to reproduce our target gate to arbitrary precision. In this way, all quantum computers with universal basis gates are able to implement any conceivable algorithm, as the name suggests. This is of course disregarding any potential noise of the hardware, as discussed earlier. 
 
 
 

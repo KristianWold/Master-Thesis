@@ -91,6 +91,7 @@ An interesting observation is that the vanishment caused by back propagation hap
 We explore the geometry of the loss landscape of various models and quantify its degree of distortion and flatness by studying the eigenvalue spectrum of the EFIM \autoref{eq:EmpiricalFisher}. Looking at \autoref{eq:EmpiricalFisher}, we see that the EFIM, unlike the Hessian, is independent of targets $y^{(i)}$. This makes the analysis data agnostic, and serves to characterise the architectures themselves. The input data $\mathcal{X} = \{\boldsymbol{x}^{(1)}, \cdots, \boldsymbol{x}^{(N)}\}$ used for calculating the EFIM is sampled randomly from a standard normal distribution as $\mathcal{X} \sim N(0,1)^{[N,p]}$. This ensures that the input is evenly sampled from feature space and is consistent with the analysis of \citet{abbas2020power}. Here, we use $N=200$ samples and either $p=4$ or $p=6$ inputs, depending on the model. For each model, the EFIM is calculated 10 times for different random initializations of the parameters. The resulting spectrum is then averaged over the 10 initializations to produce more a significant results. For a complete description of the models analysed in this section, see \autoref{tab:FIM models}.
 
 \begin{table}[H]
+\caption{Description of the architecture of the models analysed in this section. The QNN and QCN models use exact evaluation of parity to derive outputs (see \autoref{sec:Exact Expectation Value} and \autoref{sec:Inference}). The DNN models uses tanh activation in all layers. The parameters of the models are appropriately initialized as presented in \autoref{sec:Initialization}.} 
 \centering
 \begin{tabular}{|l|l|l|l|l|l|l|l|}
 \hline
@@ -106,7 +107,6 @@ H    & QCN & 6& 2    & 3      & 6     & Qubit Encoding & 156  \\ \hline
 I    & QCN & 6& 1    & 5      & 6     & Qubit Encoding & 150  \\ \hline
 J    & DNN & NA& NA   & 3      & 9     & NA             & 163 \\ \hline
 \end{tabular}
-\caption{Description of the architecture of the models analysed in this section. The QNN and QCN models use exact evaluation of parity to derive outputs (see \autoref{sec:Exact Expectation Value} and \autoref{sec:Inference}). The DNN models uses tanh activation in all layers. The parameters of the models are appropriately initialized as presented in \autoref{sec:Initialization}.} 
 \label{tab:FIM models}
 \end{table}
 
@@ -290,7 +290,7 @@ To attempt elucidating the discrepancy of expressivity between QCNs and DNNs, we
     \label{fig:activations}
 \end{figure}
 
-In \autoref{fig:activations single}, we see the output of the QNN encoding a single feature. Since the samples are only encoded once, it doesn't compute a state whose amplitudes represent polynomials of the input. Consequently, the outputs resemble simple trigonometric functions. Seen from \autoref{fig:activations tensorial}, utilizing the tensorial feature mapping enables the QNN to produces a much flexible output, reflecting the polynomial representation of the data in the prepared state. \autoref{fig:activations DNN} shows that the output of the DNN node is constrained to the functional form of the Tanh activation function.   
+In \autoref{fig:activations single}, we see the output of the QNN encoding a single feature. Since the samples are only encoded once, it doesn't compute a state whose amplitudes represent polynomials of the input. Consequently, the outputs resemble simple trigonometric functions. Seen from \autoref{fig:activations tensorial}, utilizing the tensorial feature mapping enables the QNN to produces a much flexible output, reflecting the polynomial representation of the data in the prepared state. \autoref{fig:activations DNN} shows that the output of the DNN node is constrained to the functional form of the tanh activation function.   
 
 
 
@@ -343,7 +343,7 @@ For the QNNs trained in this section, we will utilize RZZ encoding \autoref{fig:
 %================================================================
 \subsection{Ideal Simulation}\label{sec:Ideal Simulation}
 %================================================================
-\autoref{fig:trained ideal} shows the MSE during training of the models defined in \autoref{tab:training models} on the one, two and three dimensional mixed Gaussian data. All models are trained for 100 epochs, using exact and noiseless simulation. In order to produce a more significant result, each model is randomly initialized 10 times and trained separately. The resulting MSE for each model type is then averaged over the 10 runs and plotted with fill corresponding to one standard deviation. In this way, we get to see the average model behaviour during training and how it varies between different runs. \autoref{tab:training models mse} shows the final MSE after 100 epochs for the various models. In addition, the final MSE after $10^4$ epochs is included for the DNNs.   
+\autoref{fig:trained ideal} shows the MSE during training of the models defined in \autoref{tab:training models} on the one, two and three dimensional mixed Gaussian data. All models are trained for 100 epochs, using ideal simulation. In order to produce a more significant result, each model is randomly initialized 10 times and trained separately. The resulting MSE for each model is then averaged over the 10 runs and plotted with fill corresponding to one standard deviation. In this way, we get to see the average model behaviour during training and how it varies between different runs. \autoref{tab:training models mse} shows the final MSE after 100 epochs for the various models. In addition, the final MSE after $10^4$ epochs is included for the DNNs.   
 
 \begin{figure}[H]
     \centering
@@ -462,13 +462,13 @@ Moving over to the training using the simulated noisy hardware, we see from \aut
 %================================================================
 \section{Real Data}\label{sec:Real Data}
 %================================================================
-In this this section, we compare the performance QCNs and DNNs by performing regression on the Boston Housing data (kilde) and classification on the Breast Cancer Wisconsin data (kilde). See \autoref{sec:Appendix B} for more information about the data sets. Since these data originate from real world experiments, they are noisy and don't represent a deterministic relationship $y = f(\boldsymbol{x})$ between the target and the features. This is in contrast to the the mixed Gaussian data sets studied earlier, and should provide a more practical benchmark of the methods. In addition to evaluating the models using MSE on the training data, we will also investigate how they generalize to unseen data by evaluating the MSE on an independent test set, as explained in \autoref{sec:Generalizability}. For the Breast Cancer Wisconsin data, we will also investigate the training and test accuracy of the models.
+In this this section, we compare the performance QCNs and DNNs by performing regression on the Boston Housing data (kilde) and classification on the Breast Cancer Wisconsin data (kilde). See \autoref{sec:Appendix B} for more information about the data sets. Since these data originate from real world experiments, they are noisy and don't represent a deterministic relationship $y = f(\boldsymbol{x})$ between the target and the features. This is in contrast to the the mixed Gaussian data sets studied earlier, and should provide a more practical benchmark of the methods. In addition to evaluating the models using MSE on the training data, we will also investigate how they generalize to unseen data by evaluating the MSE on an independent test set, as explained in \autoref{sec:Generalizability}. For the Breast Cancer Wisconsin data, we will also investigate the training and test accuracy \autoref{eq:accuracy} of the models.
 
 In \autoref{sec:Feature Reduced Data}, we will reduce the number of features for data sets to four (down from $13$ and $30$, respectively) by using principal component analysis, as described in \autoref{sec:Principal Component Analysis}. This is done in order to produce smaller, more manage QCNs, as qubit encoding generally requires one qubit for each feature. The QCNs models are chosen to have four qubits in each circuit, and only two layers. This is done to obtain a model that has a large gradient due to low number of qubits, as discussed in \autoref{sec:Vanishing Gradient Phenomenon Discussion}, and are thus easy to train. The DNNs are chosen such that the number of parameters approximatly match that of the QCNs. 
 
 In \autoref{sec:Hybrid Method}, we will repeat the experiments of \autoref{sec:Feature Reduced Data} on the data sets with all features present, i.e. without feature reduction. To avoid QCNs with overly many qubits, we will use an initial dense layer to reduce the features from $13$ and $30$ to four. This creates a DNN/QCN hybrid model, where the initial dense layer learns derived features on which the QCN part makes predictions. See \autoref{sec:Hybrid Models} for details. 
 
-For both the feature reduced and full data set, we will split the data sets into independent training and test sets at random, each with $N=100$ samples. 
+For both the feature reduced and full data set, we will split the data sets into independent training and test sets at random, each with $N=100$ samples. The targets of the Boston Housing data is min-max scaled to $y \in [0,1]$, while the discrete targets of the Breast Cancer data are already $y \in \{0,1\}$.
 
 %================================================================
 \subsection{Feature Reduced Data}\label{sec:Feature Reduced Data}
@@ -516,7 +516,7 @@ The models defined in \autoref{tab:training models PCA} are trained for 100 epoc
 \caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
 \begin{tabular}{|l|l|l|l|l|}
 \hline
-Model& Type& Data& MSE (train/test)& Accuracy  \\ \hline
+Model& Type& Data& MSE (train/test)& Accuracy (train/test) \\ \hline
 A    & QCN & BHD  & 0.004/$\boldsymbol{0.043}$ & NA    \\ \hline
 B    & DNN & BHD  & 0.006/0.052                & NA  \\ 
 \Xhline{2\arrayrulewidth}
