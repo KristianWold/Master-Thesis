@@ -1,9 +1,9 @@
 %================================================================
 \chapter{Implementation}\label{chap:implementation}
 %================================================================
-In this chapter, we will present details surrounding implementation of algorithms and methods presented in \autoref{part:Theory}. For this thesis, we have developed an elaborate frame work for doing machine learning, capable of implementing dense neural networks(DNN, \autoref{eq:DNN}) and quantum circuit networks(QCN, \autoref{eq:QCN}). In addition, various numerical tools for analysing the models are available. The code base is object-orientated using Python, focusing on flexibility. This grants huge freedom when specifying model architecture, such as setting the number of layers, number of nodes, type of activation functions, loss function and optimizer. The frame work is also capable of implementing hybrid models mixing both DNN and QCN layers. To implement quantum machine learning, the frame work is built around Qiskit\cite{Qiskit}, an IBM-made python-package used for emulating quantum circuits. 
+In this chapter, we will present details surrounding implementation of algorithms and methods presented in \autoref{part:Theory}. For this thesis, we have developed an elaborate frame work for doing machine learning, capable of implementing dense neural networks(DNN, \autoref{eq:DNN}) and quantum circuit networks(QCN, \autoref{eq:QCN}). In addition, various numerical tools for analyzing the models are available. The code base is object-orientated using Python, focusing on flexibility. This grants a high degree freedom when specifying model architecture, such as setting the number of layers, number of nodes, type of activation functions, loss function and optimizer. The frame work is also capable of implementing hybrid models mixing both DNN and QCN layers. To allow implementation of quantum machine learning, the frame work is built around Qiskit\cite{Qiskit}, an IBM-made python-package used for emulating quantum circuits. 
 
-All source code developed for this thesis can be found on our GitHub page \url{https://github.com/KristianWold/Master-Thesis}, together with notebooks containing training of models, generation of data, analysis and plotting. For easier reading, all python types referred to in this thesis will be highlighted in \textbf{bold}.
+All source code developed for this thesis can be found on our GitHub page \url{https://github.com/KristianWold/Master-Thesis}, together with notebooks containing training of models, generation of data, analyis and plotting. For easier reading, all python types referred to in this thesis will be highlighted in \textbf{bold}.
 
 %================================================================
 \section{Qiskit}\label{sec:Qiskit}
@@ -31,17 +31,17 @@ q_reg_2 = qk.QuantumRegister(2)
 c_reg = qk.ClassicalRegister(2)
 circuit = qk.QuantumCircuit(q_reg_1, q_reg_2, c_reg)
 \end{lstlisting}
-Here, each of the registers \textbf{q\_reg\_1} and \textbf{q\_reg\_2} contains two qubits. By default, they are each initialized in the state $\ket{0}$. Thus, total circuit can be written as
+Here, each of the registers \textbf{q\_reg\_1} and \textbf{q\_reg\_2} contains two qubits. By default, they are each initialized in the state $\ket{0}$. Thus, the total circuit can be written as
 \begin{equation}
     \ket{00}\ket{00},
 \end{equation}
-where is \emph{ket} refers to one register. Further, \textbf{c\_reg} is a \emph{classical register} of classical bits, meant for storing classical information when the circuit is later measured. In general, a circuit can contain any number of quantum registers with any number of qubits. However, if one wishes to include a classical register, it must be included as the last argument in \textbf{qk.QuantumCircuit()}.
+where each \emph{ket} refers to one register. Further, \textbf{c\_reg} is a \emph{classical register} of classical bits, meant for storing classical information when the circuit is later measured. In general, a circuit can contain any number of quantum registers with any number of qubits. However, if one wishes to include a classical register, it must be included as the last argument in \textbf{qk.QuantumCircuit()}.
 
 %================================================================
 \subsection{Applying Gates}\label{sec:operationsOnQubits}
 %================================================================
 
-Continuing after creating our circuit, we may apply a variety of quantum gates by calling different methods for the \textbf{circuit} object. Hadamard gates can be applied to the two qubits of register \textbf{q\_reg\_1} in the following way:
+Continuing after creating our circuit, we can apply a variety of quantum gates by calling different methods for the \textbf{circuit} object. Hadamard gates can be applied to the two qubits of register \textbf{q\_reg\_1} in the following way:
 
 \begin{lstlisting}[language=python, numbers=left]
 circuit.h(q_reg_1[0])
@@ -102,13 +102,13 @@ print(result)
 \begin{flalign*}
     & \rightarrow \{'00':261, '01':242, '10':253, '11':244\} &
 \end{flalign*}
-Resulting from this is a python dictionary whose keys are strings indicating the different states that was measured. The value corresponding to each key is the number of times that state was measured. To set the number of times to execute and measure the circuit, the argument \textbf{shots} may be used. In this case, it was set to 1000. Using \textbf{qk.Aer.get\_backend("qasm\_simulator")} as the backend, the circuit is simulated locally on the classical machine in an ideal fashion, meaning the imperfections of real quantum computers as described in \autoref{sec:Nisq} are disregarded. Still, since a finite number of shots was used, the normalized results $\frac{261}{1000}$, $\frac{242}{1000}$, $\frac{253}{1000}$ and $\frac{244}{1000}$ only approximate the exact value $\frac{1}{4}$. 
+This results in a python dictionary whose keys are strings indicating the different states that were measured. The value corresponding to each key is the number of times that state was measured. To set the number of times to execute and measure the circuit, the argument \textbf{shots} may be used. In this case, it was set to 1000. Using \textbf{qk.Aer.get\_backend("qasm\_simulator")} as the backend, the circuit is simulated locally on the classical machine in an ideal fashion, meaning the imperfections of real quantum computers as described in \autoref{sec:Nisq} are disregarded. Still, since a finite number of shots was used, the normalized results $\frac{261}{1000}$, $\frac{242}{1000}$, $\frac{253}{1000}$ and $\frac{244}{1000}$ only approximate the exact value $\frac{1}{4}$. 
 
 %================================================================
 \subsection{Exact Expectation Value}\label{sec:Exact Expectation Value}
 %================================================================
 
-When simulating circuits on classical hardware, e.g. with Qiskit, we have the luxury of being able to access state resulting from some computation directly and calculate exact expectation values. As explained in \autoref{sec:MeasuringState}, this is not possible when using real quantum computers. Have access to exact expectation values is useful when the noise of finite sampling or realistic hardware is uninteresting for the analysis. 
+When simulating circuits on classical hardware, e.g. with Qiskit, we have the luxury of accessing the state resulting from some computation directly and calculate exact expectation values. As explained in \autoref{sec:MeasuringState}, this is not possible when using real quantum computers. Having access to exact expectation values is useful when the noise of finite sampling or realistic hardware is uninteresting for the analysis. 
 
 To access the exact state, the classical register \textbf{c\_reg} must be omitted from the circuit, as we never plan to measure it in the ordinary way. Then, the circuit is simulated using the \emph{statevector\_simulator} backend:
 
@@ -129,7 +129,7 @@ Here, the "measurements" are exact and normalized, as if infinitely many shots w
 \subsection{Simulating Real Devices}\label{sec:Simulating Real Devices}
 %================================================================
 
-Even though a given quantum algorithm may produce a satisfying resuling when executed on idealized hardware, like simulated with Qiskit, the same on necessarly true when run on real hardware. This is due to the introduced noise and inaccuracies as explained in \autoref{sec:Nisq}. To produce a more realistic result, Qiskit allows for realistic simulation of many noisy IBM quantum computers by choosing an appropriate backend. 
+Even though a given quantum algorithm may produce a satisfying result when executed on idealized hardware, like simulated with Qiskit, this may not apply when run on real hardware. This is due to the introduced noise and inaccuracies as explained in \autoref{sec:Nisq}. To produce a more realistic result, Qiskit allows for realistic simulation of many noisy IBM quantum computers by choosing an appropriate backend. 
 
 \subsubsection*{Noisy Backend}
 
@@ -142,9 +142,9 @@ There are three main components for simulating noisy devices. The first is the \
     \item \textbf{Gate Length}: Error resulting from the measurement of the qubits. 
 \end{itemize}
 
-The next component is a \emph{coupling map} that defined which the coupling of the qubit, i.e. what pairs of qubits that can interact via two-qubits gates (see \autoref{sec:Nisq}). Finally, the last component defines the basis gates of the quantum computer. 
+The next component is a \emph{coupling map} that defined which the coupling of the qubit, i.e. what pairs of qubits that can interact via two-qubits gates (see \autoref{sec:Nisq}). The last component defines the basis gates of the quantum computer. 
 
-In this thesis, we will be using the IBM quantum computer Santiago, which is has 5 qubits and only linear connectivity between the qubits. This choice is deliberate, as qubit encoding and the simple ansatz are specially made to work efficiently on such architectures. To access and save the backend simulating this quantum computer, we can use the followig code:
+In this thesis, we will be using the IBM quantum computer Santiago, which is has 5 qubits and only linear connectivity between the qubits. This choice is deliberate, as qubit encoding and the simple ansatz are specially made to work efficiently on such architectures. To access and store the backend simulating this quantum computer, we can use the following code:
 
 \begin{lstlisting}[language=python, numbers=left]
 import pickle
@@ -157,16 +157,16 @@ backend = QasmSimulator.from_backend(backend)
 pickle.dump(backend, open("backend_santiago", "wb"))
 \end{lstlisting}
 
-Here, \textbf{token} is a string identifying a IBM account necessary for accessing the correct backend. 
+Here, \textbf{token} is a string identifying an IBM account necessary for accessing the correct backend. 
 \textbf{backend = QasmSimulator.from\_backend(backend)} pulls the necessary components describes earlier and implements them into the \textbf{QasmSimulator} backend, ready to be used for noisy simulation. 
 
 \subsubsection*{Transpiling}
-When using a noisy backend, it is important to transpile the circuit before simulating, because the gates must be decomposed into the correct basis gates, and such that the specific coupling map is respected. Transpiling a circuit with respect to a given backend is done automatically when executing the circuit:
+When using a noisy backend, it is important to transpile the circuit prior to simulation, because the gates must be decomposed into the correct basis gates, and such that the specific coupling map is respected. Transpiling a circuit with respect to a given backend is done automatically when executing the circuit:
 
 \begin{lstlisting}[language=python, numbers=left]
 jov = qk.execute(transpile(circuit, noisy_backend, seed_transpiler=42, seed_simulator=42)
 \end{lstlisting}
-Here, the \textbf{seed\_transpiler} and \textbf{seed\_simulator} are seeds that make the work of the transpiler and the noise model reproducible. In this thesis, they will be set to $42$. Transpiling will also apply a light optimization of the of the circuit, in the sense that it will attempt to reduce the number of basis gates needed to reproduce the circuit. This is particularly important, since we want the depth to be as low as possible. Heavier optimization routines may be used to reduce the circuit even more, with the price of more time spent transpiling.  
+Here, the \textbf{seed\_transpiler} and \textbf{seed\_simulator} are seeds that make the work of the transpiler and the noise model reproducible. In this thesis, they will be set to $42$. Transpiling will also apply a light optimization of the the circuit, in the sense that it will attempt to reduce the number of basis gates needed to reproduce the circuit. This is particularly important, since we want the depth to be as shallow as possible. Heavier optimization routines may be used to reduce the circuit even more, with the price of more time spent transpiling.  
 
 
 
@@ -212,7 +212,7 @@ def simple_ansatz(circuit, data_reg, theta):
         
     return circuit
 \end{lstlisting}
-Here, \textbf{data\_reg.size()} was used to retrieve the number of qubits present in the register. The first for-loop ensures to entangle the qubits in sequence using CNOT gates. The last for-loop applies an $R_y$ rotation to each qubit corresponding to the parameters.
+Here, \textbf{data\_reg.size()} was used to retrieve the number of qubits present in the register. The first for-loop entangles the qubits in sequence using CNOT gates. The last for-loop applies an $R_y$ rotation to each qubit corresponding to the parameters.
 
 %================================================================
 \subsection{Inference}\label{sec:InferenceImplementation}
@@ -243,7 +243,7 @@ def parity_of_bitstring(bitstring):
 
 The function \textbf{parity()} iterates over the different measured states and makes a weighted average of their parities, resulting in the estimation of the average parity of the state.
 
-To performe the whole inference, we can implement a function \textbf{qnn(x, theta)}, where \textbf{x} is a numpy array containing features of a single sample, and \textbf{theta} is a numpy array containing parameters. The function can be implemented as 
+To perform the inference, we can implement a function \textbf{qnn(x, theta)}, where \textbf{x} is a numpy array containing features of a single sample, and \textbf{theta} is a numpy array containing parameters. The function can be implemented as 
 
 \begin{lstlisting}[language=python, numbers=left]
 def qnn(x, theta):
@@ -294,7 +294,7 @@ This function returns a numpy array with the same length as \textbf{theta}, cont
 \subsection{Training}\label{sec:QNNTraining}
 %================================================================
 
-Finally, we can implement a function \textbf{train(x\_list, y\_list, theta, lr, epochs)} that calculates the average gradient \autoref{eq:averageGradient} resulting from the samples and targets \textbf{x\_list} and \textbf{y\_list}, using MSE loss. The function then updates the parameters \textbf{theta} iterativly(\textbf{epochs} number of times) using gradient descent with learning rate \textbf{lr}:
+Finally, we can implement a function \textbf{train(x\_list, y\_list, theta, lr, epochs)} that calculates the average gradient \autoref{eq:averageGradient} resulting from the samples and targets \textbf{x\_list} and \textbf{y\_list}, using MSE loss. The function then updates the parameters \textbf{theta} iterative(\textbf{epochs} number of times) using gradient descent with learning rate \textbf{lr}:
 
 \begin{lstlisting}[language=python, numbers=left]
 def train(x_list, y_list, theta, lr, epochs):
@@ -326,7 +326,7 @@ In this section, we will introduce how our frame work can used to implement vari
 %================================================================
 \subsection{Encoders, Ansätze and Samplers}\label{sec:EAaS}
 %================================================================
-In the QCN framework, we implement encoders, ansätze and samplers as callable python classes with much the same functionality as described in \autoref{sec:QNNimpement}. We will now go thorugh the use of the most important classes.
+In the QCN framework, we implement encoders, ansätze and samplers as callable python classes with much the same functionality as described in \autoref{sec:QNNimpement}. We will now go through the use of the most important classes.
 
 \subsubsection*{QubitEncoder}
 The encoder class \textbf{QubitEncoder} can be instantiated as 
@@ -346,7 +346,7 @@ from ansatzes import Ansatz
 
 ansatz = Ansatz(block, reps)
 \end{lstlisting}
-Here, \textbf{block} is a python list containing strings that specify gates that are applied to the circuit. For example, 
+Here, \textbf{block} is a python list containing strings that specify gates applied to the circuit. For example, 
 \textbf{block = ["entangle", "ry"]} will first apply CNOT gates to all neighboring qubits in sequence. $R_y$ rotations are then applied to every qubit. This particular argument recreates the simple ansatz described in \autoref{sec:Ansätze}. \textbf{reps} specifies the number of times the ansatz is then repeated.
 
 \subsubsection*{Parity}
@@ -362,7 +362,7 @@ This class implements the same functionality as the \textbf{parity} function des
 \subsection{QLayer}\label{sec:QLayer}
 %================================================================
 
-Our framework for making QCN models implements layers consisting of QNN models as nodes, as explained in \autoref{sec:Quantum Circuit Network}. In the framework, a QCN layer can be created as a python object of the type \textbf{QLayer} in the following way:
+Our framework for making QCN models implements layers consisting of QNN models as nodes, as explained in \autoref{sec:Quantum Circuit Network}. In the framework, a QCN layer can be created as a python object of the type \textbf{QLayer} as follows:
 
 \begin{lstlisting}[language=python, numbers=left]
 from layers import QLayer
@@ -378,7 +378,7 @@ qlayer = QLayer(n_qubits,   #number of qubits in each QNN
                 shots)
 \end{lstlisting}
 
-The arguments \textbf{encoder}, \textbf{ansatz} and \textbf{sampler} defines the architecture of each QNN in the layer. Examples of possible choices are described in \autoref{sec:EAaS}. 
+The arguments \textbf{encoder}, \textbf{ansatz} and \textbf{sampler} define the architecture of each QNN in the layer. Examples of possible choices are described in \autoref{sec:EAaS}. 
 
 As an example, a \textbf{QLayer} can be instantiated and used on a data in the following way:
 
@@ -415,7 +415,7 @@ print(y_pred)
 \end{tabular}
 \end{left}
 
-Here, \textbf{x} is a dataset containing four samples of three features each. By specifying \textbf{n\_targets=2}, the layer consists of two nodes and produces thus two output targets. The layer is callable, and performs inference on the input \textbf{x} sample-wise.
+Here, \textbf{x} is a dataset containing four samples of three features each. By specifying \textbf{n\_targets=2}, the layer consists of two nodes and thus produces two output targets. The layer is callable, and performs inference on the input \textbf{x} sample-wise.
 
 If the number of shots are set to zero, i.e. \textbf{shots=0}, the outputs are exactly calculated with the \emph{statevector\_simulator} backend, as explained in \autoref{sec:Exact Expectation Value}.
 
@@ -456,7 +456,7 @@ def __call__(self, x):
             x = layer(x)
             self.a.append(x)
 \end{lstlisting}
-The output of all layers are stored, as they are needed during back-propagation. \textbf{network.predict(x)} returns only the output of the last layer, i.e. the model output. 
+The outputs of all layers are stored, as they are needed during back-propagation. \textbf{network.predict(x)} returns only the output of the last layer, i.e. the model output. 
 
 %================================================================
 \subsection{Back Propagation}\label{sec:BackpropImplementation}
@@ -517,10 +517,10 @@ layer = QLayer(n_qubits = 4,
 
 qnn_model = NeuralNetwork(layers = [layer1])
 \end{lstlisting}
-As there are no intermediate layers, we do not need to compute the derivative of the node outputs with respect to their inputs. This opens up for ways of encoding where the parameter shift rule, as implemented in \autoref{sec:AnalyticalGrad} and \autoref{sec:GradientImplementation}, fails. Possible choices is RZZ encoding(as used in the above code) and amplitude encoding.
+As there are no intermediate layers, we do not need to compute the derivative of the node outputs with respect to their inputs. This opens up for ways of encoding where the parameter shift rule, as implemented in \autoref{sec:AnalyticalGrad} and \autoref{sec:GradientImplementation}, fails. Possible choices are RZZ encoding(as used in the above code) and amplitude encoding.
 
 %================================================================
-\subsection{DNNs}\label{sec:DNNs}
+\subsection{Dense Neural Networks}\label{sec:DNNs}
 %================================================================
 In addition to \textbf{QLayer} layers, the neural network framework also implements \textbf{Dense} layers, which are densely connected, classical layers as defined in \autoref{sec:DenseNeuralNetwork}. It can be instantiated in the following way, and put together to form a DNN:
 
@@ -533,7 +533,7 @@ dense1 = Dense(n_features = 4,
               activation = Sigmoid(),
               bias = True)
 \end{lstlisting}
-Here, \textbf{activation} specifies the activation of the layer, in this case the sigmoid function. Setting \textbf{bias} to true enables the use of bias parameters in the layer. Like \textbf{QLayer}, \textbf{Dense} also implements methods like \textbf{\_call\_} for feed forward, and \textbf{grad()} for back-propagation. A DNN can be set up the following way:
+Here, \textbf{activation} specifies the activation function of the layer, in this case the sigmoid function. Setting \textbf{bias} to true enables the use of bias parameters in the layer. Like \textbf{QLayer}, \textbf{Dense} also implements methods like \textbf{\_call\_} for feed forward, and \textbf{grad()} for back-propagation. A DNN can be set up the following way:
 
 \begin{lstlisting}[language=python, numbers=left]
 from layers import Dense, Sigmoid
@@ -554,12 +554,12 @@ layers=[dense1, dense2]
 network = Neuralnetwork(layers)
 \end{lstlisting}
 
-This opens up for construction of neural networks that consists of an arbitrary combination of \textbf{QLayer} and \textbf{Dense} layers, which can be simultaneously optimized using the methods of \autoref{sec:QCNTraining}.
+This opens up for construction of neural networks that consists of an arbitrary combination of \textbf{QLayer} and \textbf{Dense} layers, which can be simultaneously optimized using the methods described in \autoref{sec:QCNTraining}.
 
 %================================================================
 \subsection{Hybrid Models}\label{sec:Hybrid Models}
 %================================================================
-Because of the flexibility of the framework and compatibility of the different layers, it is possible to make hybrid models by combining \textbf{Dense} and \textbf{QLayer} layers:
+Due to the flexibility of the framework and compatibility of the different layers, it is possible to make hybrid models by combining \textbf{Dense} and \textbf{QLayer} layers:
 
 \begin{lstlisting}[language=python, numbers=left]
 dense = Dense(n_features = 64,
@@ -580,7 +580,7 @@ qlayer = QLayer(n_qubits = 4,
 layers=[dense, qlayer]       
 network = Neuralnetwork(layers)
 \end{lstlisting}
-In this code, the initial \textbf{Dense} layer is used to produce 4 outputs from 64 features, which are then subsequently fed to the following \textbf{QLayer} layer. It may be useful to construct such hybrid models for training on data sets with many features, since feeding 64 features directly to a QCN would require 64 qubits when using qubit encoding. This high amount of qubits is generally not feasible for near-term hardware. Note that the use of tanh activation and a scaling of $\pi$ ensure that the output of the \textbf{Dense} layer is in $[-\pi, \pi]$, which we argue in \autoref{sec:Configuring QCNs and DNNs} is a appropriate scaling for QCNs.
+In this code, the initial \textbf{Dense} layer is used to produce 4 outputs from 64 features, which are subsequently fed to the following \textbf{QLayer} layer. It may be useful to construct such hybrid models for training on data sets with many features, since feeding 64 features directly to a QCN would require 64 qubits when using qubit encoding. This high amount of qubits is generally not feasible for near-term hardware. Note that the use of tanh activation and a scaling of $\pi$ ensure that the output of the \textbf{Dense} layer is in $[-\pi, \pi]$, which we argue in \autoref{sec:Configuring QCNs and DNNs} is an appropriate scaling for QCNs.
 
 
 %================================================================
@@ -594,22 +594,22 @@ In order to investigate the vanishing gradient phenomenon discussed in \autoref{
 \begin{equation}\label{eq:model gradient}
     \frac{\partial f(\boldsymbol{x}^{(i)};\boldsymbol{\theta})}{\partial \theta_j}.
 \end{equation}
-Using our framework for neural networks, \autoref{eq:model gradient} be calculated for each data sample using the \textbf{NoCost()} loss function together with sample-wise backward propagation. Given a model \textbf{network}, this can be implemented in the following way:
+Using our framework for neural networks, \autoref{eq:model gradient} is calculated for each data sample using the \textbf{NoCost()} loss function together with sample-wise backward propagation. Given a model \textbf{network}, this can be implemented in the following way:
 
 \begin{lstlisting}[language=python, numbers=left]
 network.cost = NoCost()
 network.backward(samplewise=True)
 \end{lstlisting}
 
-If \autoref{eq:model gradient} vanishes, it follows that also \autoref{eq:LossDerivateWRTparameter} vanishes, for any loss function. The quantity \autoref{eq:model gradient} also has the added benefit of being data agnostic, as it is independent of labels $y^{(i)}$.
+If \autoref{eq:model gradient} vanishes, so does does \autoref{eq:LossDerivateWRTparameter}, for any loss function. The quantity \autoref{eq:model gradient} also has the added benefit of being data agnostic, i.e., it is independent of labels $y^{(i)}$.
 
-Given a QNN $f_{QNN}$, we wish to compute the magnitude of the gradient averaged over $N$ samples $\boldsymbol{x}^{(i)}$ and the parameters $\theta_j$. This allows us to capture the average behaviour of the gradient of the model. To produce a more significant result, this quantity will finally be averaged over $T$ different realizations of the parameters $\boldsymbol{\theta}^{(k)}$. This quantity can be expressed as
+Given a QNN $f_{QNN}$, we wish to compute the magnitude of the gradient averaged over $N$ samples $\boldsymbol{x}^{(i)}$ and the parameters $\theta_j$. This allows us to capture the average behavior of the model's gradient. To produce a more significant result, this quantity will finally be averaged over $T$ different realizations of the parameters $\boldsymbol{\theta}^{(k)}$. This quantity can be expressed as
 
 \begin{equation}\label{eq:magnitude QNN}
     \frac{1}{TNn_{\theta}}\sum_{k=1}^T\sum_{i=1}^N \sum_{j=1}^{n_{\theta}}\big|\frac{\partial f_{QNN}(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{(k)})}{\partial \theta_j}\big|.
 \end{equation}
 
-For QCNs and DNNs, we want computing the same quantity as \autoref{eq:magnitude QNN}, but averaged over the parameters within each layer, rather than all parameters of the model. This enables us to investigate how the average behaviour of the gradient changes from layer to layer. This quantity can be formulated as
+For QCNs and DNNs, we want to compute the same quantity as \autoref{eq:magnitude QNN}, but averaged over the parameters within each layer, rather than all parameters of the model. This enables us to investigate how the average behavior of the gradient changes from layer to layer. This quantity can be formulated as
 
 \begin{equation}\label{eq:magnitude QCN DNN}
     \frac{1}{TNn_{\theta}}\sum_{k=1}^T\sum_{i=1}^N \sum_{j=1}^{n_{\theta}^{l}}\big|\frac{\partial f(\boldsymbol{x}^{(i)};\boldsymbol{\theta}^{k)})}{\partial \theta^{[l]}_j}\big|,
@@ -629,12 +629,12 @@ where $m^{(l)}$ is the number of nodes in layer $l$, and the indices $m$ and $n$
 %================================================================
 To investigate the loss landscape of the QCN model, we calculate the EFIM \autoref{eq:EmpiricalFisher} and its eigen value spectrum using a class \textbf{EFIM}. Given some \textbf{network} and data set \textbf{x}, it can be used in the following way:
 \begin{lstlisting}[language=python, numbers=left]
-from analysis import EFIM
+from analysis import FIM
 
-efim = EFIM(network)
-efim.fit(x)
+fim = FIM(network)
+fim.fit(x)
 \end{lstlisting}
-Calling \textbf{efim.fit(x)} calculates the EFIM of \textbf{network} over the data \textbf{x}, and is impemented as
+Calling \textbf{fim.fit(x)} calculates the EFIM of \textbf{network} over the data \textbf{x}, and is implemented as
 \begin{lstlisting}[language=python, numbers=left]
 def fit(self, x):
     n_samples = x.shape[0]
@@ -650,14 +650,14 @@ def fit(self, x):
 
     self.fim = 1 / n_samples * gradient_flattened.T @ gradient_flattened
 \end{lstlisting}
-At line 4, the cost function of the network is set to \textbf{NoCost()}. This ensures that \textbf{backward} calculates the gradient of the model output and not any particular loss, which is required by the EFIM. In addition, specifying \textbf{samplewise=True} in the \textbf{backward()} method stops the gradient from being averaged over all the samples. Rather, it is stored individually for each sample. The following for-loop unravels and concatenates all the gradients of the various layers into a single matrix with dimension $(N, n_{\theta})$, which is the number of samples and parameters, respectively. The EFIM is calculated as a matrix product in line $13$, normalized by the number of samples. This matrix is then stored in \textbf{self.efim}
+At line 4, the cost function of the network is set to \textbf{NoCost()}. This ensures that \textbf{backward} calculates the gradient of the model output and not any particular loss, which is required by the EFIM. In addition, specifying \textbf{samplewise=True} in the \textbf{backward()} method stops the gradient from being averaged over all the samples. Rather, it is stored individually for each sample. The following for-loop unravels and concatenates all the gradients of the various layers into a single matrix with dimension $(N, n_{\theta})$, which is the number of samples and parameters, respectively. The EFIM is calculated as a matrix product in line $13$, normalized by the number of samples. This matrix is then stored in \textbf{self.fim}
 
 After calculating the EFIM, its eigenvalue spectrum can be calculated as 
 
 \begin{lstlisting}[language=python, numbers=left]
-eigenvalue_spectrum = efim.eigen(x)
+eigenvalue_spectrum = fim.eigen(x)
 \end{lstlisting}
-This performs a simple eigenvalue decomposition of \textbf{self.efim} using numpy's \textbf{linalg.eigh} to extract the eigenvalues. Because the EFIM is often very degenerate, some of the lower lying eigenvalues turn out negative, likely because of floating-point errors. To combat this, any eigenvalue lower than $10^{-25}$ is set to this value. 
+This performs a simple eigenvalue decomposition of \textbf{self.fim} using numpy's \textbf{linalg.eigh} to extract the eigenvalues. Because the EFIM is often highly degenerate, some of the lower lying eigenvalues turn out negative, likely because of floating-point errors. To combat this, any eigenvalue lower than $10^{-25}$ is set to this value. 
 
 %================================================================
 \subsection{Trajectory Length}\label{sec:TrajectoryLengthImplement}
@@ -670,18 +670,18 @@ from analysis import TrajectoryLength
 tl = TrajectoryLength(network)
 traj_len, traj_proj = tl.fit(x)
 \end{lstlisting}
-This produces a two python list: \textbf{traj\_len} contains the trajectory length of the layer outputs. \textbf{traj\_proj} contains the layer outputs themselves, projected down onto 2D for visualization. The projection was done using scikit-learn's \cite{scikit-learn} PCA decomposition. 
+This produces two python lists: \textbf{traj\_len} containing the trajectory length of the layer outputs and \textbf{traj\_proj} containing the layer outputs themselves, projected down onto 2D for visualization. The projection was done using scikit-learn's \cite{scikit-learn} PCA decomposition. 
 
 
 %================================================================
 \section{Numerical Experiments}\label{sec:Numerical Experiments}
 %================================================================
-For easy reading, we will present hyper-parameters and configuration details in \autoref{chap:results_discussion} alongside the relevant results and discussion. However, for sake of tidiness, we will present and discuss configuration choices that appear very frequently in the analysis in this section.
+For easy reading, we will present hyper-parameters and configuration details in \autoref{chap:results_discussion} alongside the relevant results and discussion. However, for sake of tidiness, we will present and discuss configuration choices that appear frequently in the analysis in this section.
 
 %================================================================
 \subsection{Initialization}\label{sec:Initialization}
 %================================================================
-For QNNs and QCNs, the parameters will be initialized uniformly as $\theta_i \sim U(-\pi, \pi)$. Since Pauli rotations(used in the simple ansatz \autoref{eq:simple ansatz}) have a periodicity of $2\pi$, this choice of sampling allows us to reach the whole space of models defined by the architecture, as all possible rotation angles can be realized. Initializations that have this characteristic is typical to use for machine learning models based on PQCs \cite{abbas2020power}\cite{skolik2020layerwise}.
+For QNNs and QCNs, the parameters will be initialized uniformly as $\theta_i \sim U(-\pi, \pi)$. Note that Pauli rotations(used in the simple ansatz \autoref{eq:simple ansatz}) have a periodicity of $2\pi$, i.e. $R_j(x) = R_j(x+2\pi)$, so all possible rotation angles can be realized using this initialization. Thus, it is possible to reach the whole space of models defined by the architecture. Initializations with this characteristic is often used for machine learning models based on PQCs \cite{abbas2020power, skolik2020layerwise}.
 
 For DNNs, we will use the popular Xavier initialization \cite{xavier}, which is the default initialization used by pyTorch\cite{pytorch} when using densely connected layers. The Xavier initialization is obtained by sampling the weights and biases $\boldsymbol{\theta^{l}}$ of layer $l$ uniformly as 
 \begin{equation}
@@ -728,14 +728,14 @@ Note that we first perform a standardization of the data. This is to insure that
 %================================================================
 \subsection{Optimization}\label{sec:Optimization}
 %================================================================
-We use Adam, as presented in \autoref{sec:AdamOptimizer}, to optimize all models in this thesis. We use default hyper-parameters suggested by the authors, \citet{kingma2017adam}, together with a learning rate of $lr=0.1$. This is the same learning rate as used by \citet{abbas2020power} for training QNNs. Being a relatively large learning rate, it leads to quick optimization of the models. This is a useful property, as each training iteration can be quite time consuming due to the overhead associated with simulating quantum circuits on classical hardware.
+We use Adam, as presented in \autoref{sec:AdamOptimizer}, to optimize all models in this thesis. We use default hyper-parameters suggested by the authors, \citet{kingma2017adam}, together with a learning rate of $lr=0.1$. This is the same learning rate as used by \citet{abbas2020power} for training QNNs. Being a relatively high learning rate, it leads to quick optimization of the models. This is a useful property, as each training iteration can be quite time consuming due to the overhead associated with simulating quantum circuits on classical hardware.
 
 %================================================================
 \subsection{Configuring QCNs and DNNs}\label{sec:Configuring QCNs and DNNs}
 %================================================================
-Unless specified otherwise, the outputs of intermediate layers of QCNs withwill be scaled to the interval $a_i^{(l)} \in [-\pi, \pi]$. Using the same argument about the periodicity of Pauli rotations from \autoref{sec:Initialization}, this enables(or at least makes it more likely) the outputs of one layer to realize any rotation angle in the next layer. For the last layer, the output will be scaled to $a_i^{(L)} \in [0, 1]$. This is sufficient, given that the target $y$ is scaled to within this interval. 
+Unless specified otherwise, the outputs of intermediate layers of QCNs withwill be scaled to the interval $a_i^{(l)} \in [-\pi, \pi]$. Using the same argument about the periodicity of Pauli rotations from \autoref{sec:Initialization}, this enables the outputs of one layer to potentially realize any rotation angle in the next layer. For the last layer, the output will be scaled to $a_i^{(L)} \in [0, 1]$. This is sufficient, given that the target $y$ is scaled to within this interval. 
 
-For DNNs, we will be using Tanh activations on all layers, including the output layer. This is partly because it is a hugely popular choice, known to produce fast-converging neural models\cite{hands-on}. Further, tanh is also a bounded function, returning values on the interval $[-1, 1]$, unlike the also popular activation ReLU. This results in the outputs of intermediate layers to bounded as well, like for QCNs, making them easier to compare.
+For DNNs, we will be using tanh activations on all hidden layers. This is partly because it is a hugely popular choice, known to produce fast converging neural models\cite{hands-on}. Further, tanh is also a bounded function, returning values on the interval $[-1, 1]$, unlike the also popular activation function, namly ReLU. This results in the outputs of intermediate layers to be bounded as well, like for QCNs, making them easier to compare.
 
 
 
