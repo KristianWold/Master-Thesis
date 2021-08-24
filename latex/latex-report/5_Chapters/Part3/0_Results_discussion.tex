@@ -45,7 +45,7 @@ In order to investigate the average behaviour of the local gradients \autoref{eq
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{latex/figures/vanishing_gradient_partial_input.pdf}
-    \caption{Average magnitude of local gradients \autoref{eq:localGradients} calculated for each layer for various 8 layer QCNs. This quantity was calculated using \autoref{eq:magnitude local}. The number of qubits per node are constant for each QCN, and the number of nodes per layer is set equal the number of qubits. The QNNs are fed $N=100$ points of uniformly sampled samples, where the number of features is set equal the number of qubits. The standard deviation is calculated over 10 different realizations of the model parameters.}
+    \caption{Average magnitude of local gradients \autoref{eq:localGradients} calculated for each layer for various QCNs with eight layers. This quantity was calculated using \autoref{eq:magnitude local}. The number of qubits per node are constant for each QCN, and the number of nodes per layer is set equal the number of qubits. The QNNs are fed $N=100$ points of uniformly sampled samples, where the number of features is set equal the number of qubits. The standard deviation is calculated over 10 different realizations of the model parameters.}
     \label{fig:QCN_local_vanishing}
 \end{figure}
 
@@ -117,16 +117,15 @@ J    & DNN & NA& NA   & 3      & 9     & NA             & 163 \\ \hline
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[height=1.9in]{latex/figures/FIM_qubits_4.pdf}
-        \caption{Lorem ipsum}
-        
+        \caption{Comparison of the EFIM spectrum for QNN, QCN and DNN. The QNN and QCN has four qubits in each circuit.}
     \end{subfigure}%
     ~ 
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[height=1.9in]{latex/figures/FIM_qubits_6.pdf}
-        \caption{Lorem ipsum}
+        \caption{Comparison of the EFIM spectrum for QNN, QCN and DNN. The QNN and QCN has six qubits in each circuit.}
     \end{subfigure}
-    \caption{Comparison of EFIM eigenvalue spectrum between QNNs, QCNs and DNNs. For details about the architectures, see \autoref{tab:FIM models}. The EFIM is calculated using $N=200$ points of uniformly sampled points, where the number of features are set equal the number of qubits. The EFIM spectrum is finally averaged over 10 different model realizations.}
+    \caption{Comparison of EFIM spectrum between QNNs, QCNs and DNNs. For details about the architectures, see \autoref{tab:FIM models}. The EFIM is calculated using $N=200$ points of uniformly sampled points, where the number of features are set equal the number of qubits. The EFIM spectrum is finally averaged over 10 different model realizations.}
     \label{fig:FIM Comparison}
 \end{figure}
 
@@ -139,14 +138,14 @@ Moving over to the QCNs, we see from \autoref{fig:FIM Comparison} that the spect
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \includegraphics[height=1.8in]{latex/figures/FIM_qubits_4_comparison.pdf}
-        \caption{Comparison of the EFIM eigenvalue spectrum for different 4-qubit QNNs and QCNs.}
+        \caption{Comparison of the EFIM spectrum for different QNNs and QCNs with four qubits.}
         \label{fig:FIM QCN a}
     \end{subfigure}%
     ~ 
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \includegraphics[height=1.8in]{latex/figures/FIM_qubits_6_comparison.pdf}
-        \caption{Comparison of the EFIM eigenvalue spectrum for different 6-qubit QNNs and QCNs.}
+        \caption{Comparison of the EFIM spectrum for different QNNs and QCNs with six qubits.}
         \label{fig:FIM QCN b}
     \end{subfigure}
     \caption{Comparison of the EFIM eigenvalue spectrum between different QNNs and QCNs. For details about the architectures, see \autoref{tab:FIM models}. The EFIM is calculated using $N=200$ points of uniformly sampled points, where the number of features is set equal the number of qubits for each model. The EFIM spectrum is finally averaged over 10 different model realizations to produce a more significant result.}
@@ -261,36 +260,28 @@ D    & DNN & NA&  4 & 11& 309  \\ \hline
 %================================================================
 \subsection{Single Node Expressivity}\label{sec:Single Node Expressivity}
 %================================================================
-To attempt elucidating the discrepancy of expressivity between QCNs and DNNs, we investigate the functional form of node outputs for QCNs and DNNs. To do this, we utilize two 4-qubit QNN with qubit encoding and two repetitions of the simple ansatz. We encode data in two different ways: With the first QNN, we will encode a single feature $x$ to its first. With the second QNN, we pad the samples by repeating the feature  such as $\boldsymbol{x} = (x, x, x, x)$ and encode it in the usual way, creating a tensorial feature map for $x$ as explained in \autoref{sec:Tensorial Feature Mapping}. For comparison, we also feed the padded samples $\boldsymbol{x}$ to a single DNN node with Tanh activation. In \autoref{fig:activations}, we plot the output the different nodes for different parameters realizations and values of $x$.
+To elucidate the discrepancy of expressivity between QCNs and DNNs, we investigate the functional form of node outputs for QCNs and DNNs. To do this, we utilize a four-qubit QNN with qubit encoding and two repetitions of the simple ansatz. We prepare data $\boldsymbol{x} = (x, x, x, x)$, and encode it in the usual way. For comparison, we also feed the samples $\boldsymbol{x}$ to a single DNN node with tanh activation. In \autoref{fig:activations}, we plot the output the different nodes for different parameters realizations and values of $x$.
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
-        \includegraphics[height=1.9in]{latex/figures/activation_qnn_1.pdf}
-        \caption{Lorem ipsum}
-        \label{fig:activations single}
-        
+        \includegraphics[height=1.9in]{latex/figures/activation_qnn_4.pdf}
+        \caption{QNN}
+        \label{fig:activations tensorial}
     \end{subfigure}%
     \hfill 
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
-        \includegraphics[height=1.9in]{latex/figures/activation_qnn_4.pdf}
-        \caption{Lorem ipsum}
-        \label{fig:activations tensorial}
-    \end{subfigure}
-    \vskip\baselineskip
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
         \includegraphics[height=1.9in]{latex/figures/activation_dnn.pdf}
-        \caption{Lorem ipsum}
+        \caption{DNN node with tanh activation}
         \label{fig:activations DNN}
     \end{subfigure}%
     \caption{Caption place holder}
     \label{fig:activations}
 \end{figure}
 
-In \autoref{fig:activations single}, we see the output of the QNN encoding a single feature. Since the samples are only encoded once, it doesn't compute a state whose amplitudes represent polynomials of the input. Consequently, the outputs resemble simple trigonometric functions. Seen from \autoref{fig:activations tensorial}, utilizing the tensorial feature mapping enables the QNN to produces a much flexible output, reflecting the polynomial representation of the data in the prepared state. \autoref{fig:activations DNN} shows that the output of the DNN node is constrained to the functional form of the tanh activation function.   
+Seen from \autoref{fig:activations tensorial}, utilizing the  feature mapping enables the QNN to produces a much flexible output, reflecting the polynomial representation of the data in the prepared state. \autoref{fig:activations DNN} shows that the output of the DNN node is constrained to the functional form of the tanh activation function.   
 
 
 

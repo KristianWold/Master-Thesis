@@ -36,7 +36,7 @@ In the sections to come, we will discuss specific choices of feature encoding, a
 %================================================================
 \section{Feature Encoding}\label{sec:FeatureEncoding}
 %================================================================
-In this section, we will introduce three ways of doing feature encoding, namely \emph{qubit encoding}, \emph{tensorial feature map} and \emph{RZZ encoding}. 
+In this section, we will introduce three ways of doing feature encoding, namely \emph{qubit encoding}, and \emph{RZZ encoding}. We will also introduce \emph{latent qubits}, used for increasing the circuit size and the size of the resulting Hilbert space. 
 
 %================================================================
 \subsection{Qubit Encoding}\label{sec:QubitEncoding}
@@ -96,28 +96,27 @@ Writing the tensor product out as an explicit state vector, we get
 \end{equation}
 We see from this that qubit encoding provides a state whose amplitudes encode interactions between the features. In this sense, it computes an exponential number of interactions between features in constant time, potentially creating a powerful representation of the data useful for solving a give learning problem.
 
-
 As the the number of features are increased, the number of amplitudes will increase exponentially and contribute higher and higher interactions, creating a complex representation of the data in Hilbert space. 
 
 As the circuit depth is quite low, qubit encoding is an effective method for embedding $p$ features into a $2^p$ dimensional Hilbert space. However, the state resulting from qubit encoding is mathematically very simple, which may limit the overall expressive power of the final model. In the next subsection, we will present a more complex way of encoding features which has been shown to improve the overall flexibility of the machine learning model in some circumstances. 
 
 
 %================================================================
-\subsection{Tensorial Feature Mapping}\label{sec:Tensorial Feature Mapping}
+%\subsection{Tensorial Feature Mapping}\label{sec:Tensorial Feature Mapping}
 %================================================================
 
-From \autoref{eq:qubit rotation interaction}, we see that qubit encoding computes interactions between the features. This observation can be used to create interesting representations for data of few features by repeating them multiple times, at the expense of including more qubits. By imposing $x_1 = x_2 = x$ in the example in \autoref{sec:QubitEncoding}
+%From \autoref{eq:qubit rotation interaction}, we see that qubit encoding computes interactions between the features. This observation can be used to create interesting representations for data of few features by repeating them multiple times, at the expense of including more qubits. By imposing $x_1 = x_2 = x$ in the example in \autoref{sec:QubitEncoding}
 
-\begin{equation}\label{eq:tensorial feature mapping}
-\begin{bmatrix}
-    \cos(\frac{x}{2})^2 \\
-    \sin(\frac{x}{2})\cos(\frac{x}{2}) \\
-    \sin(\frac{x}{2})\cos(\frac{x}{2}) \\
-    \sin(\frac{x}{2})^2 \\
-    \end{bmatrix}.
-\end{equation}
+%\begin{equation}\label{eq:tensorial feature mapping}
+%\begin{bmatrix}
+%    \cos(\frac{x}{2})^2 \\
+%    \sin(\frac{x}{2})\cos(\frac{x}{2}) \\
+%    \sin(\frac{x}{2})\cos(\frac{x}{2}) \\
+%    \sin(\frac{x}{2})^2 \\
+%    \end{bmatrix}.
+%\end{equation}
 
-This technique is sometimes called  \emph{tensorial feature mapping}(kilde), and results in a state that encodes polynomials of $\sin$ and $\cos$ transformations of data, as seen in \autoref{eq:tensorial feature mapping}. In (kilde), tensorial feature mapping was shown to produce superior QNN models over normal qubit encoding. 
+%This technique is sometimes called  \emph{tensorial feature mapping}(kilde), and results in a state that encodes polynomials of $\sin$ and $\cos$ transformations of data, as seen in \autoref{eq:tensorial feature mapping}. In (kilde), tensorial feature mapping was shown to produce superior QNN models over normal qubit encoding. 
 
 
 %================================================================
@@ -386,7 +385,7 @@ where $\boldsymbol{\theta}$ is the collection of all $\boldsymbol{\theta}^{[l,j]
 
 The sequential transformation resulting from the multi-circuit architecture of QCNs offer several interesting properties compared to single circuit QNN models. The circuits can be evaluated one at a time and the output stored classically. This makes it possible to compute very large models of many parameters without the need for doing a long coherent computation on a quantum computer. While QNNs of many parameters must have either high circuits depths and or consist of many qubits (or both), QCN can on the other hand consist of many more shallow circuits of few qubits, much more suitable for near-term quantum computers. 
 
-Further, the repeated embedding and estimation of outputs of intermediate layers may alter the space of functions possible to compute in an interesting way. This is because each of these steps introduce a nonlinear transformation of the data. For classical neural networks, we know from \autoref{sec:DenseNeuralNetwork} that repeated nonlinear transformation is key for their great expressive power. Switching over to the single-circuit QNN model, nonlinearity is introduced only twice: First when the features are encoded as a quantum state using rotations such as $R_j(x_i)\ket{0} = \cos(\frac{x_i}{2})\ket{0} - i\sin(\frac{x_i}{2})\sigma_j\ket{0}$. The second time is when an output is derived by estimating an expectation value, which relates to the modulo square of the amplitudes of the state, i.e. $|\alpha_k|^2$. All other processing of the data is performed by the ansatz, which by definition is unitary and therefore linear in nature. In this sense, it could be that the formulation of QNNs as shown in \autoref{fig:QNN} could be a bit constrained with respect to what functions it can compute. By combining several circuits, nonlinearity is introduced with each layer, possibly creating a more powerful model able to fit more complicated functions.  
+Further, the repeated encoding and estimation of outputs of intermediate layers introduce nonlinearities to the transformation of the data multiple times may alter the space of functions possible to compute in an interesting way. This is because each of these steps introduce a nonlinear transformation of the data. For classical neural networks, we know from \autoref{sec:DenseNeuralNetwork} that repeated nonlinear transformation is key for their great expressive power. Switching over to the single-circuit QNN model, nonlinearity is introduced only twice: First when the features are encoded as a quantum state using rotations such as $R_j(x_i)\ket{0} = \cos(\frac{x_i}{2})\ket{0} - i\sin(\frac{x_i}{2})\sigma_j\ket{0}$. The second time is when an output is derived by estimating an expectation value, which relates to the modulo square of the amplitudes of the state, i.e. $|\alpha_k|^2$. All other processing of the data is performed by the ansatz, which by definition is unitary and therefore linear in nature. In this sense, it could be that the formulation of QNNs as shown in \autoref{fig:QNN} could be a bit constrained with respect to what functions it can compute. By combining several circuits, nonlinearity is introduced with each layer, possibly creating a more powerful model able to fit more complicated functions.  
 
 
 
