@@ -3,7 +3,7 @@
 %================================================================
 In this chapter, we will present details surrounding implementation of algorithms and methods presented in \autoref{part:Theory}. For this thesis, we have developed an elaborate frame work for doing machine learning, capable of implementing dense neural networks(DNN, \autoref{eq:DNN}) and quantum circuit networks(QCN, \autoref{eq:QCN}). In addition, various numerical tools for analyzing the models are available. The code base is object-orientated using Python, focusing on flexibility. This grants a high degree freedom when specifying model architecture, such as setting the number of layers, number of nodes, type of activation functions, loss function and optimizer. The frame work is also capable of implementing hybrid models mixing both DNN and QCN layers. To allow implementation of quantum machine learning, the frame work is built around Qiskit\cite{Qiskit}, an IBM-made python-package used for emulating quantum circuits. 
 
-All source code developed for this thesis can be found on our GitHub page \url{https://github.com/KristianWold/Master-Thesis}, together with notebooks containing training of models, generation of data, analyis and plotting. For easier reading, all python types referred to in this thesis will be highlighted in \textbf{bold}.
+All source code developed for this thesis can be found on our GitHub page \url{https://github.com/KristianWold/Master-Thesis}, together with notebooks containing training of models, generation of data, analyis and plotting. For easier reading, all python types referred to in this thesis will be highlighted in \textbf{bold}. All simulations in this thesis were performed on an Ubuntu desktop computer equipped with a Ryzen 3900x CPU and 32 GB RAM.
 
 %================================================================
 \section{Qiskit}\label{sec:Qiskit}
@@ -144,7 +144,7 @@ There are three main components for simulating noisy devices. The first is the \
 
 The next component is a \emph{coupling map} that defined which the coupling of the qubit, i.e. what pairs of qubits that can interact via two-qubits gates (see \autoref{sec:Nisq}). The last component defines the basis gates of the quantum computer. 
 
-In this thesis, we will be using the IBM quantum computer Santiago, which is has 5 qubits and only linear connectivity between the qubits. This choice is deliberate, as qubit encoding and the simple ansatz are specially made to work efficiently on such architectures. To access and store the backend simulating this quantum computer, we can use the following code:
+In this thesis, we will be using the IBM quantum computer Santiago \cite{santiago}, which has 5 qubits with only linear connectivity between the qubits. This choice is deliberate, as qubit encoding and the simple ansatz are specially made to work efficiently on such architectures. To access and store the backend simulating this quantum computer, we can use the following code:
 
 \begin{lstlisting}[language=python, numbers=left]
 import pickle
@@ -586,6 +586,8 @@ In this code, the initial \textbf{Dense} layer is used to produce 4 outputs from
 %================================================================
 \section{Tools for Analysis}\label{sec:Tools for Analysis Imp}
 %================================================================
+In this section, we present details surrounding the implementation of methods in \autoref{chap:TfA}. 
+
 
 %================================================================
 \subsection{Magnitude of Gradients}\label{sec:Magnitude of Gradients}

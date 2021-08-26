@@ -11,7 +11,7 @@
 %================================================================
 
 
-\emph{Machine learning} is the hugely successful field of algorithms that allow computers to solve problems using data, relieving the need for tailoring problem-specific solutions \cite{SupervisedwquantumComputers}. This practice has transformed nearly every aspect of our modern society, from medicine (kilde) to finance (kilde). One of the biggest branches of machine learning is \emph{supervised learning}, which is the practice of training a model to learn a relation between input and output data \cite{hastie01statisticallearning}. Typically, one starts by acquiring a \emph{training set} of \emph{labelled data}, which is a collection of pairs of input and output data. As an example, the inputs and outputs can be \emph{age} and \emph{salary} of people, respectively. By training the a machine learning model on the training set, one hopes that it learns the general relation between \emph{age} and \emph{salary}. If this is the case, the model can be used for predicting the salary of people based on their age, even for values of \emph{age} not present in the training set. If the latter is the case, the model is said to generalize to unseen data, which is required if the model should be used for prediction. How are machine learning models trained? It is typical to define a \emph{loss function} (also commonly known as risk, cost or error function \citet{}), which is a scalar function that measures how accurately a model predicts the outputs from the corresponding inputs \cite{hastie01statisticallearning}. The lower the value of the loss function, the better the model reproduce the outputs. Therefore, training a model involves minimizing the loss function with respect to the training set.
+\emph{Machine learning} is the hugely successful field of algorithms that allow computers to solve problems using data, relieving the need for tailoring problem-specific solutions \cite{SupervisedwquantumComputers}. This practice has transformed nearly every aspect of our modern society, from medicine \cite{medicine} to finance \cite{finance}. One of the biggest branches of machine learning is \emph{supervised learning}, which is the practice of training a model to learn a relation between input and output data \cite{hastie01statisticallearning}. Typically, one starts by acquiring a \emph{training set} of \emph{labelled data}, which is a collection of pairs of input and output data. As an example, the inputs and outputs can be \emph{age} and \emph{salary} of people, respectively. By training the a machine learning model on the training set, one hopes that it learns the general relation between \emph{age} and \emph{salary}. If this is the case, the model can be used for predicting the salary of people based on their age, even for values of \emph{age} not present in the training set. If the latter is the case, the model is said to generalize to unseen data, which is required if the model should be used for prediction. How are machine learning models trained? It is typical to define a \emph{loss function} (also commonly known as risk, cost or error function \citet{}), which is a scalar function that measures how accurately a model predicts the outputs from the corresponding inputs \cite{hastie01statisticallearning}. The lower the value of the loss function, the better the model reproduce the outputs. Therefore, training a model involves minimizing the loss function with respect to the training set.
 
 A particular powerful family of machine learning models are the \emph{neural networks} (NN), which are models consisting of layers of artificial neurons, originally inspired by the neural structures in the brain \cite{hands-on}. Neural networks are \emph{parametric} models, meaning that the input-output relation that they compute are determined by a set of real-valued parameters. When setting up a NN, the goal of the training is to find the correct parameters such that the given loss function is minimized. The approach for doing this in practice is to calculate the derivative of the loss function with respect to the parameters of the NN. This derivative is called the \emph{gradient}, and quantifies how the loss function change when the parameters are adjusted. Using gradient-based methods, such as gradient descent, the gradient can be utilized to adjust the parameters loss decreases \cite{hands-on}. The \emph{backpropagation algorithm} is commonly used for calculating the gradient of NNs \cite{hands-on}, tailored for accommodating their layered structure. 
 
@@ -21,9 +21,9 @@ Increasing the number of layers of NNs has been shown to increase their flexibil
 %================================================================
 \subsection{Quantum Computing}\label{sec:Quantum Computing Intro}
 %================================================================
-\emph{Quantum computing} is the study of how information can be processed using systems that obey the laws of quantum mechanics \cite{NielsenQuantum}. In 1982, Richard Feynman pointed out that quantum mechanical systems are notoriously difficult to simulate on classical computers. He suggested that this complexity could be exploited by build a computer based on the principals of quantum mechanics \cite{NielsenQuantum}. Only three years later, David Deutsch formalized a theory describing such a device, a \emph{universal quantum computer} \cite{Deutsch1985QuantumTT}. Even though such a device was not yet realized physically, people started developing algorithms for quantum computers that theorized to be more efficient than their classical counterparts. In 1994, Peter Shor developed Shor's algorithm for factoring integers in polynomial time, which is believed to be exponentially hard on classical computers \cite{Shor_1997}.  
+\emph{Quantum computing} is the study of how information can be processed using systems that obey the laws of quantum mechanics \cite{NielsenQuantum}. In 1982, Richard Feynman pointed out that quantum mechanical systems are notoriously difficult to simulate on classical computers. He suggested that this complexity could be exploited by build a computer based on the principals of quantum mechanics \cite{NielsenQuantum}. Only three years later, David Deutsch formalized a theory describing such a device, a \emph{universal quantum computer} \cite{Deutsch1985QuantumTT}. Even though such a device was not yet realized physically, people started developing algorithms for quantum computers that theorized to be more efficient than their classical counterparts. In 1994, Peter Shor developed Shor's algorithm for factoring integers in polynomial time, which is believed to be exponentially hard on classical computers \cite{Shor_1997}. 
 
-Today, there is a lot of focus on making quantum computers, with big companies such as Google and IBM at the forefront. Despite the effort, today's quantum computers are not able to implement useful quantum algorithms that would change the world right away. This is because today's quantum computers are small and perform very noisy computations \cite{Preskill_2018}. As the quantum computer performs an algorithm, it manipulates a very delicate quantum state. During the span of the computation, the state is susceptible to interference from the surrounding environment, causing the information of the system to degrade. This phenomenon is called \emph{decoherence}, and puts a strict limit on length of the algorithm one can implement \cite{saki2019study}. This makes many of the more promising quantum algorithms, such as Shor's algorithm, unfeasible to implement today.
+Today, there is a lot of focus on making quantum computers, with big companies such as Google and IBM at the forefront. Despite the effort, today's quantum computers are not able to implement useful quantum algorithms that would change the world right away. This is because today's quantum computers are small and perform very noisy computations \cite{Preskill_2018}. As it performs an algorithm, also called a \emph{circuit}, it manipulates a very delicate quantum state. During the span of the computation, the state is susceptible to interference from the surrounding environment, causing the information of the system to degrade. This phenomenon is called \emph{decoherence}, and puts a strict limit on length of the circuit one can implement \cite{saki2019study}. This makes many of the more promising quantum algorithms, such as Shor's algorithm, unfeasible to implement today.
 
 
 %================================================================
@@ -38,48 +38,10 @@ By combining machine learning and quantum computing, you get the emerging interd
     \label{fig:cccq}
 \end{figure}
 
-Lately, there has been many proposals of methods of implementing machine learning using quantum computers. 
+Lately, there has been many proposed methods for implementing machine learning using quantum computers. One of the promising candidates are parameterized quantum circuits (PQC) used for machine learning. PQCs are a family of quantum algorithms that construct a quantum state based on input data and parameters \citet{Benedetti_2019}. Because the algorithm's parametric nature, it is often called a \emph{quantum neural network} (QNN). Unlike algorithms that are tailored for solving specific problems, like Shor's algorithm, QNNs use data to learn a specific set of parameters that produce a solution to a problem. During training of such algorithms, quantum computers are used to evaluate the circuit, while classical computers are utilized to update the parameters. By leveraging both classical and quantum computation, it is believed QNNs are ideal to be implemented on noisy, near-term quantum devices \citet{Cerezo_2021}. Quantum neural networks have already been used to solve several problems in supervised learning \cite{Benedetti_2019, abbas2020power, lloyd2018quantum}. \citet{abbas2020power} showed that a QNN could be trained to distinguish between different plants from the \emph{Iris} data set. They also showed that their model trained faster and was more flexible than equivalent, classical models, even when trained on today's noisy quantum computers.
 
+Even though QNNs and other methods for quantum machine learning have been shown to outperform traditional methods, \citet{McClean_2018} point out that there are few rigorous proofs for their performance when used on larger learning problems. Further, they showed that also QNNs suffer from similar problems as NNs: When QNNs are scaled up, e.g. by increasing the number of parameters and inputs, their gradients tend to vanish exponentially fast. This is the same behaviour as when the number of layers of NNs are increased, and cause QNNs to become intractable to train when scaled up to handle larger problems. A vanishing gradient is an even bigger problem when the QNN is trained on a noisy quantum computer, as this results in a bad signal-to-noise ratio for the gradient. Consequently, the optimization of the QNN fails to converge \cite{skolik2020layerwise}.
 
-
-
-
-
-Machine learning
-\begin{itemize}
-    \item Success of machine learning
-    \item Neural networks
-    \item supervised learning
-    \item loss function
-    \item gradient -> backpropagation -> vanishing gradient!
-    \item manifests as barren plateau -> EFIM
-    \item black box -> expressivity -> trajectory length
-\end{itemize}
-
-Quantum Computing
-\begin{itemize}
-    \item Feynman
-    \item Superior algorithms -> Shors algorithm
-    \item Real hardware -> noisy!
-\end{itemize}
-
-Quantum Machine learning
-\begin{itemize}
-    \item Merging of two disciplines
-    \item QQ, QC, CQ, CC
-    \item CQ -> using quantum computers for machine learning on classical data
-    \item some examples
-    \item akin to neural network -> quantum neural network
-    \item gradient -> parameter shift rule
-    \item bottle-necked by noisy hardware -> few qubits, decoherence, limit the size of the model
-    \item also vanishing gradient -> in the number of qubits(and gates)
-\end{itemize}
-
-Quantum Circuit Network
-\begin{itemize}
-    \item Sequential structure of consisting of QNNs
-    \item How does one 
-    \item Can the use of multiple circuits allow for efficient models with shallow circuits? Will this help the gradient? More easy to estimate gradient? Does the sequential architecture increase the flexibility? Are they possible to train in practice? Suitable for noisy hardware?
-\end{itemize}
+Is it possible to implement a quantum machine learning model that is both scaleable, fast to train, and performs well on today's noisy quantum computers? \citet{stian} introduced a multi-circuit model for machine learning that utilizes several QNNs to sequentially transform data. This model was later dubbed a \emph{quantum circuit network} (QCN), and corresponds closely to the layered structure of NNs where each node is a QNN. While they showed that the QCN was able to train on and reproduce non-linear 1D data, very little is known about its properties. Is it possible to derive an algorithm akin to backpropagation to calculate its gradient? How does its expressivity change as the model is scaled up? Does it suffer from a vanishing gradient? How does it perform on noisy quantum hardware? These are some of the questions we wish to touch upon in this thesis, which we will elaborate on in the next section.
 
 
