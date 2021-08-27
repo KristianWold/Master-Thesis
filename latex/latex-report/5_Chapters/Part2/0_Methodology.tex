@@ -3,7 +3,7 @@
 %================================================================
 In this chapter, we will present details surrounding implementation of algorithms and methods presented in \autoref{part:Theory}. For this thesis, we have developed an elaborate frame work for doing machine learning, capable of implementing dense neural networks(DNN, \autoref{eq:DNN}) and quantum circuit networks(QCN, \autoref{eq:QCN}). In addition, various numerical tools for analyzing the models are available. The code base is object-orientated using Python, focusing on flexibility. This grants a high degree freedom when specifying model architecture, such as setting the number of layers, number of nodes, type of activation functions, loss function and optimizer. The frame work is also capable of implementing hybrid models mixing both DNN and QCN layers. To allow implementation of quantum machine learning, the frame work is built around Qiskit\cite{Qiskit}, an IBM-made python-package used for emulating quantum circuits. 
 
-All source code developed for this thesis can be found on our GitHub page \url{https://github.com/KristianWold/Master-Thesis}, together with notebooks containing training of models, generation of data, analyis and plotting. For easier reading, all python types referred to in this thesis will be highlighted in \textbf{bold}. All simulations in this thesis were performed on an Ubuntu desktop computer equipped with a Ryzen 3900x CPU and 32 GB RAM.
+All source code developed for this thesis can be found on our GitHub page \url{https://github.com/KristianWold/Master-Thesis}, together with notebooks containing training of models, generation of data, analysis and plotting. For easier reading, all python types referred to in this thesis will be highlighted in \textbf{bold}. All simulations in this thesis were performed on an Ubuntu desktop computer equipped with a Ryzen 3900x CPU and 32 GB RAM.
 
 %================================================================
 \section{Qiskit}\label{sec:Qiskit}
@@ -215,9 +215,9 @@ def simple_ansatz(circuit, data_reg, theta):
 Here, \textbf{data\_reg.size()} was used to retrieve the number of qubits present in the register. The first for-loop entangles the qubits in sequence using CNOT gates. The last for-loop applies an $R_y$ rotation to each qubit corresponding to the parameters.
 
 %================================================================
-\subsection{Inference}\label{sec:InferenceImplementation}
+\subsection{Model Output}\label{sec:InferenceImplementation}
 %================================================================
-To derive an inference from the model, we must estimate an expectation value as explained in \autoref{sec:Inference}. We can do this by making a callable object \textbf{y\_pred = sampler(counts)}, where \textbf{counts} is a python dictionary containing the measuring results, as explained in \autoref{sec:MeasurementQiskit} and \autoref{sec:Exact Expectation Value}. We can implement a function estimating the parity(see \autoref{sec:Inference}) in the following way:
+To derive a model output, we must estimate an expectation value as explained in \autoref{sec:Inference}. We can do this by making a callable object \textbf{y\_pred = sampler(counts)}, where \textbf{counts} is a python dictionary containing the measuring results, as explained in \autoref{sec:MeasurementQiskit} and \autoref{sec:Exact Expectation Value}. We can implement a function estimating the parity(see \autoref{sec:Inference}) in the following way:
 
 \begin{lstlisting}[language=python, numbers=left]
 def parity(counts):
