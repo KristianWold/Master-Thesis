@@ -174,14 +174,16 @@ We investigate the expressivity of QCNs and DNNs using the trajectory length met
 %================================================================
 
 In this section, we investigate QCNs and DNNs architectures as described in \autoref{sec:Vanishing Local Gradients in QCNs}. 
-The models are initialized randomly in the same manner. \autoref{fig:TL_untrained} shows how the trajectory length varies as a function of layer, when the different models are fed the circle trajectory $\boldsymbol{x}(t_i)$ defined earlier.
+The models are initialized randomly in the same manner. \autoref{fig:TL_untrained} shows how the trajectory length varies as a function of layer, when the different models are fed the circle trajectory $\boldsymbol{x}(t_i)$ defined earlier. Since the trajectory only has two features, and the circuits of the different QCNs utilize between four and eight qubits, we make use of latent qubits \autoref{fig:latent qubits} to extend the circuits in the initial layer to the correct amount of qubits.
+
+
 
 %All layers have $d$ number of nodes, and all nodes have $d$ number of qubits. $d$ ranges from $4$ to $8$. For comparison, the trajectory length is also calculated for an 8-layer DNN with approximately the same number of parameters as the biggest QCN. The QCNs and the DNN are randomly initialized as in \autoref{sec:Vanishing Gradient Phenomenon}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{latex/figures/TL_untrained.pdf}
-    \caption{}
+    \caption{Logarithmic trajectory length (TL) as a circular trajectory $\boldsymbol{x}(t_i)$ is propagated though QCNs with different number of qubits. The QCNs are defined as in \autoref{sec:Vanishing Local Gradients in QCNs}. For comparison, the TL of a DNN with 11 nodes is also shown.}
     \label{fig:TL_untrained}
 \end{figure}
 
@@ -190,19 +192,19 @@ The models are initialized randomly in the same manner. \autoref{fig:TL_untraine
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{latex/figures/TL_untrained_projection.pdf}
-    \caption{}
+    \caption{Trajectory length projected onto 2D for selected models from \autoref{fig:TL_untrained}. The rows shows the trajectory length of the four qubits QCN, eight qubit QCN and DNN, from top to bottom. The columns show the trajectory of the first layer, the second layer and last layer, from left to right.}
     \label{fig:TL_untrained_projection}
 \end{figure}
 
 %In \autoref{fig:TL_untrained}, we see that the untrained DNN exhibits an exponential decrease in trajectory length as it is being transformed by each layer. From \autoref{fig:TL_untrained_projection}, we see this manifesting itself as the trajectory concentrating around some mean, progressively more for each layer. This shows that randomly initialized DNNs can tend to compute functions which are not very sensitive to the input, which was shown experimentally by \citet{raghu2017expressive} to be possible in practical settings. 
 
-From \autoref{fig:TL_untrained}, we see that the trajectory length of QCNs with 4 and 5 qubits tend to grow exponentially with the number of layers. This growth is however diminishing as the number of qubits increase, and switches over to an exponential decay for 6 qubits and above. For 8 qubits, the decay is similar to that of the DNN with similarly many parameters. Comparing the results to \autoref{fig:TL_untrained_projection}, we see how the increasing and decreasing trajectory length manifests themselves. Seen from the top row, the trajectory produced by the 4 qubit QCN tends to become increasingly distorted and complex. This is similar to the behaviour of classical networks seen in \autoref{fig:trajectoryLengthExample}, produced by \citet{raghu2017expressive}, and shows that also QCNs can compute functions exponentially complex in the number of layers. In contrast, the trajectory of the 8 qubit QCN and DNN (seen in the next two rows) can be seen to gradually concentrate for each layer, resulting in a function that is very little sensitive to the input.  
+From \autoref{fig:TL_untrained}, we see that the trajectory length of QCNs with 4 and 5 qubits tend to grow exponentially with the number of layers, meaning they are in the exponential growth regime. This growth is however diminishing as the number of qubits increase, and switches over to an exponential decay for 6 qubits and above. For 8 qubits, the decay is similar to that of the DNN with similarly many parameters. Comparing the results to \autoref{fig:TL_untrained_projection}, we see how the increasing and decreasing trajectory length manifests themselves. Seen from the top row, the trajectory produced by the 4 qubit QCN tends to become increasingly distorted and complex. This is similar to the behaviour of classical networks seen in \autoref{fig:trajectoryLengthExample}, produced by \citet{raghu2017expressive}, and shows that also QCNs can compute functions exponentially complex in the number of layers. In contrast, the trajectory of the 8 qubit QCN and DNN (seen in the next two rows) can be seen to gradually concentrate for each layer, resulting in a function that is very little sensitive to the input.  
 
 
 %================================================================
 \subsection{Trained Models}\label{sec:Trained Models}
 %================================================================
-\citet{raghu2017expressive} showed that networks that initially don't lie in the exponential growth regime can be pushed there via training. In this subsection, we will train different models by incrementally fitting them to the 2D mixed Gaussian data. The trajectory length will be recalculated for each layer after each increment. The models being investigated here are two four layer QCNs with 6 and 7 qubits, respectively, with each node having the same architecture as in \autoref{sec:Untrained Models}. These will be compared with DNNs with approximately same number of parameters. For more information about the models, see \autoref{tab:TL models}. All the models are trained using Adam optimizer with the standard hyperparameters and a learning rate of $0.1$. The QCNs are trained for a total of $20$ epochs in increments of $5$. In order to produce a fair comparison, the DNNs will not be trained for the same increments of epochs. Rather, they will be trained until they achieve approximately the same MSE on the training set as the QCNs, for each increment. In this way, we get to compare the expressivity of QCNs and DNNs that fit the data to an equal degree. \autoref{fig:TL_trained} shows how the trajectory length changes as the different models presented here are incrementally trained, for each layer. 
+\citet{raghu2017expressive} showed that networks that initially don't lie in the exponential growth regime can be pushed there via training. In this subsection, we will train different models by incrementally fitting them to the 2D mixed Gaussian data (see \autoref{sec:Mixed Gaussian Data}). The trajectory length will be recalculated for each layer after each increment. The models being investigated here are two four layer QCNs with 6 and 7 qubits, respectively, with each node having the same architecture as in \autoref{sec:Vanishing Local Gradients in QCNs}. These will be compared to DNNs with approximately same number of parameters. For more information about the models, see \autoref{tab:TL models}. All the models are trained using Adam optimizer with the standard hyperparameters and a learning rate of $0.1$. The QCNs are trained for a total of $20$ epochs in increments of $5$. In order to produce a fair comparison, the DNNs will not be trained for the same increments of epochs. Rather, they will be trained until they achieve approximately the same MSE on the training set as the QCNs, for each increment. In this way, we get to compare the expressivity of QCNs and DNNs that fit the data to an equal degree. \autoref{fig:TL_trained} shows how the trajectory length changes as the different models presented here are incrementally trained, for each layer. 
 
 \begin{figure}[H]
     \centering
@@ -235,7 +237,7 @@ From \autoref{fig:TL_untrained}, we see that the trajectory length of QCNs with 
         \caption{DNN, 11 nodes. 309 parameters.}
         \label{fig:TL_trained_D}
     \end{subfigure}
-    \caption{Caption place holder}
+    \caption{}
     \label{fig:TL_trained}
 \end{figure}
 
