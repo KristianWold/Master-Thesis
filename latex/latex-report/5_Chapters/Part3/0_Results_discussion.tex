@@ -204,7 +204,7 @@ From \autoref{fig:TL_untrained}, we see that the trajectory length of QCNs with 
 %================================================================
 \subsection{Trained Models}\label{sec:Trained Models}
 %================================================================
-\citet{raghu2017expressive} showed that networks that initially don't lie in the exponential growth regime can be pushed there via training. In this subsection, we will train different models by incrementally fitting them to the 2D mixed Gaussian data (see \autoref{sec:Mixed Gaussian Data}). The trajectory length will be recalculated for each layer after each increment. The models being investigated here are two four layer QCNs with 6 and 7 qubits, respectively, with each node having the same architecture as in \autoref{sec:Vanishing Local Gradients in QCNs}. These will be compared to DNNs with approximately same number of parameters. For more information about the models, see \autoref{tab:TL models}. All the models are trained using Adam optimizer with the standard hyperparameters and a learning rate of $0.1$. The QCNs are trained for a total of $20$ epochs in increments of $5$. In order to produce a fair comparison, the DNNs will not be trained for the same increments of epochs. Rather, they will be trained until they achieve approximately the same MSE on the training set as the QCNs, for each increment. In this way, we get to compare the expressivity of QCNs and DNNs that fit the data to an equal degree. \autoref{fig:TL_trained} shows how the trajectory length changes as the different models presented here are incrementally trained, for each layer. 
+\citet{raghu2017expressive} showed that networks that initially don't lie in the exponential growth regime can be pushed there via training. In this subsection, we will train different models by incrementally fitting them to the 2D mixed Gaussian data (see \autoref{sec:Mixed Gaussian Data}). The trajectory length will be recalculated for each layer after each increment. The models being investigated here are  QCNs with 6 and 7 qubits, respectively, with each node having the same architecture as in \autoref{sec:Vanishing Local Gradients in QCNs}. These will be compared to DNNs with approximately same number of parameters. The models have three hidden layers, with a single node in the output layer. For more information about the models, see \autoref{tab:TL models}. All the models are trained using Adam optimizer with the standard hyperparameters and a learning rate of $0.1$. The QCNs are trained for a total of $20$ epochs in increments of $5$. In order to produce a fair comparison, the DNNs will not be trained for the same increments of epochs. Rather, they will be trained until they achieve approximately the same MSE on the training set as the QCNs, for each increment. In this way, we get to compare the expressivity of QCNs and DNNs that fit the data to an equal degree. \autoref{fig:TL_trained} shows how the trajectory length changes as the different models presented here are incrementally trained, for each layer. 
 
 \begin{figure}[H]
     \centering
@@ -237,7 +237,7 @@ From \autoref{fig:TL_untrained}, we see that the trajectory length of QCNs with 
         \caption{DNN, 11 nodes. 309 parameters.}
         \label{fig:TL_trained_D}
     \end{subfigure}
-    \caption{}
+    \caption{Logarithmic trajectory length (TL) as a circular trajectory $\boldsymbol{x}(t_i)$ is propagated though QCNs and DNNs defined in \autoref{tab:TL models}. The models are gradually fitted for different number of epochs, shown in the legend, and the TL recalculated.}
     \label{fig:TL_trained}
 \end{figure}
 
@@ -249,13 +249,13 @@ Moving over to the corresponding DNNs, we see that they fail to enter the same e
 \centering
 \begin{tabular}{|l|l|l|l|l|l|}
 \hline
-Model &Type & Qubits& Layers & Nodes &$n_{\theta}$ \\ \hline
-A    & QCN & 6 &  4 & 6& 228   \\ \hline
-B    & QCN & 7 &  4 & 7& 308 \\ \hline
-C    & DNN & NA&  4 & 9& 217  \\ \hline
-D    & DNN & NA&  4 & 11& 309  \\ \hline
+Model &Type & Qubits& Hidden Layers & Nodes &$n_{\theta}$ \\ \hline
+A    & QCN & 6 &  3 & 6& 228   \\ \hline
+B    & QCN & 7 &  3 & 7& 308 \\ \hline
+C    & DNN & NA&  3 & 9& 217  \\ \hline
+D    & DNN & NA&  3 & 11& 309  \\ \hline
 \end{tabular}
-\caption{Stuff.} 
+\caption{Hyperparameters of the models in trained on the 2D mixed Gaussian data in \autoref{fig:TL_trained}. The DNNs have tanh activation on all layers, including the output layer.} 
 \label{tab:TL models}
 \end{table}
 
@@ -263,14 +263,14 @@ D    & DNN & NA&  4 & 11& 309  \\ \hline
 %================================================================
 \subsection{Single Node Expressivity}\label{sec:Single Node Expressivity}
 %================================================================
-To elucidate the discrepancy of expressivity between QCNs and DNNs, we investigate the functional form of node outputs for QCNs and DNNs. To do this, we utilize a four-qubit QNN with qubit encoding and two repetitions of the simple ansatz. We prepare data $\boldsymbol{x} = (x, x, x, x)$, and encode it in the usual way. For comparison, we also feed the samples $\boldsymbol{x}$ to a single DNN node with tanh activation. In \autoref{fig:activations}, we plot the output the different nodes for different parameters realizations and values of $x$.
+To elucidate the discrepancy of expressivity between QCNs and DNNs, we investigate the functional form of node outputs for QCNs and DNNs. To do this, we use a QCN node (a QNN) with four qubits. It utilizes qubit encoding and two repetitions of the simple ansatz. We prepare data $\boldsymbol{x} = (x, x, x, x)$, and encode it in the usual way. For comparison, we also feed the samples $\boldsymbol{x}$ to a single DNN node with tanh activation. In \autoref{fig:activations}, we plot the output the different nodes for different parameter realizations and values of $x$.
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[height=1.9in]{latex/figures/activation_qnn_4.pdf}
-        \caption{QNN}
+        \caption{QCN node with four qubits. It utilizes qubit encoding \autoref{fig:qubitencoding} with $R_y$ rotations, and two repetitiaons of the simple ansatz \autoref{eq:simple ansatz}.}
         \label{fig:activations tensorial}
     \end{subfigure}%
     \hfill 
@@ -280,11 +280,11 @@ To elucidate the discrepancy of expressivity between QCNs and DNNs, we investiga
         \caption{DNN node with tanh activation}
         \label{fig:activations DNN}
     \end{subfigure}%
-    \caption{Caption place holder}
+    \caption{Comparison between the functional form of the outputs of a QCN node and a DNN node. The different functions stem from different parameters realizations in the nodes.}
     \label{fig:activations}
 \end{figure}
 
-Seen from \autoref{fig:activations tensorial}, utilizing the feature mapping enables the QNN to produces a much flexible output, reflecting the polynomial representation of the data in the prepared state. \autoref{fig:activations DNN} shows that the output of the DNN node is constrained to the functional form of the tanh activation function.   
+Seen from \autoref{fig:activations tensorial}, the QCN node produces a more flexible output, reflecting the polynomial representation of the data in the prepared state \autoref{eq:qubit rotation interaction}. \autoref{fig:activations DNN} shows that the output of the DNN node is constrained to the functional form of the tanh activation function.   
 
 
 
@@ -306,11 +306,11 @@ Looking at \autoref{fig:TL_trained_C} and \autoref{fig:TL_trained_D}, we see tha
 %================================================================
 \section{Training Models on Mixed Gaussian Data}\label{sec:Training Models}
 %================================================================
-In this section, we will study the ability of various models to fit one, two and three dimensions mixed Gaussian data. For more details on the data, see \autoref{sec:Mixed Gaussian Data}. We will train QNNs, QCN and DNNs with varying complexity and use MSE on the training data to evaluate how good the fit is. This will be done first in the ideal case, with exact calculation of outputs. Then, we will repeat the training using the simulated the noise model of the IBM Santiago quantum computer \cite{santiago}. The hyper parameters, such as number of layers, nodes and qubits, are chosen by trial and error such that the results QCNs are relatively small in number of parameters, but still fit the data sufficiently. The QNNs and DNNs are then chosen such that they have similar number of parameters as the QCNs. For a detailed description of the models trained in this section, see \autoref{tab:training models}.
+In this section, we will study the ability of various models to fit one, two and three dimensions mixed Gaussian data. For more details on the data, see \autoref{sec:Mixed Gaussian Data}. We will train QNNs, QCN and DNNs with varying complexity and use MSE on the training data to evaluate how good the fit is. This will be done first in the ideal case, with exact calculation of outputs. Then, we will repeat the training using the simulated noise model of the IBM Santiago quantum computer \cite{santiago}. The hyper parameters, such as number of layers, nodes and qubits, are chosen by trial and error such that the results QCNs are relatively small in number of parameters, but still fit the data sufficiently. The QNNs and DNNs are then chosen such that they have similar number of parameters as the QCNs.  For a detailed description of the models trained in this section, see \autoref{tab:training models}.
 
 \begin{table}[H]
 \centering
-\caption{Hyper-parameters of the different models fitted to the one, two, and three dimensional mixed Gaussian data. Here, "Qubits" refer to the number of qubits used in each circuit, and "Reps" refer to the number of repetitions of the simple anzats \autoref{eq:simple ansatz}.} 
+\caption{Hyper-parameters of the different models fitted to the one, two, and three dimensional mixed Gaussian data. \emph{Qubits} refer to the number of qubits used in each circuit, and \emph{Reps} refer to the number of repetitions of the simple ansatz \autoref{eq:simple ansatz}, and $n_{\theta}$ refers to the number of parameters in the model.} 
 \begin{tabular}{|l|l|l|l|l|l|l|l|}
 \hline
 Model& Type& Data& Qubits& Reps& Layers & Nodes &$n_{\theta}$ \\ \Xhline{3\arrayrulewidth}
@@ -331,13 +331,13 @@ L    & DNN & 3D  & NA    & NA&3      & 8& 113  \\ \hline
 \label{tab:training models}
 \end{table}
 
-For the QNNs trained in this section, we will utilize RZZ encoding \autoref{fig:Rzzencoding} in an effort to increase the flexibility of the model. From \autoref{sec:RZZencoding}, we know that the circuit depth of this encoding scales as $\mathcal{O}(p^2)$, where $p$ is the number of features. To get a constant depth across the 1D, 2D and 3D Gaussian data, we will repeat features until all the data sets have the same number of features: For the 1D data, we repeat the one feature three times: $(x_1) \rightarrow (x_1, x_2, x_3)$. For the 2D data, we repeat the first feature once: $(x_1, x_2) \rightarrow (x_1, x_2, x_1)$. The 3D data is left unchanged, since it already has three features. In this way, RZZ encoding prepares similarly complicated encoding for all data sets. 
+For the QNNs trained in this section, we will utilize RZZ encoding \autoref{fig:Rzzencoding} together with latent qubits \autoref{fig:latent qubits} in an effort to increase the flexibility of the model. From \autoref{sec:RZZencoding}, we know that the circuit depth of this encoding scales as $\mathcal{O}(p^2)$, where $p$ is the number of features. To get a constant depth across the 1D, 2D and 3D Gaussian data, we will repeat features until all the data sets have the same number of features: For the 1D data, we repeat the one feature three times: $(x_1) \rightarrow (x_1, x_2, x_3)$. For the 2D data, we repeat the first feature once: $(x_1, x_2) \rightarrow (x_1, x_2, x_1)$. The 3D data is left unchanged, since it already has three features. In this way, RZZ encoding prepares similarly complicated encoding for all data sets.
 
 
 %================================================================
 \subsection{Ideal Simulation}\label{sec:Ideal Simulation}
 %================================================================
-\autoref{fig:trained ideal} shows the MSE during training of the models defined in \autoref{tab:training models} on the one, two and three dimensional mixed Gaussian data. All models are trained for 100 epochs, using ideal simulation. In order to produce a more significant result, each model is randomly initialized 10 times and trained separately. The resulting MSE for each model is then averaged over the 10 runs and plotted with fill corresponding to one standard deviation. In this way, we get to see the average model behaviour during training and how it varies between different runs. \autoref{tab:training models mse} shows the final MSE after 100 epochs for the various models. In addition, the final MSE after $10^4$ epochs is included for the DNNs.   
+\autoref{fig:trained ideal} shows the MSE during training of the models defined in \autoref{tab:training models} on the one, two and three dimensional mixed Gaussian data. All models are trained for 100 epochs, using Adam optimizer and ideal simulation. In order to produce a more significant result, each model is randomly initialized ten times and trained separately. The resulting MSE for each model is then averaged over the 10 runs and plotted with fill corresponding to one standard deviation. In this way, we get to see the average model behaviour during training and how it varies between different runs. \autoref{tab:training models mse} shows the final MSE after 100 epochs for the various models. In addition, the final MSE after $10^4$ epochs is included for the DNNs.   
 
 \begin{figure}[H]
     \centering
@@ -360,24 +360,24 @@ For the QNNs trained in this section, we will utilize RZZ encoding \autoref{fig:
         \caption{MSE of models trained on 3D mixed Gaussian data.}
         
     \end{subfigure}%
-    \caption{MSE during training of the models defined in \autoref{tab:training models}, trained on the mixed Gaussian data (see \autoref{sec:Mixed Gaussian Data} for details on the data). The QNNs and QCNs are trained using ideal simulations, using the methods of \autoref{sec:Exact Expectation Value}.}
+    \caption{MSE during training of the models defined in \autoref{tab:training models}, trained on the mixed Gaussian data (see \autoref{sec:Mixed Gaussian Data} for details on the data). The QNNs and QCNs are trained using ideal simulations.}
     \label{fig:trained ideal}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\caption{Final MSE after training of the models detailed in \autoref{tab:training models}, using exact simulation. See \autoref{sec:Exact Expectation Value} for details. These results accompany the training shown in \autoref{fig:trained ideal}.}
+\caption{Final MSE after training of the models detailed in \autoref{tab:training models}, using ideal simulation These results accompany the training shown in \autoref{fig:trained ideal}. The lowest MSE after 100 epochs is highlighted.}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 Model& Type& Data& MSE, $10^{2}$ Epochs& MSE, $10^{4}$ Epochs \\ \hline
 A    & QNN & 1D  &  $4.6\times 10^{-2}$  & NA   \\ \hline
 B    & QCN & 1D  & $5.9\times 10^{-3}$  & NA \\ \hline
 C    & QCN & 1D  & $\boldsymbol{8.0\times 10^{-4}}$  & NA  \\ \hline
-D    & DNN & 1D  & $1.1\times 10^{-2}$ & $3.1\times 10^{-2}$  \\ \Xhline{2\arrayrulewidth}
+D    & DNN & 1D  & $9.2\times 10^{-3}$ & $2.2\times 10^{-4}$  \\ \Xhline{2\arrayrulewidth}
 E    & QNN & 2D  &  $3.6\times 10^{-2}$ & NA  \\ \hline
 F    & QCN & 2D  &  $1.8\times 10^{-2}$ & NA  \\ \hline
 G    & QCN & 2D  &  $\boldsymbol{4.3\times 10^{-3}}$ & NA  \\ \hline
-H    & DNN & 2D  &  $2.5\times10^{-2}$ & $1.6\times10^{-3}$\\ 
+H    & DNN & 2D  &  $4.5\times10^{-2}$ & $4.3\times10^{-3}$\\ 
 \Xhline{2\arrayrulewidth}
 I    & QNN & 3D  &  $2.0\times 10^{-2}$& NA  \\ \hline
 J    & QCN & 3D  &  $4.9\times 10^{-3}$ & NA  \\ \hline
@@ -388,9 +388,7 @@ L    & DNN & 3D  &  $1.2\times10^{-2}$  & $1.8\times10^{-3}$  \\ \hline
 \label{tab:training models mse}
 \end{table}
 
-From \autoref{fig:trained ideal}, we see that the QCNs minimize the MSE quicker than both the QNNs and DNNs on the mixed Gaussian data, for any number of dimensions. The QCNs with the two ansatz repetitons also trained faster than those with just one. Further, we see that QNNs perform overall worst among the models. After initially fast optimization, the models quickly flatten out at a relatively high MSE, struggling to obtain a good fit. 
-
-From \autoref{tab:training models}, we see that the DNNs obtains the lowest MSE among all models when trained until saturation, after $10^4$ epochs. The one exception to this was for the 1D mixed Gaussian data, where the MSE actually increased after the additional training for the DNN. This is likely due to heavy overparameterization for this model, having 13 nodes to achieve $20$ parameters, causing it to become very unstable.
+From \autoref{fig:trained ideal}, we see that the QCNs minimize the MSE quicker than both the QNNs and DNNs on the mixed Gaussian data, for any number of dimensions. The QCNs with the two ansatz repetitons also trained faster than those with just one. Further, we see that QNNs perform overall worst among the models. After initially fast optimization, the models quickly flatten out at a relatively high MSE, struggling to obtain a good fit. From \autoref{tab:training models}, we see that the DNNs obtains the lowest MSE among all models when trained until saturation, after $10^4$ epochs.
 
 
 %================================================================
@@ -448,7 +446,7 @@ Further, we see that the QCNs with two ansatz repetitions show faster training a
 
 In \autoref{sec:Expressivity}, it was suggested that QCNs are more expressive and flexible than DNNs with similar number of parameters. Looking at \autoref{tab:training models mse}, we see that the final MSE obtained by the QCNs with two repetitions is within the same order of magnitude as the final MSE obtained by the DNNs. This is despite the fact that the QCNs were only trained for 100 epochs, while the DNNs where allowed to train for $10^4$ epochs (basically until saturation, i.e. the lowest possible MSE for that particular model). In light of this, it is not unlikely that the QCNs would eventually reach a lower MSE than the DNNs if given the opportunity to train for more epochs. This suggests that it is possible for QCNs to fit complicated data more easily than DNNs, and hence are more flexible. However, this is speculative, as we are unable to train the QCNs much further due to limited computational resources.    
 
-Even though QNNs with RZZ encoding were shown to also exhibit a relatively uniform EFIM spectrum in \autoref{sec:Investigating the Loss Landscape}, we see in \autoref{fig:trained ideal} that they struggle to obtain a good fit on the mixed Gaussian data, even though they have a similar number of parameters as the QCNs with one ansatz repetition. This shows that RZZ encoding combined with multiple repetitions of the simple ansatz is insufficient for fitting this data. As explained in \autoref{sec:FeedForward}, our QNNs perform a mostly unitary (and thus linear) transformation of the input, except at the stage of encoding and measurement. This results in a perhaps too constrained model, which might explain the QNNs' inability to fit the data. QCNs, on the other hand, incorporate multiple non-linearities for each layer as a result of measurements done to estimate the output of each node, as explained in \autoref{sec:Quantum Circuit Network}. As with DNNs, this is likely the key to their greater flexibility, as it enables them to compute a larger family of functions. 
+We see in \autoref{fig:trained ideal} that they struggle to obtain a good fit on the mixed Gaussian data, even though they have a similar number of parameters as the QCNs with one ansatz repetition. This shows that RZZ encoding combined with multiple repetitions of the simple ansatz is insufficient for fitting this data. As explained in \autoref{sec:FeedForward}, our QNNs perform a mostly unitary (and thus linear) transformation of the input, except at the stage of encoding and measurement. This results in a perhaps too constrained model, which might explain the QNNs' inability to fit the data. QCNs, on the other hand, incorporate multiple non-linearities for each layer as a result of measurements done to estimate the output of each node, as explained in \autoref{sec:Quantum Circuit Network}. As with DNNs, this is likely the key to their greater flexibility, as it enables them to compute a larger family of functions. 
 
 Moving over to the training using the simulated noisy hardware, we see from \autoref{fig:trained noisy} that the QNN and QCN models performed overall worse than in the ideal case. This is not surprising, since the simulation of real hardware and the low number of 1024 shots cause a significant amount of noise to be added to the outputs of the QNNs and QCNs. The slowdown of the training is likely a due to noise being added to the calculation of the gradient. This causes it to misalign with the direction of steepest descent, as discussed in \autoref{sec:BarrenPlateus}, and which results in the optimization slowing down. However, the QCNs with two ansatz repetitions still obtained a lower MSE than the DNNs after 100 epochs, even in using the noisy simulation. This shows that QCNs have the ability to outperform DNNs on some data sets, even on noisy quantum hardware with few shots. 
 
@@ -456,16 +454,16 @@ Moving over to the training using the simulated noisy hardware, we see from \aut
 %================================================================
 \section{Real-World Data}\label{sec:Real Data}
 %================================================================
-In this section, we compare the performance QCNs and DNNs by performing regression on the Boston Housing data \cite{boston} and classification on the Breast Cancer Wisconsin data \cite{cancer}. See \autoref{sec:Appendix B} for more information about the data sets. Since these data originate from real world experiments, they are noisy and don't represent a deterministic relationship $y = f(\boldsymbol{x})$ between the target and the features. This is in contrast to the the mixed Gaussian data sets studied earlier, and should provide a more practical benchmark of the methods. In addition to evaluating the models using MSE on the training data, we will also investigate how they generalize to unseen data by evaluating the MSE on an independent test set, as explained in \autoref{sec:Generalizability}. For the Breast Cancer Wisconsin data, we will also investigate the training and test accuracy \autoref{eq:accuracy} of the models.
+In this section, we compare the performance QCNs and DNNs by performing regression on the Boston Housing data \cite{boston} and classification on the Breast Cancer Wisconsin data \cite{cancer}. To reduce the computational burden of training the models, both data sets are feature reduced to four features using principal component analysis (PCA). See \autoref{sec:Appendix B} for more information about the data sets. To uncover how well the models generalize, we will test their performance on independent training and test sets using MSE as a metric. For the Breast Cancer data, we will also investigate the training and test accuracy \autoref{eq:accuracy}. 
+%The models will be benchmarked using MSE on both the the training set and an independent test set, as explained in \autoref{sec:Generalizability}. This is done to uncover how the models generalize to unseen data. For the Breast Cancer Wisconsin data, we will also investigate the training and test accuracy \autoref{eq:accuracy} of the models.
 
-In \autoref{sec:Feature Reduced Data}, we will reduce the number of features for data sets to four (down from $13$ and $30$, respectively) by using principal component analysis, as described in \autoref{sec:Principal Component Analysis}. This is done in order to produce smaller, more manage QCNs, as qubit encoding generally requires one qubit for each feature. The QCNs models are chosen to have four qubits in each circuit, and only two layers. This is done to obtain a model that has a large gradient due to low number of qubits, as discussed in \autoref{sec:Vanishing Gradient Phenomenon Discussion}, and are thus easy to train. The DNNs are chosen such that the number of parameters approximately match that of the QCNs. 
+The QCNs models are chosen to have four qubits in each circuit, and only two layers. This is done to obtain a model that has a large gradient due to low number of qubits, as discussed in \autoref{sec:Vanishing Gradient Phenomenon Discussion}, and are thus easy to train. The DNNs are chosen such that the number of parameters approximately match that of the QCNs. The hyperparameters of the various models are listed in \autoref{tab:training models PCA}.
 
-For both the feature reduced and full data set, we will split the data sets into independent training and test sets at random, each with $N=100$ samples. The targets of the Boston Housing data is min-max scaled to $y \in [0,1]$, while the discrete targets of the Breast Cancer data are already $y \in \{0,1\}$.
+%For both the feature reduced and full data set, we will split the data sets into independent training and test sets at random, each with $N=100$ samples. The targets of the Boston Housing data is min-max scaled to $y \in [0,1]$, while the discrete targets of the Breast Cancer data are already $y \in \{0,1\}$.
 
-%================================================================
-\subsection{Feature Reduced Data}\label{sec:Feature Reduced Data}
-%================================================================
-To reduce the number of features, the training and test data sets are each reduced to four features using PCA and scaled appropriately depending on the model, as explained in \autoref{sec:Pre-processing Input}. The hyperparameters of the various models trained on the feature reduced data is listed in \autoref{tab:training models PCA}.
+%To reduce the number of features, the training and test data sets are each reduced to four features using PCA and scaled appropriately depending on the model, as explained in \autoref{sec:Pre-processing Input}. The hyperparameters of the various models trained on the feature reduced data is listed in \autoref{tab:training models PCA}.
+
+
 
 \begin{table}[H]
 \centering
@@ -481,26 +479,6 @@ D    & DNN & Breast Cancer        & NA    & NA &2     & 6& 37  \\ \hline
 
 \label{tab:training models PCA}
 \end{table}
-
-%\autoref{fig:train PCA} shows the training and test MSE of the models defined in \autoref{tab:training models PCA} as they are fitted to the feature reduced Boston Housing data and Breast Cancer data. Each model is initialized ten times with different parameters, and trained individually for 100 epochs. The resulting MSE is averaged.
-
-%\begin{figure}[H]
-%    \centering
-%    \begin{subfigure}[t]{0.5\textwidth}
-%        \centering
- %       \includegraphics[height=1.9in]{latex/figures/Boston_PCA.%pdf}
-%        \caption{Lorem ipsum}
-%        
-%    \end{subfigure}%
-%    \hfill 
-%    \begin{subfigure}[t]{0.5\textwidth}
-%        \centering
-%        \includegraphics[height=1.9in]{latex/figures/Cancer_PCA.%pdf}
-%        \caption{Lorem ipsum}
-%    \end{subfigure}
-%    \caption{Caption place holder}
-%    \label{fig:train PCA}
-%\end{figure}
 
 The models defined in \autoref{tab:training models PCA} are trained for 100 epochs, ten times each for different random initializations of parameters.  In \autoref{tab:results PCA}, we see the average minimum training and test MSE for each model obtained during training. In addition, the final average training and test accuracy is included for the models trained on the Breast Cancer data. We see that the training MSE is strictly lower than the test MSE, i.e., both the QCN and DNN does not perform as good on the test set as on the training set. As explained in \autoref{sec:Generalizability}, we know that since the models are optimized with respect to the training set, its performance on the independent test set will always be worse. Comparing the models trained on the Boston Housing data, we see that the QCN has a lower test MSE than the DNN, meaning it generalizes better to unseen data. The same is however not true for the Breast Cancer data, where the QCN obtained almost twice the test MSE compared to the DNN. This indicates that the QCN is struggling to produce the correct labels $y^{(i)} \in \{0, 1\}$ which are the targets of the Breast Cancer data. Hence, both the train and test accuracies are lower for the QCN compared to the DNN. 
 \begin{table}[H]
@@ -520,3 +498,4 @@ D    & DNN & Breast Cancer        & 0.001/\boldsymbol{$0.032$} & 1.000/\boldsymb
 \end{table}
 
 
+Since these data originate from real world experiments, they are noisy and don't represent a deterministic relationship $y = f(\boldsymbol{x})$ between the target and the features. This is in contrast to the the mixed Gaussian data sets studied earlier, and should provide a more practical benchmark of the methods.
