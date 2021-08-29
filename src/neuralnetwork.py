@@ -75,7 +75,9 @@ class NeuralNetwork():
             dec = identity
 
         self.loss = []
+        self.acc = []
         self.loss_test = []
+        self.acc_test = []
         for i in dec(range(epochs)):
 
             if x_test is not None:
