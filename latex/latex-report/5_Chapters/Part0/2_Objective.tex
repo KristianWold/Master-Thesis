@@ -1,16 +1,16 @@
 %================================================================
-\section{Objective of the Study}
+\section{Objectives}
 %================================================================
-The overall objective of this study is to implement and investigate quantum circuit networks (QCN), a quantum machine learning model introduced by \citet{stian}, and characterize their behaviour as a function of their architecture. This is done using various numerical methods. This investigation is then repeated on traditional methods, such as dense neural networks and quantum neural networks. Finally, the former models are benchmarked and compared against each other on artificial and real-world data, using both ideal and noisy simulation of quantum hardware. The main goals can be divided into the following seven points:
+The overall objective of this study is to implement and investigate quantum circuit networks (QCN), and characterize their behavior as a function of their architecture. This will be done by using various numerical methods. This investigation is then repeated on traditional methods, such as dense neural networks and quantum neural networks. Finally, the former models are benchmarked and compared against each other on artificial and real-world data, using both ideal and noisy simulation of quantum hardware. The main goals can be divided into the following seven points:
 
 \begin{itemize}
     \item Implement a framework for creating quantum neural networks (QNNs), dense neural networks (DNNs) and QCNs.
     
     \item Develop a backpropagation algorithm based on the parameter shift rule for calculating the gradient of QCNs, allowing for gradient-based optimization. 
     
-    \item Investigate the vanishing gradient phenomenon for QCNs by calculating the magnitude of their gradients for different number of qubits and layers. Repeat this investigation for QNNs and DNNs and compare.
+    \item Investigate the vanishing gradient phenomenon for QCNs by calculating the magnitude of their gradients for different numbers of qubits and layers. Repeat this investigation for QNNs and DNNs and compare.
     
-    \item Study the loss landscape for QNNs, DNNs and QCNs by calculation the spectrum of their empirical fisher information matrix (EFIM), and assess how trainable the different models are for different architectures.
+    \item Study the loss landscape for QNNs, DNNs and QCNs by calculating the spectrum of their empirical fisher information matrix (EFIM), and assess how trainable the different models are for different architectures.
     
     \item Assess the expressivity of QCNs and DNNs using the trajectory length metric, for both untrained and trained models, and compare. 
     

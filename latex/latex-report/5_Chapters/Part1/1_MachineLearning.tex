@@ -124,7 +124,7 @@ The gradient \autoref{eq:Gradient} can be geometrically interpreted as the direc
 \end{equation}
 for $t=1, \cdots, T$. Here, $T$ is the total number of  iterations, or \emph{epochs}, and $\mu$ is some small positive value, often called the \emph{learning rate}. Usually, some initial choice of parameters $\boldsymbol{\theta}_{0}$ is chosen at random. Analogous to walking down a mountain, the proceeding recalculation of the gradient and repeated adjustment of the parameters result in a gradual descent in the loss landscape. This is the heart of gradient descent.
 
-Even though batch gradient descent is intuitively simple and sometimes sufficiently effective for training some models, it has several flaws that should be addressed when suggesting better methods of optimization. A common problem with batch gradient descent is that optimization has a tendency of getting stuck in local minima, as only local information in the loss landscape is used when updating the parameters. In addition, the presence of \emph{plateaus}, areas of particular flatness in the loss landscape, tend to induce slow convergence. The two aforementioned phenomena are illustrated in \autoref{fig:localMinima}. Further more, the presence of high degree of distortions in certain directions in parameter space, so called  \emph{thin valleys}, can lead to oscillations and inefficient optimization. This is exemplified in \autoref{fig:thinValley}. We will discuss how the popular \emph{Adam optimizer}, which was used in this thesis, addresses these problems. 
+Even though batch gradient descent is intuitively simple and sometimes sufficiently effective for training some models, it has several flaws that should be addressed when suggesting better methods of optimization. A common problem with batch gradient descent is that optimization has a tendency of getting stuck in local minima, as only local information in the loss landscape is used when updating the parameters. In addition, the presence of \emph{plateaus}, areas of particular flatness in the loss landscape, tend to induce slow convergence. The two aforementioned phenomena are illustrated in \autoref{fig:localMinima}.  
 
 
 \begin{figure}[htp]
@@ -133,6 +133,17 @@ Even though batch gradient descent is intuitively simple and sometimes sufficien
     \caption{One-dimensional representation of the loss landscape for a parameterized model, showcasing the phenomenon of getting stuck in local minima, and slow convergence induced by plateaus. The figure is retrieved from \citet{hands-on}.}
     \label{fig:localMinima}
 \end{figure}
+
+Further more, the presence of high degree of distortions in certain directions in parameter space, so called  \emph{thin valleys}, can lead to oscillations and inefficient optimization. This is exemplified in \autoref{fig:thinValley}. We will discuss how the popular \emph{Adam optimizer}, which was used in this thesis, addresses these problems.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{latex/figures/thin_vally.png}
+    \caption{Two-dimensional representation of the loss landscape for a parameterized model, showcasing the phenomenon of "thin valleys", known to induce slow convergence due to oscillations. The blue optimizations steps incorporate momentum, which dampens the oscillations and leads to faster convergence. The figure is retrieved from \citet{SupervisedwquantumComputers}.}
+    \label{fig:thinValley}
+\end{figure}
+
+
 
 %================================================================
 \subsection{Adam Optimizer}\label{sec:AdamOptimizer}

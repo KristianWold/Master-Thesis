@@ -1,5 +1,68 @@
 %================================================================
-\chapter{Amplitude Encoding}\label{sec:Appendix A}
+\chapter{DNN/QCN Hybrid}\label{sec:Appendix A}
 %================================================================
-Stuff
+
+%================================================================
+\subsection{Hybrid Method}\label{sec:Hybrid Method}
+%================================================================
+In \autoref{sec:Hybrid Method}, we will repeat the experiments of \autoref{sec:Feature Reduced Data} on the data sets with all features present, i.e. without feature reduction. To avoid QCNs with overly many qubits, we will use an initial dense layer to reduce the features from $13$ and $30$ to four. This creates a DNN/QCN hybrid model, where the initial dense layer learns derived features on which the QCN part makes predictions. See \autoref{sec:Hybrid Models} for details.
+
+Using PCA for feature reduction enabled us to train feasibly small QCNs on the data, but in turn, we lost some of the information of the features. To enable us retain all the information of the data and train on all the features, we implement a DNN/QCN hybrid model with an initial dense of the type \autoref{eq:FeedforwardSingle}. This layer  
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+Model& Type& Data& Qubits& Reps& Layers & Nodes &$n_{\theta}$ \\ \hline
+E    & Hybrid & Boston Housing Data  & 4     & 2&3      & 4& 96   \\ \hline
+F    & DNN & Boston Housing Data  & NA    & NA&3      & 5& 106 \\ \Xhline{2\arrayrulewidth}
+G    & Hybrid & Breast Cancer        & 4     & 2&3      & 4& 164  \\ \hline
+H    & DNN & Breast Cancer        & NA    & NA&3      & 5& 191  \\ \hline
+\end{tabular}
+\caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
+\label{tab:training models Hybrid}
+\end{table}
+
+%\begin{figure}[H]
+%    \centering
+%    \begin{subfigure}[t]{0.5\textwidth}
+%        \centering
+%        \includegraphics[height=1.9in]{latex/figures/Boston_Hyb%rid.pdf}
+%        \caption{Lorem ipsum}
+%        
+%    \end{subfigure}%
+%    \hfill 
+%    \begin{subfigure}[t]{0.5\textwidth}
+%        \centering
+%        \includegraphics[height=1.9in]{latex/figures/Cancer_Hyb%rid.pdf}
+%        \caption{Lorem ipsum}
+%    \end{subfigure}
+%    \caption{Caption place holder}
+%    \label{fig:}
+%\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+Model& Type& Data& MSE (train/test) & Accuracy (train/test) \\ \hline
+E    & Hybrid & BHD  & 0.004/0.021 & NA    \\ \hline
+F    & DNN & BHD     & 0.002/$\boldsymbol{0.011}$  & NA  \\ \Xhline{2\arrayrulewidth}
+G    & Hybrid & BCD        & 0.035/0.102  & 1.000/0.875    \\ \hline
+H    & DNN & BCD           & 0.000/$\boldsymbol{0.030}$  & 1.000/$\boldsymbol{0.954}$  \\ \hline
+\end{tabular}
+\caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
+\label{tab:results PCA}
+\end{table}
+
+%================================================================
+%\section{Regularized Feature Map}\label{sec:Regularized Feature Map}
+%================================================================
+%Stuff
+
+%================================================================
+%\subsection{Discussion}\label{sec:Regularized Feature Map Discussion}
+%================================================================
+%Stuff
 
