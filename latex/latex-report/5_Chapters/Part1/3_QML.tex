@@ -247,7 +247,7 @@ where $\boldsymbol{\theta}^i$ are independent vectors of parameters. We call $d$
 To derive a model output $\hat{y}$, we must estimate the expectation value of some observable with respect to the state prepared by the encoder and ansatz, i.e. $\hat{y} =\bra{\psi_{\boldsymbol{x},\boldsymbol{\theta}}}
 \hat{O} 
 \ket{\psi_{\boldsymbol{x},\boldsymbol{\theta}}}$. In the same manner as \cite{abbas2020power}, we use the \emph{parity} of the state to derive a model output for inference. The parity of an $n$ qubit state can be formulated as an operator as
-\begin{equation}
+\begin{equation}\label{eq:parity}
     P = \frac{1}{2}(I^{\otimes n} + \bigotimes_{i=1}^n \sigma_z).
 \end{equation}
 Applying this operator on a computational basis state $\ket{v_1  \cdots v_n}$ computes 

@@ -15,13 +15,13 @@ In this chapter, we will investigate and characterize models discussed in earlie
 %================================================================
 \section{Vanishing Gradient Phenomenon}\label{sec:Vanishing Gradient Phenomenon}
 %================================================================
-In this section, we investigate and compare the vanishing gradient phenomenon for QNNs, QCNs and DNNs by studying how the magnitudes of their gradients vary as a function of architecture. First, we study how the gradients of QNNs behave as the number of qubits and repetition of the ansatz increase. Then, the local gradients \autoref{eq:localGradients} of QCNs is studied for different number of qubits, nodes and layers. Lastly, the vanishing of the total gradient \autoref{eq:derivweightsQCN}.
+In this section, we investigate and compare the vanishing gradient phenomenon for QNNs, QCNs and DNNs by studying how the magnitudes of their gradients vary as a function of architecture. First, we study how the gradients of QNNs behave as the number of qubits and repetition of the ansatz increase. Then, the local gradients \autoref{eq:localGradients} of QCNs are studied for different number of qubits, nodes and layers. Lastly, the vanishing of the total gradient \autoref{eq:derivweightsQCN} is investigated.
 
 
 %================================================================
 \subsection{Vanishing Gradient in QNNs}\label{sec:Vanishing Gradient for QNNs}
 %================================================================
-We start by investigating the magnitude of the gradient of QNNs for different number of qubits and repetitions of the ansatz. We use qubit encoding \autoref{fig:qubitencoding} with $R_y$ for feature encoding, and the simple ansatz \autoref{eq:simple ansatz} for processing. This combination was chosen as it yielded the largest gradient. To derive an output, we calculate the expected parity of the state exactly using the methods in \autoref{sec:Exact Expectation Value} and \autoref{sec:Inference}. We calculate the average magnitude of the gradient using \autoref{eq:magnitude QNN}, with $T=10$ different realizations of the parameters to increase the statistical significance of the result. To get a representative result for a large feature space, we sample features $\mathcal{X} = \{\boldsymbol{x}^{(1)}, \cdots, \boldsymbol{x}^{(N)}\}$ uniformly as $\mathcal{X} \sim U(-\frac{\pi}{2}, \frac{\pi}{2})^{[N,p]}$. We use $N=100$ samples, and the number of features $p$ is set equal to the number of qubits for each QNN. The QNNs are also initialized in the standard way, i.e. sampling parameters as $\theta_j \sim U(-\pi, \pi)$. The resulting magnitude of the gradients for different number of qubits and ansatz repetitions can be seen in figure \autoref{fig:QNN_vanishing}.
+We start by investigating the magnitude of the gradient of QNNs for different number of qubits and repetitions of the ansatz. We use qubit encoding \autoref{fig:qubitencoding} with $R_y$ rotations for feature encoding, and the simple ansatz \autoref{eq:simple ansatz} for processing. This combination was chosen as it was found to yield the largest gradient. To derive an output, we calculate the expected parity \autoref{eq:parity} using ideal simulation, as explained in \autoref{sec:Exact Expectation Value}. We calculate the average magnitude of the gradient using \autoref{eq:magnitude QNN}, with $T=10$ different realizations of the parameters to increase the statistical significance of the result. To get a representative result for a large feature space, we sample features $\mathcal{X} = \{\boldsymbol{x}^{(1)}, \cdots, \boldsymbol{x}^{(N)}\}$ uniformly as $\mathcal{X} \sim U(-\frac{\pi}{2}, \frac{\pi}{2})^{[N,p]}$. We use $N=100$ samples, and the number of features $p$ is set equal to the number of qubits for each QNN. The QNNs are also initialized in the standard way, i.e. sampling parameters as $\theta_j \sim U(-\pi, \pi)$. The resulting magnitude of the gradients for different number of qubits and ansatz repetitions can be seen in figure \autoref{fig:QNN_vanishing}.
 
 \begin{figure}[H]
     \centering
@@ -30,26 +30,26 @@ We start by investigating the magnitude of the gradient of QNNs for different nu
     \label{fig:QNN_vanishing}
 \end{figure}
 
-From the above figure, we see that our implementation of QNNs results in a gradient that vanishes in the exponential regime with respect to the number of qubits. Also, the vanishing is stronger for a higher number of repetitions of the ansatz. This behavior can be explained by the fact that QNNs are a special variant of PQCs. By encoding random inputs and randomly initializing the parameters, the QNN essentially approaches a random circuit as they grow deeper. As shown by \citet{McClean_2018}, and discussed in \autoref{sec:BarrenPlateus}, randomly initialized PQCs tend to produce gradients closely centered around zero as the number of qubits are increased, which also applies for our implementation of QNNs.   
+From the above figure, we see that our implementation of QNNs results in a gradient that vanishes in the exponential regime with respect to the number of qubits. Also, the vanishing is stronger for a higher number of repetitions of the ansatz. This behavior can be explained by the fact that QNNs are a special variant of PQCs. By encoding random inputs and randomly initializing the parameters, the QNN essentially approaches a random circuit as they grow deeper. As shown by \citet{McClean_2018}, and discussed in \autoref{sec:BarrenPlateus}, randomly initialized PQCs tend to produce gradients closely centered around zero as the number of qubits are increased, which also applies for our implementation of QNNs.  
 
 %================================================================
 \subsection{Vanishing Local Gradient in QCNs}\label{sec:Vanishing Local Gradients in QCNs}
 %================================================================
 
-An interesting feature of QCNs is their ability to scale up by introducing more circuits, rather than wider and deeper ones. As the gradients of QNNs tend to vanish with higher numbers of qubits, we want to investigate how the gradients of smaller QNNs behave when they enter as nodes in a QCN architecture.
+An interesting feature of QCNs is the ability to create larger models by introducing more circuits, rather than wider and deeper ones. As the gradients of QNNs tend to vanish with higher numbers of qubits, we want to investigate how the gradients of smaller QNNs behave when they enter as nodes in a QCN architecture.
 
-The QNNs used to construct QCNs here are set up and initialized in the manner explained in \autoref{sec:Vanishing Gradient for QNNs}, but always with two repetitions of the simple ansatz. Also, we sample input data in the same manner, i.e. uniformly as $\mathcal{X} \sim U(-\frac{\pi}{2}, \frac{\pi}{2})^{[N,p]}$, with $N=100$ and the number of features $p$ set to the number of qubits used in the each node. In this section, all QCNs have 8 layers with $d$ number of nodes each,  where $d$ range from four to eight. The number of qubits in each node will also be set to $d$. Further, the outputs of each hidden layer is scaled to the interval $[-\pi, \pi]$ to make full use of the qubit encoding in the subsequent layer, as explained in \autoref{sec:Configuring QCNs and DNNs}.
+The QNNs used as nodes to construct QCNs here are set up and initialized in the manner explained in \autoref{sec:Vanishing Gradient for QNNs}, but always with two repetitions of the simple ansatz to keep each circuit shallow. Also, we sample input data uniformly as $\mathcal{X} \sim U(-\frac{\pi}{2}, \frac{\pi}{2})^{[N,p]}$, with $N=100$ and the number of features $p$ set to the number of qubits used in the each node. In this section, all QCNs have 8 layers with $d$ number of nodes each, where $d$ range from four to eight. The number of qubits in each node will also be set to $d$. Further, the outputs of each hidden layer is scaled to the interval $[-\pi, \pi]$ to make full use of the qubit encoding in the subsequent layer, as explained in \autoref{sec:Configuring QCNs and DNNs}.
 
 In order to investigate the average behavior of the local gradients \autoref{eq:localGradients} for each layer, we calculate their magnitude averaged over each layer, the samples and $T = 10$ different realizations. This quantity is given by \autoref{eq:magnitude local}, and is plotted in \autoref{fig:QCN_local_vanishing} for various layers of different QCNs. In addition, the standard deviation of this quantity is estimated over the different realizations, serving as a confidence interval seen in the figure. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{latex/figures/vanishing_gradient_partial_input.pdf}
-    \caption{Average magnitude of local gradients \autoref{eq:localGradients} calculated for each layer for various QCNs with eight layers. This quantity was calculated using \autoref{eq:magnitude local}. The number of qubits per node is constant for each QCN, and the number of nodes per layer is set equal the number of qubits. The QNNs are fed $N=100$ points of uniformly sampled points, where the number of features is set equal the number of qubits. The standard deviation is calculated over ten different realizations of the model parameters.}
+    \caption{Average magnitude of local gradients \autoref{eq:localGradients} calculated for each layer for various QCNs with eight layers. This quantity was calculated using \autoref{eq:magnitude local}. The number of qubits per node is constant for each QCN, and the number of nodes per layer is set equal the number of qubits. The QCNs are fed $N=100$ points of uniformly sampled points, where the number of features is set equal the number of qubits. The standard deviation is calculated over ten different realizations of the model parameters.}
     \label{fig:QCN_local_vanishing}
 \end{figure}
 
-In the above figure we see the average magnitude of the local gradients for different layers and number of qubits. The local gradients of the QNNs entering the QCN model tend to vanish exponentially in the number of qubits, similar to the the single-circuit QNNs seen in \autoref{fig:QNN_vanishing}. However, the relative position of the QNNs along the depth of the QCN does not seem to affect the magnitude. This can be seen from the overlapping confidence intervals of the magnitudes for each number of qubits. Any variation of the average magnitude between the layers is thus likely just noise induced by the low number of ten parameter realizations, and does not indicate significant differences.
+In the above figure we see the average magnitude of the local gradients for different layers and number of qubits. The local gradients of the QCNs tend to vanish exponentially in the number of qubits, similar to the gradients of single-circuit QNNs seen in \autoref{fig:QNN_vanishing}. However, the relative position along the depth of the QCN does not seem to affect the magnitude. This can be seen from the overlapping confidence intervals of the magnitudes for each number of qubits. Any variation of the average magnitude between the layers is thus likely just noise induced by the low number of ten parameter realizations, and does not indicate significant differences.
 
 %================================================================
 \subsection{Vanishing Total Gradient in QCNs}\label{sec:Vanishing Total Gradients in QCNs}
@@ -59,7 +59,7 @@ In the above figure we see the average magnitude of the local gradients for diff
 
 In the previous subsection, we showed that the magnitude of local gradients of any layer is independent of the relative position of that layer in the QCN model. However, the parameters of are not updated using the local gradients directly. Rather, they are updated using the total gradient \autoref{eq:derivweightsQCN}, which is calculated by combining the local gradients using back propagation \autoref{eq:errorQCN}. We need to investigate how the magnitude of the total gradient \autoref{eq:derivweightsQCN} behaves as a function of layers and qubits. 
 
-In this section, the total gradient is calculated using the local gradients from the numerical experiment as in \autoref{sec:Vanishing Local Gradients in QCNs}. As previously, the magnitude of the total gradient is averaged over each layer, the samples and ten realizations of the parameters using \autoref{eq:magnitude QCN DNN}. This quantity is plotted in \autoref{fig:QNC_vanishing_total} for different layers and number of qubits. For comparison, it also shows the magnitude of the total gradient of two DNNs with the same number of layers and similar number of parameters as the four and eight-qubit QCN.
+In this section, the total gradient is calculated using the local gradients from the numerical experiments in \autoref{sec:Vanishing Local Gradients in QCNs}. As previously, the magnitude of the total gradient is averaged over each layer, the samples and ten realizations of the parameters using \autoref{eq:magnitude QCN DNN}. This quantity is plotted in \autoref{fig:QNC_vanishing_total} for different layers and number of qubits. For comparison, it also shows the magnitude of the total gradient of two DNNs with the same number of layers and similar number of parameters as the four and eight-qubit QCN.
 
 \begin{figure}[H]
     \centering
@@ -70,12 +70,12 @@ In this section, the total gradient is calculated using the local gradients from
 
 From \autoref{fig:QNC_vanishing_total}, we see that the total gradient for a given layer in the DNN tends to vanish exponentially in the number of layers after it. This is a well-known phenomenon for classical neural networks, often explained by the saturation of the activation function during feed forward \cite{shalevshwartz2017failures}. (Write about this under neural network theory).
 
-As with the DNN, the QCNs also exhibits vanishing total gradient with increasing number of layers, with a strong dependence on the number of qubits in each node. As we see in \autoref{fig:QCN_local_vanishing}, the total gradient vanishes faster for higher number of qubits in each node. This phenomenon can be related to the magnitude of the local gradients. As the error \autoref{eq:lastLayerErrorQCN} of the QCN is propagated backwards using \autoref{eq:errorQCN}, it accumulates the local gradients $\frac{\partial \boldsymbol{a}^{l+1}_k}{\partial \boldsymbol{a}^{l}_j}$ as factors. When that these factors are large, the error tends to decrease more slowly, and hence also the total gradient. This is the case for architectures with few qubits per node, as discussed in \autoref{sec:Vanishing Local Gradients in QCNs}. However, as the number of qubits increases, the local gradients tend to decrease. Accumulating small factors will cause the error to decrease faster, exponentially so for each layer. In a sense, this vanishing of local gradients with increasing number of qubits is analogous to the saturation of the activations for classical networks.
+As with the DNN, the QCNs also exhibit a vanishing total gradient with increasing number of layers, with a strong dependence on the number of qubits in each node. As we see in \autoref{fig:QCN_local_vanishing}, the total gradient vanishes faster for higher number of qubits in each node. This phenomenon can be related to the magnitude of the local gradients. As the error \autoref{eq:lastLayerErrorQCN} of the QCN is propagated backwards using \autoref{eq:errorQCN}, it accumulates the local gradients $\frac{\partial \boldsymbol{a}^{l+1}_k}{\partial \boldsymbol{a}^{l}_j}$ as factors. As the number of qubits increases, the local gradients tend to decrease. Accumulating small factors will cause the error to decrease faster, exponentially so for each layer. However, if these factors are large, the error tends to decrease more slowly, and hence also the total gradient. This is the case for architectures with few qubits per node, as discussed in \autoref{sec:Vanishing Local Gradients in QCNs}.
 
 %================================================================
 \subsection{Discussion}\label{sec:Vanishing Gradient Phenomenon Discussion}
 %================================================================
-The results of \autoref{sec:Vanishing Gradient for QNNs} show that up-scaling of QNNs by increasing the number of qubits and repetitions of the ansatz results in an exponential decay of their gradients. As explained in \autoref{sec:BarrenPlateus}, this means that exponentially many shots are required in order to obtain a good signal-to-noise when estimating the gradient. If the gradient is too noisy, optimization using gradient descent and similar methods may essentially result in a random walk in parameter space that fails to converge \cite{skolik2020layerwise}. This becomes even more problematic in the presence of addition noise introduced by noisy hardware, as discussed in \autoref{sec:Noisy Simulation}. Ultimately, this indicate that the training of QNNs can become intractable as they are up-scaled to solve harder learning problems.    
+The results of \autoref{sec:Vanishing Gradient for QNNs} show that increasing the model size of QNNs by adding more qubits and repetitions of the ansatz results in an exponential decay of their gradients. As explained in \autoref{sec:BarrenPlateus}, this means that exponentially many shots are required in order to obtain a good signal-to-noise when estimating the gradient. If the gradient is too noisy, optimization using gradient descent and similar methods may essentially result in a random walk in parameter space that fails to converge \cite{skolik2020layerwise}. This becomes even more problematic in the presence of noise introduced by real hardware, as discussed in \autoref{sec:Noisy Simulation}. Ultimately, this indicate that the training of QNNs can become intractable as they are increased in size to solve harder learning problems.    
 
 In \autoref{sec:Vanishing Local Gradients in QCNs}, we see that the local gradients of QCNs also vanish exponentially fast in the number of qubits, but are independent of the overall number of layers. In other words, the local gradients of any layer are unaffected by outputs produced by the previous layer. This suggests that QCNs can be scaled up by making them deeper, without affecting the magnitude of the local gradients. Consequently, a constant number of shots can be used for each node during estimation to obtain a certain signal-to-noise ratio, making their estimations tractable on a quantum computer. 
 
@@ -88,14 +88,14 @@ An interesting observation is that the vanishment caused by back propagation hap
 %================================================================
 \section{Investigating the Loss Landscape}\label{sec:Investigating the Loss Landscape}
 %================================================================
-We explore the geometry of the loss landscape of various models and quantify its degree of distortion and flatness by studying the eigenvalue spectrum of the EFIM \autoref{eq:EmpiricalFisher}. Looking at \autoref{eq:EmpiricalFisher}, we see that the EFIM, unlike the Hessian, is independent of targets $y^{(i)}$. This makes the analysis data agnostic, and serves to characterize the architectures themselves. The input data $\mathcal{X} = \{\boldsymbol{x}^{(1)}, \cdots, \boldsymbol{x}^{(N)}\}$ used for calculating the EFIM is sampled randomly from a standard normal distribution as $\mathcal{X} \sim N(0,1)^{[N,p]}$. This ensures that the input is evenly sampled from feature space and is consistent with the analysis of \citet{abbas2020power}. Here, we use $N=200$ samples and either $p=4$ or $p=6$ inputs, depending on the model. For each model, the EFIM is calculated ten times for different realizations of the parameters of the parameters. The resulting spectrum is then averaged the different realizations to produce more a statistically significant result. For a complete description of the models analyzed in this section, see \autoref{tab:FIM models}.
+We explore the geometry of the loss landscape of randomly initialized QNNs, QCNs and DNNs, and quantify their degree of distortion and flatness by studying the eigenvalue spectrum of the EFIM \autoref{eq:EmpiricalFisher}. Looking at \autoref{eq:EmpiricalFisher}, we see that the EFIM, unlike the Hessian, is independent of targets $y^{(i)}$. This makes the analysis data agnostic. The input data sampled uniformly as $\mathcal{X} \sim U(-\frac{\pi}{2}, \frac{\pi}{2})^{[N,p]}$, like earlier. For the DNNs, the features are standardized as explained in \autoref{sec:Scaling Features}. Here, we use $N=200$ samples and either $p=4$ or $p=6$ inputs, depending on the model. For each model, the EFIM is calculated ten times for different realizations of the model parameters. The resulting spectrum is then averaged over different realizations to produce a more statistically significant result. For a complete description of the models analyzed in this section, see \autoref{tab:FIM models}.
 
 \begin{table}[H]
-\caption{Description of the architecture of the models analyzed in this section. The QNN and QCN models use exact evaluation of parity to derive outputs (see \autoref{sec:Exact Expectation Value} and \autoref{sec:Inference}). The DNN models use tanh activation in all layers. The parameters of the models are appropriately initialized as described in \autoref{sec:Initialization}.} 
+\caption{Description of the architecture of the models analyzed in this section. \emph{Reps} is the number of ansatz repetitions, and $n_{\theta}$ is the number of model parameters. The QNN and QCN models use ideal simulation to derive outputs. The DNN models use tanh activation in all layers. The parameters of the models are appropriately initialized as described in \autoref{sec:Initialization}.} 
 \centering
 \begin{tabular}{|l|l|l|l|l|l|l|l|}
 \hline
-Model &Type & Qubits& Reps & Layers & Width & Encoder        & $n_{\theta}$ \\ \hline
+Model &Type & Qubits& Reps & Layers & Nodes & Encoder        & $n_{\theta}$ \\ \hline
 A    & QNN & 4& 18   & 1      & 4     & RZZ Encoding   & 72  \\ \hline
 B    & QCN & 4& 3    & 2      & 4     & Qubit Encoding & 60 \\ \hline
 C    & QCN & 4& 2    & 3      & 4     & Qubit Encoding & 72  \\ \hline
@@ -110,22 +110,22 @@ J    & DNN & NA& NA   & 3      & 9     & NA             & 163 \\ \hline
 \label{tab:FIM models}
 \end{table}
 
-\autoref{fig:FIM Comparison} compares the EFIM spectrum of QNNs, QCNs and DNNs. Their architectures are chosen so that the models have approximately equal numbers of parameters. This is to ensure a fair comparison. 
+\autoref{fig:FIM Comparison} compares the EFIM spectra of QNNs, QCNs and DNNs. Their architectures are chosen so that the models have approximately equal numbers of parameters. This is to ensure a fair comparison. 
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[height=1.9in]{latex/figures/FIM_qubits_4.pdf}
-        \caption{Comparison of the EFIM spectrum for QNN, QCN and DNN. The QNN and QCN has four qubits in each circuit.}
+        \caption{QNN and QCN with four qubits in each circuit.}
     \end{subfigure}%
     ~ 
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[height=1.9in]{latex/figures/FIM_qubits_6.pdf}
-        \caption{Comparison of the EFIM spectrum for QNN, QCN and DNN. The QNN and QCN has six qubits in each circuit.}
+        \caption{QNN and QCN with six qubits in each circuit.}
     \end{subfigure}
-    \caption{Comparison of EFIM spectrum between QNNs, QCNs and DNNs. For details about the architectures, see \autoref{tab:FIM models}. The EFIM is calculated using $N=200$ points of uniformly sampled points, where the number of features are set equal to the number of qubits. The EFIM spectrum is finally averaged over ten different parameter realizations.}
+    \caption{Comparison of EFIM spectrum between QNNs, QCNs and DNNs, calculated for uniform data. For details about the architectures, see \autoref{tab:FIM models}. \emph{reps} is the number of ansatz repetitions, \emph{L} is the number of layers, and \emph{d} is the number of nodes.}
     \label{fig:FIM Comparison}
 \end{figure}
 
@@ -138,21 +138,21 @@ Moving over to the QCNs, we see from \autoref{fig:FIM Comparison} that the spect
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \includegraphics[height=1.8in]{latex/figures/FIM_qubits_4_comparison.pdf}
-        \caption{Comparison of the EFIM spectrum for different QNNs and QCNs with four qubits.}
+        \caption{Comparison of the EFIM spectra for different QNNs and QCNs with four qubits.}
         \label{fig:FIM QCN a}
     \end{subfigure}%
     ~ 
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \includegraphics[height=1.8in]{latex/figures/FIM_qubits_6_comparison.pdf}
-        \caption{Comparison of the EFIM spectrum for different QNNs and QCNs with six qubits.}
+        \caption{Comparison of the EFIM spectra for different QNNs and QCNs with six qubits.}
         \label{fig:FIM QCN b}
     \end{subfigure}
-    \caption{Comparison of the EFIM eigenvalue spectrum between different QNNs and QCNs. For details about the architectures, see \autoref{tab:FIM models}. The EFIM is calculated using $N=200$ points of uniformly sampled points, where the number of features is set equal to the number of qubits for each model. The EFIM spectrum is finally averaged over ten different parameter realizations to produce a more significant result.}
+    \caption{Comparison of the EFIM eigenvalue spectrum between different QNNs and QCNs, calculated for uniform data. For details about the architectures, see \autoref{tab:FIM models}. \emph{reps} is the number of ansatz repetitions, \emph{L} is the number of layers, and \emph{d} is the number of nodes.}
     \label{fig:FIM QCN}
 \end{figure}
 
-\autoref{fig:FIM QCN a} shows that, for four qubits, the spectra of the different QCNs exhibit roughly the same uniformity as the QNN, with the eigenvalues staying within roughly an order of magnitude of each-other. Going up to six qubits, \autoref{fig:FIM QCN b} shows that the spectrum tends to concentrate more around zero for increasing number of layers. This is likely related to the vanishing of the gradient induced by back propagation. For four qubits, this is not as big of a problem since the local gradients are relatively big and hence the total gradient. However, for six qubits, the local gradients tend to vanish. This results in the gradient vanishing faster when increasing the number of layers, which in turn results in a flatter landscape. 
+\autoref{fig:FIM QCN a} shows that, for four qubits, the spectra of the different QCNs exhibit roughly the same uniformity as the QNN, with the eigenvalues staying within roughly an order of magnitude of each other. Going up to six qubits, \autoref{fig:FIM QCN b} shows that the spectrum tends to concentrate more around zero for increasing number of layers. This is likely related to the vanishing of the gradient induced by back propagation. For four qubits, this is not as big of a problem since the local gradients are relatively big and hence the total gradient. However, for six qubits, the local gradients tend to vanish. This results in the gradient vanishing faster when increasing the number of layers, which in turn results in a flatter landscape. 
 
 
 %================================================================
@@ -167,13 +167,14 @@ We found that QCNs with four qubits exhibit similar uniformity of the EFIM spect
 %================================================================
 \section{Expressivity}\label{sec:Expressivity}
 %================================================================
-We will investigate the expressivity of QCNs and DNNs using the trajectory length method of \citet{raghu2017expressive}, as described in \autoref{sec:TrajectoryLength}. The trajectory length will be first studied for randomly initialized QCNs for varying number of qubits in each node. Then, for some selected QCNs, the trajectory length will be investigated as the models are gradually fitted on 2D mixed Gaussian data. The results in both cases will be compared to similar DNNs, with approximately the same number of parameters for fair comparison. We will use a input trajectory  used will be circle $\boldsymbol{x}(t_i) \in \mathbb{R}^2$ with radius $\frac{\pi}{2}$ and centered around $0$, divided up into $1000$ equally spaced point. The input trajectory and 2D mixed Gaussian data will be pre-processed appropriately, depending on the model, as described in \autoref{sec:Pre-processing Input}.
+We investigate the expressivity of QCNs and DNNs using the trajectory length method of \citet{raghu2017expressive}, as described in \autoref{sec:TrajectoryLength}. The trajectory length will first be  studied for randomly initialized QCNs for varying number of qubits in each node. Then, for some selected QCNs, the trajectory length will be investigated as the models are gradually fitted on 2D mixed Gaussian data. The results in both cases will be compared to similar DNNs, with approximately the same number of parameters for fair comparison. We use an input trajectory $\boldsymbol{x}(t_i) \in \mathbb{R}^2$ in the shape of a circle, with radius $\frac{\pi}{2}$ and centered around $0$, divided up into $1000$ equally spaced points. The input trajectory and 2D mixed Gaussian data will be pre-processed appropriately, depending on the model, as described in \autoref{sec:Pre-processing Input}. 
 
 %================================================================
 \subsection{Untrained Models}\label{sec:Untrained Models}
 %================================================================
 
-In this subsection, we investigate the same QCN and DNN architectures as formulated in \autoref{sec:Vanishing Local Gradients in QCNs}, initialized randomly in the same manner. \autoref{fig:TL_untrained} shows how the trajectory length varies as a function of layer, when the different models are fed the circle trajectory $\boldsymbol{x}(t_i)$ defined earlier.
+In this section, we investigate QCNs and DNNs architectures as described in \autoref{sec:Vanishing Local Gradients in QCNs}. 
+The models are initialized randomly in the same manner. \autoref{fig:TL_untrained} shows how the trajectory length varies as a function of layer, when the different models are fed the circle trajectory $\boldsymbol{x}(t_i)$ defined earlier.
 
 %All layers have $d$ number of nodes, and all nodes have $d$ number of qubits. $d$ ranges from $4$ to $8$. For comparison, the trajectory length is also calculated for an 8-layer DNN with approximately the same number of parameters as the biggest QCN. The QCNs and the DNN are randomly initialized as in \autoref{sec:Vanishing Gradient Phenomenon}.
 
@@ -457,8 +458,6 @@ In this section, we compare the performance QCNs and DNNs by performing regressi
 
 In \autoref{sec:Feature Reduced Data}, we will reduce the number of features for data sets to four (down from $13$ and $30$, respectively) by using principal component analysis, as described in \autoref{sec:Principal Component Analysis}. This is done in order to produce smaller, more manage QCNs, as qubit encoding generally requires one qubit for each feature. The QCNs models are chosen to have four qubits in each circuit, and only two layers. This is done to obtain a model that has a large gradient due to low number of qubits, as discussed in \autoref{sec:Vanishing Gradient Phenomenon Discussion}, and are thus easy to train. The DNNs are chosen such that the number of parameters approximately match that of the QCNs. 
 
-In \autoref{sec:Hybrid Method}, we will repeat the experiments of \autoref{sec:Feature Reduced Data} on the data sets with all features present, i.e. without feature reduction. To avoid QCNs with overly many qubits, we will use an initial dense layer to reduce the features from $13$ and $30$ to four. This creates a DNN/QCN hybrid model, where the initial dense layer learns derived features on which the QCN part makes predictions. See \autoref{sec:Hybrid Models} for details. 
-
 For both the feature reduced and full data set, we will split the data sets into independent training and test sets at random, each with $N=100$ samples. The targets of the Boston Housing data is min-max scaled to $y \in [0,1]$, while the discrete targets of the Breast Cancer data are already $y \in \{0,1\}$.
 
 %================================================================
@@ -519,64 +518,3 @@ D    & DNN & Breast Cancer        & 0.001/\boldsymbol{$0.032$} & 1.000/\boldsymb
 \end{table}
 
 
-%================================================================
-\subsection{Hybrid Method}\label{sec:Hybrid Method}
-%================================================================
-Using PCA for feature reduction enabled us to train feasibly small QCNs on the data, but in turn, we lost some of the information of the features. To enable us retain all the information of the data and train on all the features, we implement a hybrid model with an initial dense of the type \autoref{eq:FeedforwardSingle}. This layer  
-
-
-\begin{table}[H]
-\centering
-\begin{tabular}{|l|l|l|l|l|l|l|l|}
-\hline
-Model& Type& Data& Qubits& Reps& Layers & Nodes &$n_{\theta}$ \\ \hline
-E    & Hybrid & Boston Housing Data  & 4     & 2&3      & 4& 96   \\ \hline
-F    & DNN & Boston Housing Data  & NA    & NA&3      & 5& 106 \\ \Xhline{2\arrayrulewidth}
-G    & Hybrid & Breast Cancer        & 4     & 2&3      & 4& 164  \\ \hline
-H    & DNN & Breast Cancer        & NA    & NA&3      & 5& 191  \\ \hline
-\end{tabular}
-\caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
-\label{tab:training models Hybrid}
-\end{table}
-
-%\begin{figure}[H]
-%    \centering
-%    \begin{subfigure}[t]{0.5\textwidth}
-%        \centering
-%        \includegraphics[height=1.9in]{latex/figures/Boston_Hyb%rid.pdf}
-%        \caption{Lorem ipsum}
-%        
-%    \end{subfigure}%
-%    \hfill 
-%    \begin{subfigure}[t]{0.5\textwidth}
-%        \centering
-%        \includegraphics[height=1.9in]{latex/figures/Cancer_Hyb%rid.pdf}
-%        \caption{Lorem ipsum}
-%    \end{subfigure}
-%    \caption{Caption place holder}
-%    \label{fig:}
-%\end{figure}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{|l|l|l|l|l|}
-\hline
-Model& Type& Data& MSE (train/test) & Accuracy (train/test) \\ \hline
-E    & Hybrid & BHD  & 0.004/0.021 & NA    \\ \hline
-F    & DNN & BHD     & 0.002/$\boldsymbol{0.011}$  & NA  \\ \Xhline{2\arrayrulewidth}
-G    & Hybrid & BCD        & 0.035/0.102  & 1.000/0.875    \\ \hline
-H    & DNN & BCD           & 0.000/$\boldsymbol{0.030}$  & 1.000/$\boldsymbol{0.954}$  \\ \hline
-\end{tabular}
-\caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
-\label{tab:results PCA}
-\end{table}
-
-%================================================================
-%\section{Regularized Feature Map}\label{sec:Regularized Feature Map}
-%================================================================
-%Stuff
-
-%================================================================
-%\subsection{Discussion}\label{sec:Regularized Feature Map Discussion}
-%================================================================
-%Stuff
