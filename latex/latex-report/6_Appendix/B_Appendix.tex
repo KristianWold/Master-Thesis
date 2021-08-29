@@ -12,7 +12,7 @@ Given a data point $\boldsymbol{x}$ with $p$ features, the output of a general m
 \begin{equation}\label{eq:Gaussian}
     y = e^{(\boldsymbol{x} - \boldsymbol{\mu})^T \Sigma^{-1}(\boldsymbol{x} - \boldsymbol{\mu})},
 \end{equation}
-where $\boldsymbol{\mu}$ is a $p$-dimensional vector that defines the position of the center of the Gaussian function, and $\Sigma$ is a $p\times p$ diagonal matrix defining the extension of the Gaussian in each direction. In this thesis, we will prepare samples $\boldsymbol{x}^{(i)} \in [0,1]^p$ as a meshgrid that uniformly fills the input space $[0,1]^p$. This ensures a dense data set that captures the details of the mixed Gaussian function. We will generate data sets for $p \in[1,2,3].$ These differed data sets are described in \autoref{tab:MixedGaussianData}. For a visualization, see \autoref{fig:mixed Gaussian 1D}, \autoref{fig:mixed Gaussian 2D} and \autoref{fig:mixed Gaussian 3D}. For a complete description on how the data is generated, see \url{https://github.com/KristianWold/Master-Thesis/blob/main/src/utils.py}.
+where $\boldsymbol{\mu}$ is a $p$-dimensional vector that defines the position of the center of the Gaussian function, and $\Sigma$ is a $p\times p$ diagonal matrix defining the extension of the Gaussian in each direction. In this thesis, we will prepare samples $\boldsymbol{x}^{(i)} \in [0,1]^p$ as a meshgrid that uniformly fills the input space $[0,1]^p$. This ensures a dense data set that captures the details of the mixed Gaussian function. We will generate data sets for $p \in[1,2,3].$ These differed data sets are described in \cref{tab:MixedGaussianData}. For a visualization, see \cref{fig:mixed Gaussian 1D}, \cref{fig:mixed Gaussian 2D} and \cref{fig:mixed Gaussian 3D}. For a complete description on how the data is generated, see \url{https://github.com/KristianWold/Master-Thesis/blob/main/src/utils.py}.
 
 To import the mixed Gaussian data, the following code can be used:
 \begin{lstlisting}[language=python, numbers=left]
@@ -40,14 +40,14 @@ x3, y3 = generate_1D_mixed_gaussian()
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{latex/figures/gaussian_1D.pdf}
-    \caption{Visualization of the 1D mixed Gaussian dataset. For more details, see \autoref{tab:MixedGaussianData}.} 
+    \caption{Visualization of the 1D mixed Gaussian dataset. For more details, see \cref{tab:MixedGaussianData}.} 
     \label{fig:mixed Gaussian 1D}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{latex/figures/gaussian_2D.pdf}
-    \caption{Visualization of the 2D mixed Gaussian dataset. For more details, see \autoref{tab:MixedGaussianData}} 
+    \caption{Visualization of the 2D mixed Gaussian dataset. For more details, see \cref{tab:MixedGaussianData}} 
     \label{fig:mixed Gaussian 2D}
 \end{figure}
 
@@ -65,7 +65,7 @@ x3, y3 = generate_1D_mixed_gaussian()
         \includegraphics[height=1.9in]{latex/figures/gaussian_3D_2.pdf}
         \caption{Slice of the data set at $x_3 = \frac{5}{6}$.}
     \end{subfigure}
-    \caption{Visualization of the 3D mixed Gaussian dataset. For more details, see \autoref{tab:MixedGaussianData}}
+    \caption{Visualization of the 3D mixed Gaussian dataset. For more details, see \cref{tab:MixedGaussianData}}
     \label{fig:mixed Gaussian 3D}
 \end{figure}
 
@@ -90,7 +90,7 @@ x = data.data
 y = data.target
 \end{lstlisting}
 
-The targets $y$ of the Boston Housing data are \emph{median of owner-occupied homes by town}, in \$1000, which can be predicted using for regression methods. Some of the features include quantities such as \emph{per capita crime rate by town}, \emph{average number of rooms per dwelling} and \emph{pupil-teacher ratio by town}. For a complete description of the features, see \url{https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html}. For some general details of the data set, see \autoref{tab:Boston}.
+The targets $y$ of the Boston Housing data are \emph{median of owner-occupied homes by town}, in \$1000, which can be predicted using for regression methods. Some of the features include quantities such as \emph{per capita crime rate by town}, \emph{average number of rooms per dwelling} and \emph{pupil-teacher ratio by town}. For a complete description of the features, see \url{https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html}. For some general details of the data set, see \cref{tab:Boston}.
 
 \begin{table}[H]
 \begin{tabular}{|l|l|l|l|l|}
@@ -117,7 +117,7 @@ x = data.data
 y = data.target
 \end{lstlisting}
 
-The targets $y$ of the data set are binary values indicating whether breast tissue is malignant or benign, suitable for classification methods. Some of the features include quantities such as \emph{mean radius}, \emph{mean area} and \emph{mean smoothness} describing the breast tissue. For a complete description of the features, see \url{https://www.kaggle.com/uciml/breast-cancer-wisconsin-datal}. For some general details of the data set, see \autoref{tab:Cancer}.
+The targets $y$ of the data set are binary values indicating whether breast tissue is malignant or benign, suitable for classification methods. Some of the features include quantities such as \emph{mean radius}, \emph{mean area} and \emph{mean smoothness} describing the breast tissue. For a complete description of the features, see \url{https://www.kaggle.com/uciml/breast-cancer-wisconsin-datal}. For some general details of the data set, see \cref{tab:Cancer}.
 
 \begin{table}[H]
 \begin{tabular}{|l|l|l|l|l|}
@@ -135,7 +135,7 @@ The targets $y$ of the data set are binary values indicating whether breast tiss
 %================================================================
 \subsection{Feature Reduction with PCA}\label{sec:Feature Reduction with PCA}
 %================================================================
-For both the Boston Housing data and the Breast Cancer Wisconsin data, we will perform a principal component analysis (PCA) to reduce the number of features from $13$ and $30$ to four, respectively. This is for making the training of QCNs more feasible, as a high number of features also require a high number of qubits when using qubit encoding. For more details, see \autoref{sec:Principal Component Analysis} and \autoref{sec:Feature Reduction with PCA}.
+For both the Boston Housing data and the Breast Cancer Wisconsin data, we will perform a principal component analysis (PCA) to reduce the number of features from $13$ and $30$ to four, respectively. This is for making the training of QCNs more feasible, as a high number of features also require a high number of qubits when using qubit encoding. For more details, see \cref{sec:Principal Component Analysis} and \cref{sec:Feature Reduction with PCA}.
 
 
 

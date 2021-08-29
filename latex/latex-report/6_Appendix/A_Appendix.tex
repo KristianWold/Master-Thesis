@@ -5,9 +5,9 @@
 %================================================================
 \subsection{Hybrid Method}\label{sec:Hybrid Method}
 %================================================================
-In \autoref{sec:Hybrid Method}, we will repeat the experiments of \autoref{sec:Feature Reduced Data} on the data sets with all features present, i.e. without feature reduction. To avoid QCNs with overly many qubits, we will use an initial dense layer to reduce the features from $13$ and $30$ to four. This creates a DNN/QCN hybrid model, where the initial dense layer learns derived features on which the QCN part makes predictions. See \autoref{sec:Hybrid Models} for details.
+In \cref{sec:Hybrid Method}, we will repeat the experiments of \cref{sec:Feature Reduced Data} on the data sets with all features present, i.e. without feature reduction. To avoid QCNs with overly many qubits, we will use an initial dense layer to reduce the features from $13$ and $30$ to four. This creates a DNN/QCN hybrid model, where the initial dense layer learns derived features on which the QCN part makes predictions. See \cref{sec:Hybrid Models} for details.
 
-Using PCA for feature reduction enabled us to train feasibly small QCNs on the data, but in turn, we lost some of the information of the features. To enable us retain all the information of the data and train on all the features, we implement a DNN/QCN hybrid model with an initial dense of the type \autoref{eq:FeedforwardSingle}. This layer  
+Using PCA for feature reduction enabled us to train feasibly small QCNs on the data, but in turn, we lost some of the information of the features. To enable us retain all the information of the data and train on all the features, we implement a DNN/QCN hybrid model with an initial dense of the type \cref{eq:FeedforwardSingle}. This layer  
 
 
 \begin{table}[H]

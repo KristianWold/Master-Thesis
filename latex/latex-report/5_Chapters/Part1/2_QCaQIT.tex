@@ -67,7 +67,7 @@ where $\boldsymbol{v} \in \{0,1\}^n$ sums over all possible binary strings of le
 %================================================================
 \subsection{Measuring Qubits}\label{sec:MeasuringState}
 %===============================================================
-It appears the information encoded in quantum systems is much greater than the information in a corresponding classical system, at least in the case of qubits versus bits. How can one interact with this information? Unlike classical bits, whose state can always be measured exactly, the state of one or multiple qubits cannot be measured and determined. Returning to the single qubit example, one can choose to perform a measurement in the computational basis on a qubit in the state $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$. The measurement will result in  \emph{either} $\ket{0}$ \emph{or} $\ket{1}$, with probabilities $|\alpha|^2$ and $|\beta|^2$, respectively. For multiple qubits in a general state \autoref{eq:MultiQubitState}, a measurement on all qubits will grant a state in the computational basis, i.e. $\ket{\boldsymbol{v}_1} \otimes \ket{\boldsymbol{v}_2} \otimes \cdots \ket{\boldsymbol{v}_n}$ for some binary string $\boldsymbol{v} \in \{0,1\}^n$, with probability $|c_{\boldsymbol{v}}|^2$. This motivates why states in quantum mechanics need to have unity norm, i.e
+It appears the information encoded in quantum systems is much greater than the information in a corresponding classical system, at least in the case of qubits versus bits. How can one interact with this information? Unlike classical bits, whose state can always be measured exactly, the state of one or multiple qubits cannot be measured and determined. Returning to the single qubit example, one can choose to perform a measurement in the computational basis on a qubit in the state $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$. The measurement will result in  \emph{either} $\ket{0}$ \emph{or} $\ket{1}$, with probabilities $|\alpha|^2$ and $|\beta|^2$, respectively. For multiple qubits in a general state \cref{eq:MultiQubitState}, a measurement on all qubits will grant a state in the computational basis, i.e. $\ket{\boldsymbol{v}_1} \otimes \ket{\boldsymbol{v}_2} \otimes \cdots \ket{\boldsymbol{v}_n}$ for some binary string $\boldsymbol{v} \in \{0,1\}^n$, with probability $|c_{\boldsymbol{v}}|^2$. This motivates why states in quantum mechanics need to have unity norm, i.e
 \begin{equation}\label{eq:MultiQubitState}
 \sum_{\boldsymbol{v}}|c_{\boldsymbol{v}}|^2 = 1,
 \end{equation} 
@@ -90,7 +90,7 @@ Assuming $\ket{\psi}$ is initially normalized, so is $\ket{\phi}$ after a unitar
 
 By construction, quantum computers allow for the application of carefully selected sequences of operators that transforms the state in a desired way, often called a \emph{quantum circuit}. Typical operators used in quantum computing, often called quantum gates, act on one or multiple qubits, and are analogous to logical operations in the classical context. 
 
-\autoref{fig:exampleCircuit} illustrates an example of a quantum circuit. Going from left to right indicates the chronological order of application of the different quantum gates. Note that the exact passing of time is not shown in this schematic, and is highly dependent on the implementation of physical hardware. The horizontal lines, called wires, each symbolize a qubit. The qubits are initialized in the zero state, as shown by the notation on the left-hand side. Then, various gates are applied to the qubits, acting on one, two or three qubits. Lastly, illustrated by the gauge symbol, each qubit is measured in the computational basis, yielding either $0$ or $1$. This information is then stored in the classical register $c$, indicated by the double line. 
+\cref{fig:exampleCircuit} illustrates an example of a quantum circuit. Going from left to right indicates the chronological order of application of the different quantum gates. Note that the exact passing of time is not shown in this schematic, and is highly dependent on the implementation of physical hardware. The horizontal lines, called wires, each symbolize a qubit. The qubits are initialized in the zero state, as shown by the notation on the left-hand side. Then, various gates are applied to the qubits, acting on one, two or three qubits. Lastly, illustrated by the gauge symbol, each qubit is measured in the computational basis, yielding either $0$ or $1$. This information is then stored in the classical register $c$, indicated by the double line. 
 
 \begin{figure}[htp]
     \centering
@@ -146,7 +146,7 @@ which gives a $50\%$ chance to yield either $0$ or $1$ upon measuring. In a sens
 \begin{equation}\label{eq:unscramble}
     HH\ket{0} = \frac{1}{\sqrt{2}}H\ket{0} +\frac{1}{\sqrt{2}}H\ket{1} = \frac{1}{2}(\ket{0} + \ket{0}) + \frac{1}{2}(\ket{1} - \ket{1}) = \ket{0}.
 \end{equation}
-Pointed out in \citet{SupervisedwquantumComputers}, this phenomenon has no classical equivalent. If one has a classical procedure of scrambling a coin, e.g. shaking it in your hands, a second shaking will not leave it unscrambled, but scrambled still. Quantum computation is able to reverse this because quantum mechanics is fundamentally not a theory of probabilities; Probabilities can be derived from the theory, but the underlying description revolves around amplitudes, as explained earlier. Whereas probabilities must be positive or zero, amplitudes can be positive or negative(and complex in general), which allows destructive interference. This can be seen in \autoref{eq:unscramble}, where the last term $\frac{1}{2}(\ket{1} - \ket{1})$ is cancelled out. In addition to the exponentially large size of Hilbert space, this is also an interesting property of quantum computing when discussing its capabilities over classical computing.
+Pointed out in \citet{SupervisedwquantumComputers}, this phenomenon has no classical equivalent. If one has a classical procedure of scrambling a coin, e.g. shaking it in your hands, a second shaking will not leave it unscrambled, but scrambled still. Quantum computation is able to reverse this because quantum mechanics is fundamentally not a theory of probabilities; Probabilities can be derived from the theory, but the underlying description revolves around amplitudes, as explained earlier. Whereas probabilities must be positive or zero, amplitudes can be positive or negative(and complex in general), which allows destructive interference. This can be seen in \cref{eq:unscramble}, where the last term $\frac{1}{2}(\ket{1} - \ket{1})$ is cancelled out. In addition to the exponentially large size of Hilbert space, this is also an interesting property of quantum computing when discussing its capabilities over classical computing.
 
 Further, a much-used set of single qubit gates are the Pauli operators:
 
@@ -173,7 +173,7 @@ Further, a much-used set of single qubit gates are the Pauli operators:
 \end{aligned}    
 \end{equation}
 
-To visualize what these operators do, it is useful to introduce a geometrical representation called the \emph{Bloch sphere}, illustrated in \autoref{fig:blochsphere}. Rewriting the state of a qubit to 
+To visualize what these operators do, it is useful to introduce a geometrical representation called the \emph{Bloch sphere}, illustrated in \cref{fig:blochsphere}. Rewriting the state of a qubit to 
 
 \begin{equation}\label{eq:blochsphere}
     \ket{\psi} = \alpha \ket{0} + \beta \ket{1} = e^{i\gamma}(\cos{\frac{\theta}{2}}\ket{0} + e^{i\phi}\sin{\frac{\theta}{2}}\ket{1}) \sim 
@@ -229,7 +229,7 @@ The action of a gate $R_j(\theta)$ on a state, for $j \in \{x,y,z\}$, is to rota
 %================================================================
 \subsection{Multi-Qubit Operators}\label{sec:ControlledOperations}
 %===============================================================
-With only single qubit gates, the number of states we can access is greatly reduced as all the qubits stay independent, i.e. the state can be written as \autoref{eq:tensorProductState}. By introducing gates that operates on several qubits, one can for example transform the state of one qubit conditioned on the state of an other qubit. This makes the two qubits correlated, known as \emph{entanglement} in quantum mechanics.
+With only single qubit gates, the number of states we can access is greatly reduced as all the qubits stay independent, i.e. the state can be written as \cref{eq:tensorProductState}. By introducing gates that operates on several qubits, one can for example transform the state of one qubit conditioned on the state of an other qubit. This makes the two qubits correlated, known as \emph{entanglement} in quantum mechanics.
 
 \subsubsection*{CNOT}
 One such conditional gate is the controlled NOT gate (CNOT gate). It is formulated as
@@ -261,7 +261,7 @@ where we have also included its formulation in Dirac notation. Looking at the ci
     \frac{1}{\sqrt{2}}(\ket{0}\otimes I\ket{0} + \ket{1}\otimes X\ket{0}) =
     \frac{1}{\sqrt{2}}(\ket{0}\otimes \ket{0} + \ket{1}\otimes \ket{1}).
 \end{equation}
-This is a well-known state called a \emph{Bell state}. It has the interesting property that the qubits are correlated: When the first qubit is measured to be in either state $0$ or $1$, the second qubit will be found in the same state, and vice versa. This is known as an entangled state, which cannot be expressed as a product of independent single qubit states, such as \autoref{eq:tensorProductState}. By introducing controlled gates, we have increased the space of accessible states.
+This is a well-known state called a \emph{Bell state}. It has the interesting property that the qubits are correlated: When the first qubit is measured to be in either state $0$ or $1$, the second qubit will be found in the same state, and vice versa. This is known as an entangled state, which cannot be expressed as a product of independent single qubit states, such as \cref{eq:tensorProductState}. By introducing controlled gates, we have increased the space of accessible states.
 
 \subsubsection*{Multi-Controlled Gate}
 The CNOT gate is just one example of a controlled quantum gate. In general, we can have a controlled gate on the form 
@@ -346,11 +346,11 @@ For a two-qubit system, where the first qubit is in the state $\ket{\psi}$ and t
 %================================================================
 \subsection{Observables}\label{sec:Observables}
 %===============================================================
-In \autoref{sec:MeasuringState}, we introduced the process of measurement. We will now generalize this by introducing \emph{quantum observables}. In quantum mechanics, an observable is an operator that acts on the state space of the system being measured. It can be expressed as
+In \cref{sec:MeasuringState}, we introduced the process of measurement. We will now generalize this by introducing \emph{quantum observables}. In quantum mechanics, an observable is an operator that acts on the state space of the system being measured. It can be expressed as
 \begin{equation}\label{eq:observable}
     \hat{O} = \sum_m m P_m,
 \end{equation}
-where $m$ are real numbers called \emph{eigenvalues} and $P_m$ are projection operators(satisfying $P_m^2 = P_m$) with the condition $\sum_m P_m = I$. Under these conditions, the operator $\hat{O}$ is said to be \emph{Hermitian}, which is a property required of all quantum observables. Upon measuring the observable \autoref{eq:observable} on a state $\ket{\psi}$, the measured value will be $m$ with probability 
+where $m$ are real numbers called \emph{eigenvalues} and $P_m$ are projection operators(satisfying $P_m^2 = P_m$) with the condition $\sum_m P_m = I$. Under these conditions, the operator $\hat{O}$ is said to be \emph{Hermitian}, which is a property required of all quantum observables. Upon measuring the observable \cref{eq:observable} on a state $\ket{\psi}$, the measured value will be $m$ with probability 
 
 \begin{equation}
     p(m) = \bra{\psi}P_m\ket{\psi},
@@ -387,7 +387,7 @@ and the states after the corresponding measurement is
     \frac{\beta}{|\beta|} \ket{1} \sim \ket{1},
 \end{aligned}
 \end{equation}
-where it was used that $\frac{\alpha}{|\alpha|}$ and $\frac{\beta}{|\beta|}$ are just global phases, and hence not important. Thus we see that the measurement leaves the state in the computational basis corresponding with the measured value, with the correct probability as described in \autoref{sec:MeasuringState}.
+where it was used that $\frac{\alpha}{|\alpha|}$ and $\frac{\beta}{|\beta|}$ are just global phases, and hence not important. Thus we see that the measurement leaves the state in the computational basis corresponding with the measured value, with the correct probability as described in \cref{sec:MeasuringState}.
 
 %================================================================
 \subsection{Expectation Values}\label{sec:ExpectationValues}
@@ -399,14 +399,14 @@ What is the average value of an observable for a given state $\ket{\psi}$? Using
     \mathbb{E}(m) = \sum_m m p(m) = \sum_m m \bra{\psi}P_m\ket{\psi} = \bra{\psi}\sum_m m P_m\ket{\psi} = \bra{\psi}\hat{O}\ket{\psi}
 \end{equation}
 
-$\bra{\psi}\hat{O}\ket{\psi}$ is a recurring expression in quantum mechanics, often denoted simply as $\langle \hat{O} \rangle$. The expectation value is crucial for quantum computing as it serves as a method for extracting a deterministic value from a quantum state. Whereas the total quantum information of a state is inaccessible to us, estimating the expectation value for some desired observable is possible for retrieving an output of a quantum algorithm. Desirably, this output serves as a solution to the problem one wishes to solve. Looking at the expected value \autoref{eq:ExpectedValue}, it is easy to see why global phases of the state are physically insignificant. How does the expected value of an arbitrary observable change when we add a global phase $\ket{\psi} \rightarrow e^{i\gamma}\ket{\psi}$? We get
+$\bra{\psi}\hat{O}\ket{\psi}$ is a recurring expression in quantum mechanics, often denoted simply as $\langle \hat{O} \rangle$. The expectation value is crucial for quantum computing as it serves as a method for extracting a deterministic value from a quantum state. Whereas the total quantum information of a state is inaccessible to us, estimating the expectation value for some desired observable is possible for retrieving an output of a quantum algorithm. Desirably, this output serves as a solution to the problem one wishes to solve. Looking at the expected value \cref{eq:ExpectedValue}, it is easy to see why global phases of the state are physically insignificant. How does the expected value of an arbitrary observable change when we add a global phase $\ket{\psi} \rightarrow e^{i\gamma}\ket{\psi}$? We get
 
 \begin{equation}\label{eq:ExpectedValue}
     \bra{\psi}e^{-i\gamma}
     \hat{O}e^{i\gamma}\ket{\psi} =\bra{\psi}e^{i(\gamma-\gamma) }\hat{O}\ket{\psi} = 
     \bra{\psi}\hat{O}\ket{\psi}.
 \end{equation}
-The above results show that whatever measurement we do on the state, we cannot determine if the global phase is present or not. Therefore, we can assume two state that differ by a global phase are physically identical, as was assumed in \autoref{eq:blochsphere} and \autoref{eq:CompBasisMeasurement}.
+The above results show that whatever measurement we do on the state, we cannot determine if the global phase is present or not. Therefore, we can assume two state that differ by a global phase are physically identical, as was assumed in \cref{eq:blochsphere} and \cref{eq:CompBasisMeasurement}.
 
 %================================================================
 \subsection{Estimating Expectation Values}\label{sec:EstimatingExpectationValues}
@@ -437,7 +437,7 @@ The standard deviation of the estimator $\hat{p}_i$ can be shown to be
 
 If $S$ is reasonably large, $\hat{p}$ is approximately normally distributed by the law of large numbers. Consequently, any one estimation of $\hat{p}$ falls within the interval of one standard deviation around the mean with a probability of $68\%$. This means that in order to reduce the error of the estimation, i.e. the standard deviation, one need to increase the number of shots $S$. Looking at the above expression, the error of $\hat{p}_i$ goes as $O(1/\sqrt{S})$. 
 
-The expectation values can be estimated by inserting the estimates $\hat{p}_i$ into \autoref{eq:ExpectedValueExact}, giving
+The expectation values can be estimated by inserting the estimates $\hat{p}_i$ into \cref{eq:ExpectedValueExact}, giving
 
 \begin{equation}\label{eq:ExpectedValueEstimate}
     \bra{\psi}\hat{O}\ket{\psi} \approx \sum_{i} \hat{p}_i\lambda_i.
@@ -478,7 +478,7 @@ From this expression, it can be seen that also the error of the expectation valu
 %================================================================
 \section{Noisy Intermediate-Scale Quantum Computing}\label{sec:Nisq}
 %===============================================================
-So far, we have introduced abstract and rather idealized aspects of quantum mechanics in the context of quantum computing. We have not yet discussed how quantum algorithms are implemented on quantum hardware in practice, and what drawbacks such implementation might bring. Even in the ideal case, we saw in \autoref{sec:EstimatingExpectationValues} that outputs of quantum circuits are noisy as a result of finite shots. Quantum computing on near-term quantum hardware, so-called \emph{noisy intermediate-scale quantum computing}(NISQ)\cite{Preskill_2018}, is characterized by few available qubits, low-fidelity computations and other restrictions. These aspects tend to make performing quantum computing even more challenging, and will be frequently discussed when we later motivate different ways of implementing quantum machine learning. The content of this section is mainly based on \citet{SupervisedwquantumComputers} and \citet{Preskill_2018}.
+So far, we have introduced abstract and rather idealized aspects of quantum mechanics in the context of quantum computing. We have not yet discussed how quantum algorithms are implemented on quantum hardware in practice, and what drawbacks such implementation might bring. Even in the ideal case, we saw in \cref{sec:EstimatingExpectationValues} that outputs of quantum circuits are noisy as a result of finite shots. Quantum computing on near-term quantum hardware, so-called \emph{noisy intermediate-scale quantum computing}(NISQ)\cite{Preskill_2018}, is characterized by few available qubits, low-fidelity computations and other restrictions. These aspects tend to make performing quantum computing even more challenging, and will be frequently discussed when we later motivate different ways of implementing quantum machine learning. The content of this section is mainly based on \citet{SupervisedwquantumComputers} and \citet{Preskill_2018}.
 
 
 %================================================================
@@ -489,12 +489,12 @@ In physical quantum computers, it is important to implement ways to precisely co
 %================================================================
 \subsection{Quantum Decoherence}\label{sec:DaEC}
 %===============================================================
-In addition to the error introduced by the imprecision of the gates, the qubits themselves are susceptible to outside disturbance, causing \emph{decoherence} of the state. In \autoref{sec:IntroQM} and \autoref{sec:QuantumCircuits}, we talked about states of isolated systems and how they transform under unitary operators. In this context, "isolated" means that the system of qubits is not affected by any external sources, with the exception of the mechanisms that implement quantum gates. In practice, quantum computers are only approximately isolated, as vibrations and external fields tends to leak into the system, degrading the information stored in the state. This effect tends to strengthen the longer the computation takes, and places another restriction on how many gates one can implement. Specifically, decoherence limits the \emph{circuit depth}, which refers to the number of gates applied in sequence. 
+In addition to the error introduced by the imprecision of the gates, the qubits themselves are susceptible to outside disturbance, causing \emph{decoherence} of the state. In \cref{sec:IntroQM} and \cref{sec:QuantumCircuits}, we talked about states of isolated systems and how they transform under unitary operators. In this context, "isolated" means that the system of qubits is not affected by any external sources, with the exception of the mechanisms that implement quantum gates. In practice, quantum computers are only approximately isolated, as vibrations and external fields tends to leak into the system, degrading the information stored in the state. This effect tends to strengthen the longer the computation takes, and places another restriction on how many gates one can implement. Specifically, decoherence limits the \emph{circuit depth}, which refers to the number of gates applied in sequence. 
 
 %================================================================
 \subsection{Coupling of Qubits}\label{sec:CoQ}
 %===============================================================
-Depending on the specific implementation of the hardware, it is not given that a two-qubit gate can be applied on any two qubits. Typical for near-term quantum computers, the qubits are arranged in a \emph{linear array}\cite{Holmes_2020}. This means that two-qubit gates may only be applied on neighboring qubits, i.e. they are linearly connected. \autoref{fig:connectivity} gives examples on quantum circuits that either respect or violate the linear connectivity of qubits.     
+Depending on the specific implementation of the hardware, it is not given that a two-qubit gate can be applied on any two qubits. Typical for near-term quantum computers, the qubits are arranged in a \emph{linear array}\cite{Holmes_2020}. This means that two-qubit gates may only be applied on neighboring qubits, i.e. they are linearly connected. \cref{fig:connectivity} gives examples on quantum circuits that either respect or violate the linear connectivity of qubits.     
 
 \begin{figure}[H]
      \begin{subfigure}[b]{0.3\textwidth}
@@ -536,7 +536,7 @@ Depending on the specific implementation of the hardware, it is not given that a
         \label{fig:connectivity}
 \end{figure}
 
-\autoref{fig:linear_con} applies CNOT gate only on neighboring qubits, which is allowed on a linear architecture. In contrast, \autoref{fig:not_linear_con} shows a violation of this. However, the circuit in \autoref{fig:linear_con_swap} has the equivalent functionality as the aforementioned circuit, while still respecting linear connection. This was achieved by using SWAP gates to essentially "move qubits around", but at the cost of a greater circuit depth. In order to limit the circuit depth as much as possible, we will often discuss quantum circuits respecting the linear connectivity going forward.
+\cref{fig:linear_con} applies CNOT gate only on neighboring qubits, which is allowed on a linear architecture. In contrast, \cref{fig:not_linear_con} shows a violation of this. However, the circuit in \cref{fig:linear_con_swap} has the equivalent functionality as the aforementioned circuit, while still respecting linear connection. This was achieved by using SWAP gates to essentially "move qubits around", but at the cost of a greater circuit depth. In order to limit the circuit depth as much as possible, we will often discuss quantum circuits respecting the linear connectivity going forward.
 
 %================================================================
 \subsection{Basis Gates}\label{sec:Basis Gates}
