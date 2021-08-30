@@ -31,7 +31,7 @@ often called a \emph{quantum feature map}. Next, a circuit parameterized by $\bo
     \hat{y} = f_{QNN}(\boldsymbol{x};\boldsymbol{\theta}) = \bra{\psi_{\boldsymbol{x}, \boldsymbol{\theta}}} \hat{O} \ket{\psi_{\boldsymbol{x}, \boldsymbol{\theta}}}.
 \end{equation} In the standard approach of supervised learning, the parameters $\boldsymbol{\theta}$ must be adjusted in order to minimize some loss function $L(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^N L(\hat{y_i},y_i)$, as explained in \cref{sec:ParametricModels}. 
 
-In the sections to come, we will discuss specific choices of feature encoding, ansätze, and expectation values.
+In the sections to come, we will discuss specific choices of feature encoding, ansatzes, and expectation values.
 
 %================================================================
 \section{Feature Encoding}\label{sec:FeatureEncoding}
@@ -213,9 +213,9 @@ For both qubit encoding and RZZ encoding, the number of qubits in the circuit is
 
 
 %================================================================
-\section{Ansatz}\label{sec:Ansätze}
+\section{Ansatz}\label{sec:Ansatz}
 %================================================================
-What kinds of unitary transformation are interesting as ansätze used for processing information embedded in quantum states? In principle, we are able to explore every conceivable unitary transformation as a parameterized circuit, since there are circuit designs that are known to be \emph{universal}\cite{lloyd2018quantum}. In this context, universality means that for any unitary operator, there exists a sufficiently deep ansatz that approximates the operator to an arbitrary accuracy. However, such approximations are often exponentially deep\cite{NielsenQuantum}, meaning the vast majority of unitary transformations are inaccessible on ideal quantum computers, let alone near-term quantum computers. Still, it is believed that there exist reasonably shallow ansatz that are useful for constructing powerful machine learning models. Many of these ansatzes are also believed to be classically hard to simulate, eluding to a possible quantum advantage for quantum machine learning\cite{lloyd2020quantum}.
+What kinds of unitary transformation are interesting as ansatzes used for processing information embedded in quantum states? In principle, we are able to explore every conceivable unitary transformation as a parameterized circuit, since there are circuit designs that are known to be \emph{universal}\cite{lloyd2018quantum}. In this context, universality means that for any unitary operator, there exists a sufficiently deep ansatz that approximates the operator to an arbitrary accuracy. However, such approximations are often exponentially deep\cite{NielsenQuantum}, meaning the vast majority of unitary transformations are inaccessible on ideal quantum computers, let alone near-term quantum computers. Still, it is believed that there exist reasonably shallow ansatz that are useful for constructing powerful machine learning models. Many of these ansatzes are also believed to be classically hard to simulate, eluding to a possible quantum advantage for quantum machine learning\cite{lloyd2020quantum}.
 
 In this thesis, we will investigate an ansatz that respect limitations of near-team quantum computers, constrained to circuit depth that scales linearly with the number of qubits and linear connectivity between qubits. We will refer to this ansatz as the \emph{simple ansatz}(SA). It can be visualised as 
 
@@ -344,7 +344,7 @@ While recent studies have shown several promising characteristics of QNNs, such 
 \begin{equation}
     \lim_{n\to\infty} V(\bra{\psi_n}\hat{O}\ket{\psi_n}) = 0,
 \end{equation}
-where $V()$ indicates the variance, and $\hat{O}$ is some observable. Also, this concentration occurs exponentially fast in n. From \cref{sec:Ansätze}, we know that a PQC $U_{\boldsymbol{\theta}}$  in general can prepare any state $\ket{\psi_\boldsymbol{\theta}}$ only if it is exponentially deep. However, \citet{McClean_2018} showed that shallow PQC with polynomial depth was also susceptible for the same exponential concentration of observable. This effect is also worsening the deeper the circuit is. Further, they showed that the gradient of PQC has a mean around zero, i.e.
+where $V()$ indicates the variance, and $\hat{O}$ is some observable. Also, this concentration occurs exponentially fast in n. From \cref{sec:Ansatz}, we know that a PQC $U_{\boldsymbol{\theta}}$  in general can prepare any state $\ket{\psi_\boldsymbol{\theta}}$ only if it is exponentially deep. However, \citet{McClean_2018} showed that shallow PQC with polynomial depth was also susceptible for the same exponential concentration of observable. This effect is also worsening the deeper the circuit is. Further, they showed that the gradient of PQC has a mean around zero, i.e.
 
 \begin{equation}
      E(\partial \theta_i \bra{\psi_{\boldsymbol{\theta}}}\hat{O}\ket{\psi_{\boldsymbol{\theta}}}) = 0.

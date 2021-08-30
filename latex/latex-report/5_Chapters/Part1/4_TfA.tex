@@ -22,6 +22,17 @@ Let $f(\boldsymbol{x}^{(k)}; \boldsymbol{\theta})$ be a parameterized and differ
 
 The Hessian matrix is an $n_\theta \times n_\theta$ matrix that quantifies the curvature of the loss function locally in the parameter space at the point of $\boldsymbol{\theta}$. This is an extensively studied quantity in the machine learning community, and it has been used to study the loss landscape both for classical and quantum mechanical machine learning models \cite{LeCun2012, Huembeli_2021}. In particular, its eigenvalue spectrum quantifies the amount of curvature in various directions. Typically for classical neural networks, the spectrum is characterized by the presence of many eigenvalues near zero, with the exception of a few large ones(so-called "big killers") \cite{LeCun2012}. This indicate the that loss landscape is mostly flat, with large distortions in a few directions, which in turn causes slow optimization as discussed earlier. 
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{latex/figures/spec}
+    \caption{Figure showing a trajectory increasing with the depth
+of a network. Starting with a circular trajectory (left most
+pane), it is fed through a fully connected tanh network with
+width 100. Pane second from left shows the image of the circular
+trajectory (projected down to two dimensions) after being transformed by the first hidden layer. Subsequent panes show the trajectory after being transformed by multiple layers. This figure is retrieved from \citet{raghu2017expressive}.}
+\label{fig:trajectoryLengthExample}
+\end{figure}
+
 %================================================================
 \subsection{Empirical Fisher Information Matrix}\label{sec:EFIM}
 %================================================================

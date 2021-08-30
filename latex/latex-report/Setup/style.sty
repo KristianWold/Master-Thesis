@@ -14,7 +14,7 @@
 
 
 %--------- color ------------
-\usepackage[usenames,dvipsnames,svgnames,table]{xcolor} 
+\usepackage[usenames,dvipsnames,svgnames,table,cmyk]{xcolor}
 
 %----- document formatting ---- 
 % Begin paragraphs with an empty line rather than an indent:
@@ -100,7 +100,11 @@
 \usepackage[listings,theorems,skins,breakable]{tcolorbox}
 \tcbset{highlight math style={enhanced,
   colframe=red,colback=white,arc=0pt,boxrule=2pt}} 
-  
+
+%---------------- algorithm -------------------
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{algpseudocode}
+\usepackage{algpascal}
 
 %--------- referencing ----------------
 \usepackage[obeyspaces, spaces, hyphens]{url} % typesetting URLs
@@ -109,13 +113,15 @@
 \hypersetup{          % set color of referenced items
     colorlinks=true,
     linkcolor=blue, % black
-    citecolor=red,  % black
+    %citecolor=red,  % black
     filecolor=blue, % black     
     urlcolor=blue,} % black 
     
 \usepackage[nameinlink,capitalize]{cleveref} % must be loaded after hyperref  
 
 \crefname{equation}{Equation}{}
+\crefname{figure}{Figure}{}
+\crefname{algocf}{Algorithm}{}
 
 \def\algorithmautorefname{Algorithm}
 
@@ -125,10 +131,7 @@
   \renewcommand{\subsubsectionautorefname}{Section}%
 }
     
-%---------------- algorithm -------------------
-\usepackage[ruled,vlined]{algorithm2e}
-\usepackage{algpseudocode}
-\usepackage{algpascal}
+
 
 %------------------ code  ----------------------
 \usepackage{minted}     %Source Code Highlighting

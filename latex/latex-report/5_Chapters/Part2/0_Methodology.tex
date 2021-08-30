@@ -198,7 +198,7 @@ This function requires that the number of features does not exceed the number of
 \subsection{Ansatz}
 %================================================================
 To implement the ansatz, we want a callable object on the form 
-\textbf{circuit = ansatz(circuit, data\_reg, theta, reps)}, where \textbf{theta} is a numpy array containing the parameters. The "simple ansatz" detailed in \cref{sec:Ansätze} can be implemented as a python function:
+\textbf{circuit = ansatz(circuit, data\_reg, theta, reps)}, where \textbf{theta} is a numpy array containing the parameters. The "simple ansatz" detailed in \cref{sec:Ansatz} can be implemented as a python function:
 
 \begin{lstlisting}[language=python, numbers=left]
 def simple_ansatz(circuit, data_reg, theta):
@@ -324,9 +324,9 @@ At line 10, \textbf{grad += (y\_pred - y)*gradient(x, theta)} accumulates the gr
 In this section, we will introduce how our frame work can used to implement various QCN architectures, and how these can be used to fit data. We will also show how the framework can be used to implements single-circuit QNNs, pure classical DNNS, and hybrid models combining QCN and DNN. 
 
 %================================================================
-\subsection{Encoders, Ansätze and Samplers}\label{sec:EAaS}
+\subsection{Encoders, Ansatzes and Samplers}\label{sec:EAaS}
 %================================================================
-In the QCN framework, we implement encoders, ansätze and samplers as callable python classes with much the same functionality as described in \cref{sec:QNNimpement}. We will now go through the use of the most important classes.
+In the QCN framework, we implement encoders, ansatzes and samplers as callable python classes with much the same functionality as described in \cref{sec:QNNimpement}. We will now go through the use of the most important classes.
 
 \subsubsection*{QubitEncoder}
 The encoder class \textbf{QubitEncoder} can be instantiated as 
@@ -347,7 +347,7 @@ from ansatzes import Ansatz
 ansatz = Ansatz(block, reps)
 \end{lstlisting}
 Here, \textbf{block} is a python list containing strings that specify gates applied to the circuit. For example, 
-\textbf{block = ["entangle", "ry"]} will first apply CNOT gates to all neighboring qubits in sequence. $R_y$ rotations are then applied to every qubit. This particular argument recreates the simple ansatz described in \cref{sec:Ansätze}. \textbf{reps} specifies the number of times the ansatz is then repeated.
+\textbf{block = ["entangle", "ry"]} will first apply CNOT gates to all neighboring qubits in sequence. $R_y$ rotations are then applied to every qubit. This particular argument recreates the simple ansatz described in \cref{sec:Ansatz}. \textbf{reps} specifies the number of times the ansatz is then repeated.
 
 \subsubsection*{Parity}
 The sampler class \textbf{Parity} can be instantiated as
