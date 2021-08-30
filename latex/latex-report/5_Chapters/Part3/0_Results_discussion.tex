@@ -40,7 +40,7 @@ An interesting feature of QCNs is the ability to create larger models by introdu
 
 The QNNs used as nodes to construct QCNs here are set up and initialized in the manner explained in \cref{sec:Vanishing Gradient for QNNs}, but always with two repetitions of the simple ansatz to keep each circuit shallow. Also, we sample input data uniformly as $\mathcal{X} \sim U(-\frac{\pi}{2}, \frac{\pi}{2})^{[N,p]}$, with $N=100$ and the number of features $p$ set to the number of qubits used in the each node. In this section, all QCNs have 8 layers with $d$ number of nodes each, where $d$ range from four to eight. The number of qubits in each node will also be set to $d$. Further, the outputs of each hidden layer is scaled to the interval $[-\pi, \pi]$ to make full use of the qubit encoding in the subsequent layer, as explained in \cref{sec:Configuring QCNs and DNNs}.
 
-In order to investigate the average behavior of the local gradients \cref{eq:localGradients} for each layer, we calculate their magnitude averaged over each layer, the samples and $T = 10$ different realizations. This quantity is given by \cref{eq:magnitude local}, and is plotted in \cref{fig:QCN_local_vanishing} for various layers of different QCNs. In addition, the standard deviation of this quantity is estimated over the different realizations, serving as a confidence interval seen in the figure. 
+In order to investigate the average behavior of the local gradients \cref{eq:localGradients} for each layer, we calculate their magnitude averaged over each layer, the samples and $T = 10$ different realizations. This quantity is given by \cref{eq:magnitude local}, and is plotted in \cref{fig:QCN_local_vanishing} for various layers of different QCNs. In addition, the standard deviation of this quantity is estimated over the different realizations. 
 
 \begin{figure}[H]
     \centering
@@ -49,7 +49,7 @@ In order to investigate the average behavior of the local gradients \cref{eq:loc
     \label{fig:QCN_local_vanishing}
 \end{figure}
 
-In the above figure we see the average magnitude of the local gradients for different layers and number of qubits. The local gradients of the QCNs tend to vanish exponentially in the number of qubits, similar to the gradients of single-circuit QNNs seen in \cref{fig:QNN_vanishing}. However, the relative position along the depth of the QCN does not seem to affect the magnitude. This can be seen from the overlapping confidence intervals of the magnitudes for each number of qubits. Any variation of the average magnitude between the layers is thus likely just noise induced by the low number of ten parameter realizations, and does not indicate significant differences.
+In the above figure we see the average magnitude of the local gradients for different layers and number of qubits. The local gradients of the QCNs tend to vanish exponentially in the number of qubits, similar to the gradients of single-circuit QNNs seen in \cref{fig:QNN_vanishing}. However, the relative position along the depth of the QCN does not seem to affect the magnitude. Even though there is some variation of the magnitude from layer to layer, these variations are smaller than the standard deviation, and thus not statistically significant.
 
 %================================================================
 \subsection{Vanishing Total Gradient in QCNs}\label{sec:Vanishing Total Gradients in QCNs}
@@ -68,7 +68,7 @@ In this section, the total gradient is calculated using the local gradients from
     \label{fig:QNC_vanishing_total}
 \end{figure}
 
-From \cref{fig:QNC_vanishing_total}, we see that the total gradient for a given layer in the DNN tends to vanish exponentially in the number of layers after it. This is a well-known phenomenon for classical neural networks, often explained by the saturation of the activation function during feed forward \cite{shalevshwartz2017failures}. (Write about this under neural network theory).
+From \cref{fig:QNC_vanishing_total}, we see that the total gradient for a given layer in the DNN tends to vanish exponentially in the number of layers after it. The is a manifestation of the vanishing gradient phenomenon for DNNs caused by saturation of the activation functions, as explained in \cref{sec:Saturated Activations and Vanishing Gradient}.
 
 As with the DNN, the QCNs also exhibit a vanishing total gradient with increasing number of layers, with a strong dependence on the number of qubits in each node. As we see in \cref{fig:QCN_local_vanishing}, the total gradient vanishes faster for higher number of qubits in each node. This phenomenon can be related to the magnitude of the local gradients. As the error \cref{eq:lastLayerErrorQCN} of the QCN is propagated backwards using \cref{eq:errorQCN}, it accumulates the local gradients $\frac{\partial \boldsymbol{a}^{l+1}_k}{\partial \boldsymbol{a}^{l}_j}$ as factors. As the number of qubits increases, the local gradients tend to decrease. Accumulating small factors will cause the error to decrease faster, exponentially so for each layer. However, if these factors are large, the error tends to decrease more slowly, and hence also the total gradient. This is the case for architectures with few qubits per node, as discussed in \cref{sec:Vanishing Local Gradients in QCNs}.
 
@@ -129,7 +129,7 @@ J    & DNN & NA& NA   & 3      & 9     & NA             & 163 \\ \hline
     \label{fig:FIM Comparison}
 \end{figure}
 
-Looking at the spectra of the DNNs in \cref{fig:FIM Comparison}, we see the characteristic result of a singular large eigenvalue, with the rest sitting close to zero. This indicates that DNN models exhibit a loss landscape that is very flat in all but one direction where it is extremely distorted. We also see that the spectra of our implementation of QNNs are much more uniformly distributed compared to the DNN models. This results in a loss landscape that is significantly distorted in most directions, rather than just one. 
+Looking at the spectra of the DNNs in \cref{fig:FIM Comparison}, we see the characteristic result of a singular large eigenvalue, with the rest sitting close to zero. This is reminiscent of the typical Hessian spectrum of DNNs, shown in \cref{fig:spectrumExample}.  This indicates that DNN models exhibit a loss landscape that is very flat in all but one direction where it is extremely distorted. We also see that the spectra of our implementation of QNNs are much more uniformly distributed compared to the DNN models. This results in a loss landscape that is significantly distorted in most directions, rather than just one. 
 
 Moving over to the QCNs, we see from \cref{fig:FIM Comparison} that the spectra of the three layer QCNs exhibit much the same uniformity as the QNNs. A more thorough comparison between different QCNs is shown \cref{fig:FIM QCN}. In this figure, we vary the number of layers of the QNCs and the number of repetitions (i.e. the number of times the ansatz is repeated for each node), while keeping the total number of parameters roughly constant. In doing this, we get to precisely shift how much of the complexity of a given QCN results from the complexity of each node or the overall structure of the network.
 
@@ -370,19 +370,19 @@ For the QNNs trained in this section, we will utilize RZZ encoding \cref{fig:Rzz
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 Model& Type& Data& MSE, $10^{2}$ Epochs& MSE, $10^{4}$ Epochs \\ \hline
-A    & QNN & 1D  &  $4.6\times 10^{-2}$  & NA   \\ \hline
-B    & QCN & 1D  & $5.9\times 10^{-3}$  & NA \\ \hline
-C    & QCN & 1D  & $\boldsymbol{8.0\times 10^{-4}}$  & NA  \\ \hline
-D    & DNN & 1D  & $9.2\times 10^{-3}$ & $2.2\times 10^{-4}$  \\ \Xhline{2\arrayrulewidth}
-E    & QNN & 2D  &  $3.6\times 10^{-2}$ & NA  \\ \hline
-F    & QCN & 2D  &  $1.8\times 10^{-2}$ & NA  \\ \hline
-G    & QCN & 2D  &  $\boldsymbol{4.3\times 10^{-3}}$ & NA  \\ \hline
-H    & DNN & 2D  &  $4.5\times10^{-2}$ & $4.3\times10^{-3}$\\ 
+A    & QNN & 1D  &  $4.61\times 10^{-2}$  & NA   \\ \hline
+B    & QCN & 1D  & $5.88\times 10^{-3}$  & NA \\ \hline
+C    & QCN & 1D  & $\boldsymbol{7.99\times 10^{-4}}$  & NA  \\ \hline
+D    & DNN & 1D  & $9.17\times 10^{-3}$ & $2.23\times 10^{-4}$  \\ \Xhline{2\arrayrulewidth}
+E    & QNN & 2D  &  $3.56\times 10^{-2}$ & NA  \\ \hline
+F    & QCN & 2D  &  $1.75\times 10^{-2}$ & NA  \\ \hline
+G    & QCN & 2D  &  $\boldsymbol{4.27\times 10^{-3}}$ & NA  \\ \hline
+H    & DNN & 2D  &  $3.50\times10^{-2}$ & $4.26\times10^{-3}$\\ 
 \Xhline{2\arrayrulewidth}
-I    & QNN & 3D  &  $2.0\times 10^{-2}$& NA  \\ \hline
-J    & QCN & 3D  &  $4.9\times 10^{-3}$ & NA  \\ \hline
-K    & QCN & 3D  &  $\boldsymbol{2.8\times10^{-3}}$  & NA  \\ \hline
-L    & DNN & 3D  &  $1.2\times10^{-2}$  & $1.8\times10^{-3}$  \\ \hline
+I    & QNN & 3D  &  $1.95\times 10^{-2}$& NA  \\ \hline
+J    & QCN & 3D  &  $4.91\times 10^{-3}$ & NA  \\ \hline
+K    & QCN & 3D  &  $\boldsymbol{2.77\times10^{-3}}$  & NA  \\ \hline
+L    & DNN & 3D  &  $1.21\times10^{-2}$  & $1.79\times10^{-3}$  \\ \hline
 \end{tabular}
  
 \label{tab:training models mse}
@@ -454,10 +454,10 @@ Moving over to the training using the simulated noisy hardware, we see from \cre
 %================================================================
 \section{Real-World Data}\label{sec:Real Data}
 %================================================================
-In this section, we compare the performance QCNs and DNNs by performing regression on the Boston Housing data \cite{boston} and classification on the Breast Cancer Wisconsin data \cite{cancer}. To reduce the computational burden of training the models, both data sets are feature reduced to four features using principal component analysis (PCA). See \cref{sec:Appendix B} for more information about the data sets. To uncover how well the models generalize, we calculate the MSE on independent training and test sets with $N=100$ samples in each. For the Breast Cancer data, we will also investigate the training and test accuracy \cref{eq:accuracy}. 
+In this section, we compare the performance of QCNs and DNNs by performing regression on the Boston Housing data \cite{boston} and classification on the Breast Cancer Wisconsin data \cite{cancer}. To reduce the computational burden of training the models, both data sets are feature reduced to four features (down from 13 and 30 features, respectively) using principal component analysis (PCA). See \cref{sec:Appendix B} for more information about the data sets. We pick independent training and test sets with $N=100$ samples from each of the two data sets. To uncover how well the models generalize to unseen data, we calculate the MSE on the test set during training and find the minimum. For the Breast Cancer data, we will also investigate the training and test accuracy \cref{eq:accuracy}. 
 %The models will be benchmarked using MSE on both the the training set and an independent test set, as explained in \cref{sec:Generalizability}. This is done to uncover how the models generalize to unseen data. For the Breast Cancer Wisconsin data, we will also investigate the training and test accuracy \cref{eq:accuracy} of the models.
 
-The QCNs models are chosen to have four qubits in each circuit, and only two layers. This is done to obtain a model that has a large gradient due to low number of qubits, as discussed in \cref{sec:Vanishing Gradient Phenomenon Discussion}, and are thus easy to train. The DNNs are chosen such that the number of parameters approximately match that of the QCNs. The hyperparameters of the various models are listed in \cref{tab:training models PCA}.
+The QCNs models are chosen to have four qubits in each circuit, and only one hidden layer. This is done to obtain a model that has a large gradient due to low number of qubits, as discussed in \cref{sec:Vanishing Gradient Phenomenon Discussion}, and are thus easy to train. The DNNs are chosen such that the number of parameters approximately match that of the QCNs. The hyperparameters of the various models are listed in \cref{tab:training models PCA}.
 
 %For both the feature reduced and full data set, we will split the data sets into independent training and test sets at random, each with $N=100$ samples. The targets of the Boston Housing data is min-max scaled to $y \in [0,1]$, while the discrete targets of the Breast Cancer data are already $y \in \{0,1\}$.
 
@@ -467,35 +467,43 @@ The QCNs models are chosen to have four qubits in each circuit, and only two lay
 
 \begin{table}[H]
 \centering
-\caption{Hyperparameters of the various models fitted to the feature reduced Boston Housing data and Breast Cancer data.} 
+\caption{Hyperparameters of the various models fitted to the feature reduced Boston Housing data (BHD) and Breast Cancer data (BC). \emph{Reps} is the number of ansatz repetitions, and $n_{\theta}$ is the number of model parameters.} 
 \begin{tabular}{|l|l|l|l|l|l|l|l|}
 \hline
-Model& Type& Data& Qubits& Reps& Layers & Nodes &$n_{\theta}$ \\ \hline
-A    & QCN & Boston Housing Data  & 4     & 2  &2     & 4& 40   \\ \hline
-B    & DNN & Boston Housing Data  & NA    & NA &2     & 6& 37 \\ \Xhline{2\arrayrulewidth}
-C    & QCN & Breast Cancer        & 4     & 2  &2     & 4& 40  \\ \hline
-D    & DNN & Breast Cancer        & NA    & NA &2     & 6& 37  \\ \hline
+Model& Type& Data& Qubits& Reps& Hidden Layers & Nodes &$n_{\theta}$ \\ \hline
+A    & QCN & BHD  & 4     & 2  &1     & 4& 40   \\ \hline
+B    & DNN & BHD  & NA    & NA &1     & 6& 37 \\ \Xhline{2\arrayrulewidth}
+C    & QCN & BC        & 4     & 2  &1     & 4& 40  \\ \hline
+D    & DNN & BC        & NA    & NA &1     & 6& 37  \\ \hline
 \end{tabular}
 
 \label{tab:training models PCA}
 \end{table}
 
-The models defined in \cref{tab:training models PCA} are trained for 100 epochs, ten times each for different random initializations of parameters.  In \cref{tab:results PCA}, we see the average minimum training and test MSE for each model obtained during training. In addition, the final average training and test accuracy is included for the models trained on the Breast Cancer data. Comparing the models trained on the Boston Housing data, we see that the QCN has a lower test MSE than the DNN, meaning it generalizes better to unseen data. The same is however not true for the Breast Cancer data, where the QCN obtained almost twice the test MSE compared to the DNN. This indicates that the QCN is struggling to produce the correct labels $y^{(i)} \in \{0, 1\}$ which are the targets of the Breast Cancer data. Hence, both the train and test accuracies are lower for the QCN compared to the DNN. 
+The models defined in \cref{tab:training models PCA} are trained for 100 epochs. As usual, this is repeated ten time for each model for different parameter realizations. The QCNs are trained using both ideal simulation and noisy simulation. For the latter, a simulation of the Santiago quantum computer \cite{santiago} with 1024 shots is used. In \cref{tab:results PCA}, we see the average minimum training and test MSE for each model obtained during training. In addition, the final average training and test accuracy is included for the models trained on the Breast Cancer data. Comparing the models trained on the Boston Housing data, we see that the QCN has a lower test MSE than the DNN, meaning it generalizes better to unseen data. The same is however not true for the Breast Cancer data, where the QCN obtained almost twice the test MSE compared to the DNN. 
 \begin{table}[H]
 \centering
-\caption{Hyper-parameters of the different models fitted to the Boston Housing data and Breast Cancer data.} 
+\caption{Minimum training and test MSE obtained during training for the models defined in \cref{tab:training models PCA}. The models are trained on the feature reduced Boston Housing data (BHD) and Breast Cancer data (BC) for 100 epochs. The QCNs are trained using both ideal and noisy simulation. The final training and test accuracy is also included for the models trained on BC. The best test MSE is highlighted.} 
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 Model& Type& Data& MSE (train/test)& Accuracy (train/test) \\ \hline
-A    & QCN & BHD  & 0.004/$\boldsymbol{0.043}$ & NA    \\ \hline
-B    & DNN & BHD  & 0.006/0.052                & NA  \\ 
+A (Ideal)    & QCN & BHD  & $4.29\times 10^{-3}/4.32\times 10^{-2}$ & NA    \\ \hline
+A (Noisy)    & QCN & BHD  & $5.53\times 10^{-3}/\boldsymbol{4.26\times 10^{-2}}$ & NA    \\ \hline
+B    & DNN & BHD  & $5.59\times 10^{-3}/5.22\times 10^{-2}$               & NA  \\ 
 \Xhline{2\arrayrulewidth}
-C    & QCN & Breast Cancer        & 0.028/0.058                & 0.989/0.947    \\ \hline
-D    & DNN & Breast Cancer        & 0.001/\boldsymbol{$0.032$} & 1.000/\boldsymbol{$0.965$}  \\ \hline
+C (Ideal)   & QCN & BC        & $2.78\times 10^{-2}/5.77\times 10^{-2}$                & 0.989/0.947    \\ \hline
+C (Noisy)   & QCN & BC        & $4.3\times 10^{-2}/6.5\times 10^{-2}$               & 0.979/0.941    \\ \hline
+D    & DNN & BC        & $1.11\times 10^{-3}/\boldsymbol{3.19 \times 10^{-2}}$ & 1.000/\boldsymbol{$0.965$}  \\ \hline
 \end{tabular}
 
 \label{tab:results PCA}
 \end{table}
 
 
-Since these data originate from real world experiments, they are noisy and don't represent a deterministic relationship $y = f(\boldsymbol{x})$ between the target and the features. This is in contrast to the the mixed Gaussian data sets studied earlier, and should provide a more practical benchmark of the methods.
+%================================================================
+\section{Discussion}\label{sec:Real Data Discussion}
+%================================================================
+
+From \cref{tab:results PCA}, we see that the training MSE for the QCN trained on the Boston Housing data increased for the noisy simulation compared to the ideal. This is not surprising, since the added noise makes it harder to approximate the training data. However, the test error is actually slightly lower for the noisy simulation than the ideal. It has been shown that adding noise to the inputs of neural networks help them avoid overfitting \cite{noh2017regularizing}, which in turn decreases the test error. This shows that noise introduced from noisy quantum hardware is not necessarily detrimental for the quality of the model, but could be actually helpful. 
+
+For the Breast Cancer data, the QCN performed overall worse than the DNN, both with ideal and noisy simulation. While QCNs performed better on the mixed Gaussian data and the Boston Housing data, this is not the case for every data set. Still, the QCN still managed to classify the test labels of the Breast Cancer data correctly 94.7\% and 94.1\% time for the ideal and noisy simulation, respectively. This is not much worse than than the DNN, with an accuracy of 96.5\%, showing that QCNs can perform also classification successfully. 
