@@ -14,7 +14,7 @@ The input $\boldsymbol{x}$ is a vector consisting of elements $(x_1, \cdots, x_p
 %================================================================
 \section{Parametric Models}\label{sec:ParametricModels}
 %================================================================
-The approach of supervised learning often starts by acquiring a training set $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, where $N$ is the number of samples in the training set. This is called labeled data, since the samples of features $\boldsymbol{x}^{(i)}$ are accompanied by the ground truth target $y^{(i)}$ (the labels of the samples) that we want to predict. One often hypothesizes that the acquired training data was produced by some mechanism or process that we can mathematically express as
+The approach of supervised learning often starts by acquiring a training set $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, where $N$ is the number of samples in the training set. This is called labeled data, since the samples of features $\boldsymbol{x}^{(i)}$ are accompanied by the ground truth target $y^{(i)}$ (the labels of the samples, assumed to be a scalar) that we want to predict. One often hypothesizes that the acquired training data was produced by some mechanism or process that we can mathematically express as
 
 \begin{equation}\label{eq:data}
     y = f(\boldsymbol{x}) + \epsilon,
@@ -104,11 +104,11 @@ This optimization problem is generally not trivial, and depends highly on the ch
 In the absence of an analytical expression that minimizes the loss function, \emph{gradient descent} is an easy-to-implement method that iteratively decreases the loss. This is done by repeatedly adjusting the model parameters using information of the \emph{gradient} of the loss function. The derivative of the loss function \cref{eq:LossFunction} with respect to the model parameters can be calculated as
 
 \begin{equation}\label{eq:LossDerivateWRTparameter}
-    \frac{\partial}{\partial \theta_k} L(\boldsymbol{\theta}) =
-    \frac{1}{N}\sum_{i=1}^{N} \frac{\partial}{\partial \hat{y}^{(i)}} L( \hat{y}^{(i)}, y^{(i)})
-    \frac{\partial}{\partial \theta}_k\hat{y}^{(i)}
+    \frac{\partial L(\boldsymbol{\theta})}{\partial \theta_k}  =
+    \frac{1}{N}\sum_{i=1}^{N} \frac{\partial L( \hat{y}^{(i)}, y^{(i)})}{\partial \hat{y}^{(i)}} 
+    \frac{\partial \hat{y}^{(i)}}{\partial \theta_k}
 \end{equation}
-where $\theta_k$ is the k'th model parameter, and  $\hat{y}^{(i)} = f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$. To arrive at this expression, the chain rule was used under the assumption that the loss function $L(\hat{y}^{(i)}, y^{(i)})$ and model output $\hat{y}^{(i)}$ are differentiable with respect to $\hat{y}^{(i)}$ and $\theta_k$, respectively. Note that the derivative is calculated with respect to the entire training set, i.e. the whole \emph{batch}, hence the name. The gradient is then constructed simply as a vector quantity containing the derivatives with respect to each model parameter:
+where $\theta_k$ is the $k$'th model parameter, and  $\hat{y}^{(i)} = f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$. To arrive at this expression, the chain rule was used under the assumption that the loss function $L(\hat{y}^{(i)}, y^{(i)})$ and model output $\hat{y}^{(i)}$ are differentiable with respect to $\hat{y}^{(i)}$ and $\theta_k$, respectively. Note that the derivative is calculated with respect to the entire training set, i.e. the whole \emph{batch}, hence the name. The gradient is then constructed simply as a vector quantity containing the derivatives with respect to each model parameter:
 
 \begin{equation}\label{eq:Gradient}
     \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta})= 
@@ -183,12 +183,12 @@ Adam is a highly successful algorithm for optimizing machine learning models. In
 %================================================================
 \section{Dense Neural Network}\label{sec:DenseNeuralNetwork}
 %================================================================
-Originally inspired by the network structure of the brain \cite{hands-on}, artificial neural networks are powerful parameterized machine learning models that have proven extremely useful for a vast number of applications. Over the years, a comprehensive collection of different network architectures has been developed to target specific problems, such as \emph{Recurrent Neural Networks} for predicting time series data and \emph{Convolutional Neural Networks} for image classification. In this thesis, we focus on \emph{Dense Neural Networks}, which is a type of simple \emph{feedforward network}, meaning the information is processed in a forward fashion without any loops that direct information backwards.
+Originally inspired by the network structure of the brain \cite{hands-on}, artificial neural networks are powerful parameterized machine learning models that have proven extremely useful for a vast number of applications. Over the years, a comprehensive collection of different network architectures has been developed to target specific problems, such as \emph{Recurrent Neural Networks} for predicting time series data and \emph{Convolutional Neural Networks} for image classification. In this thesis, we focus on \emph{Dense Neural Networks} (DNNs), which is a type of simple \emph{feedforward network}, meaning the information is processed in a forward fashion without any loops that direct information backwards.
 
 %================================================================
 \subsection{Feedforward}\label{sec:FeedforwardDNN}
 %================================================================
-Dense Neural Networks (DNNs) work by sequentially transforming input data by passing them through one or more \emph{layers}, which each applies a parameterized and often nonlinear transformation. The result of the first layer of the neural network can be formulated as
+Dense Neural Networks work by sequentially transforming input data by passing them through one or more \emph{layers}, which each applies a parameterized and often nonlinear transformation. The result of the first layer of the neural network can be formulated as
 
 \begin{equation}\label{eq:FeedforwardSingle}
     \boldsymbol{a}^1 = f^1(\boldsymbol{z}^1) = f^1(W^1 \boldsymbol{x} + \boldsymbol{b}^1),
@@ -198,7 +198,7 @@ Here, $\boldsymbol{x} \in \mathbb{R}^p$ is a single sample of $p$ features. $W^1
 We will now generalize \cref{eq:FeedforwardSingle} to an arbitrary layer. For a neural network with $L$ layers, the feedforward procedure for layer $l$ can be formulated as 
 
 \begin{equation}\label{eq:FeedforwardDNN}
-    \boldsymbol{a}^l = f^l(\boldsymbol{z}^l) = f^l(W^l \boldsymbol{a^{l-1}} + \boldsymbol{b}^l),
+    \boldsymbol{a}^l = f^l(\boldsymbol{z}^l) = f^l(W^l \boldsymbol{a}^{l-1} + \boldsymbol{b}^l),
 \end{equation}
 where $\boldsymbol{a}^{l-1}$ is the activation of the previous layer with the exception $\boldsymbol{a}^{0} = \boldsymbol{x}$. The output of the network is then the activation of the last layer, namely 
 \begin{equation}\label{eq:DNN}
@@ -258,7 +258,7 @@ which can be used to optimize the neural network with a gradient-based method as
 \subsection{Activation Functions}\label{sec:Activation Functions}
 %================================================================
 
-Activation functions are important for introducing nonlinearities to the layers of DNNs, but what are some popular choices from the literature? A comprehensive list can be found in \cref{fig:activation function}.
+Activation functions are important for introducing nonlinearities to the layers of DNNs. A comprehensive list can be found in \cref{fig:activation function}.
 
 \begin{figure}[H]
     \centering
@@ -267,7 +267,13 @@ Activation functions are important for introducing nonlinearities to the layers 
     \label{fig:activation function}
 \end{figure}
 
-In this thesis, we will be mainly concerned with the activation functions \emph{linear}, \emph{sigmoid} and \emph{tanh}. The linear activation function, or identity function, applies no transformation to the output $W^l \boldsymbol{a}^{l-1} + \boldsymbol{b}^l$. This activation function is usually applied to the output layer only, and is useful when we don't want to transform the final output of the DNN into any particular shape. This is usually the case for regression, where the targets we want to predict can be any real value. The sigmoid activation function constraints the output to be in the interval $a^L \in [0, 1]$. This activation is often used on the output layer when doing classification, as the target labels are (in the binary case) $y \in \{0,1\}$. For all hidden layers, we will use tanh activation. This choice is discussed in \cref{sec:Configuring QCNs and DNNs}.
+In this thesis, we will be mainly concerned with the activation functions \emph{linear}, \emph{sigmoid} and \emph{tanh}. The linear activation function, or identity function, applies no transformation to the layer output output $\boldsymbol{z} = W^l \boldsymbol{a}^{l-1} + \boldsymbol{b}^l$. This activation function is usually applied to the output layer only, and is useful when we don't want to transform the final output of the DNN into any particular shape. This is usually the case for regression, where the targets we want to predict can be any real value. The sigmoid activation function constraints the output to be in the interval $a^L \in [0, 1]$. This activation is often used on the output layer when doing classification, as the target labels are (in the binary case) $y \in \{0,1\}$. For all hidden layers, we will use tanh activation. This choice is discussed in \cref{sec:Configuring QCNs and DNNs}.
+
+%================================================================
+\subsection{Saturated Activations and Vanishing Gradient}\label{sec:Saturated Activations and Vanishing Gradient}
+%================================================================
+
+A common problem with many widely used activation functions is \emph{saturation}. An activation function $f(x)$ is said to be saturated when the input $x$ causes it to become locally very flat. From \cref{fig:activation function}, one can see that this happens for the tanh activation for very high or low values of $x$. This causes the derivative of the activation to be approximately zero, i.e. $f'(x) \approx 0$. If sufficiently many activations are saturated in the network, backpropagation \cref{eq:error} tends to produce gradients close to zero. This phenomenon is known as a \emph{vanishing gradient} \cite{shalevshwartz2017failures}, and is known to slow down training of the neural network. Typically, the effect is worse for neural networks with many layers.
 
 
 %================================================================
