@@ -76,7 +76,7 @@ x3, y3 = generate_1D_mixed_gaussian()
 %================================================================
 \section{Real Data}\label{sec:Real Data stuff}
 %================================================================
-For benchmarking the dense neural networks (DNNs) and quantum circuit networks (QCNs) implemented in this thesis against realistic data sets, and for investigating how they generalize to unseen data, we will be using the popular Boston Housing data (kilde) and Breast Cancer Wisconsin data (kilde). In this section, we will presents details about these data sets. 
+For benchmarking the dense neural networks (DNNs) and quantum circuit networks (QCNs) implemented in this thesis against realistic data sets, and for investigating how they generalize to unseen data, we will be using the popular Boston Housing data \cite{boston} and Breast Cancer Wisconsin data \cite{cancer}. In this section, we will presents details about these data sets. 
 
 %================================================================
 \subsection{Boston Housing Data}\label{sec:Boston Housing Data}
@@ -90,7 +90,7 @@ x = data.data
 y = data.target
 \end{lstlisting}
 
-The targets $y$ of the Boston Housing data are \emph{median of owner-occupied homes by town}, in \$1000, which can be predicted using for regression methods. Some of the features include quantities such as \emph{per capita crime rate by town}, \emph{average number of rooms per dwelling} and \emph{pupil-teacher ratio by town}. For a complete description of the features, see \url{https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html}. For some general details of the data set, see \cref{tab:Boston}.
+The targets $y$ of the Boston Housing data are the \emph{median values of owner-occupied homes by town}, in \$1000, which can be predicted using methods for regression. Some of the features include quantities such as \emph{the per capita crime rate by town}, \emph{the average number of rooms per dwelling} and \emph{the pupil-teacher ratio by town}. For a complete description of the features, see \url{https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html}. For some general details of the data set, see \cref{tab:Boston}.
 
 \begin{table}[H]
 \begin{tabular}{|l|l|l|l|l|}
