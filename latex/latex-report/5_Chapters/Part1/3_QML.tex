@@ -1,9 +1,9 @@
 %================================================================
 \chapter{Quantum Machine Learning}\label{chap:QML}
 %================================================================
-Over the years, many different quantum algorithms have been proposed that is anticipated to greatly outshine classical methods. Perhaps most famously is the Shor's algorithm\cite{Shor_1997}, which promises to factor integers in polynomial time. This is believed to be an exponentially hard problem for classical computers. However, such useful quantum algorithms often need a large number of error-corrected qubits to be efficient, meaning noise introduced by the environment and inaccuracy of the gates is corrected for. Also, their implementation often requires often a large number of quantum gates, requiring the quantum computer to handle deep circuits. As explained in \autoref{sec:Nisq}, near-term quantum computers are not able to accommodate these criteria, and are thus unsuitable. What would then be interesting candidate algorithms for useful near-term applications? A promising family of algorithms is \emph{parameterized quantum circuits} (PQC), which are quantum circuits comprised of fixed gates, such as CNOT gates, and adjustable gates, such as Pauli rotations\cite{Benedetti_2019}. Unlike algorithms that are tailored to solve specific problems, such as Shor's algorithm for factoring integers, PQCs are general algorithms with free parameters that need to be adjusted in order to solve a given problem. In practice, quantum computers are used to evaluate the circuits, while classical hardware is used to post-process the results and optimized the parameters. In this sense, both quantum and classical hardware are leveraged to solve the problem in a variational manner. This hybrid approach is though to be much less demanding on the number qubits and the depth of the circuit, as much of the computation is outsource to classical computers\cite{Cerezo_2021}. Thus, they are much more suitable for near-term applications. Moreover, since PQC are not problem specific, one is freed from the need to tailor algorithms for solving specific problems, which is otherwise difficult in practice because of how non-intuitive quantum computing can be. 
+Over the years, many different quantum algorithms have been proposed that is anticipated to greatly outshine classical methods. Perhaps most famously is the Shor's algorithm\cite{Shor_1997}, which promises to factor integers in polynomial time. This is believed to be an exponentially hard problem for classical computers. However, such useful quantum algorithms often need a large number of error-corrected qubits to be efficient, meaning noise introduced by the environment and inaccuracy of the gates is corrected for. Also, their implementation often requires often a large number of quantum gates, requiring the quantum computer to handle deep circuits. As explained in \cref{sec:Nisq}, near-term quantum computers are not able to accommodate these criteria, and are thus unsuitable. What would then be interesting candidate algorithms for useful near-term applications? A promising family of algorithms is \emph{parameterized quantum circuits} (PQC), which are quantum circuits comprised of fixed gates, such as CNOT gates, and adjustable gates, such as Pauli rotations\cite{Benedetti_2019}. Unlike algorithms that are tailored to solve specific problems, such as Shor's algorithm for factoring integers, PQCs are general algorithms with free parameters that need to be adjusted in order to solve a given problem. In practice, quantum computers are used to evaluate the circuits, while classical hardware is used to post-process the results and optimized the parameters. In this sense, both quantum and classical hardware are leveraged to solve the problem in a variational manner. This hybrid approach is though to be much less demanding on the number qubits and the depth of the circuit, as much of the computation is outsource to classical computers\cite{Cerezo_2021}. Thus, they are much more suitable for near-term applications. Moreover, since PQC are not problem specific, one is freed from the need to tailor algorithms for solving specific problems, which is otherwise difficult in practice because of how non-intuitive quantum computing can be. 
 
-The use of PQC as machine learning models, often called \emph{Quantum Neural Network}(QNN), has been subject to extensive research\cite{abbas2020power, Benedetti_2019}. In general, the typical structure of QNNs can be broken up into three stages: \emph{feature encoding}, \emph{processing} and \emph{measurement} with potential post-processing. This general procedure is summarized in \autoref{fig:QNN}.
+The use of PQC as machine learning models, often called \emph{Quantum Neural Network}(QNN), has been subject to extensive research\cite{abbas2020power, Benedetti_2019}. In general, the typical structure of QNNs can be broken up into three stages: \emph{feature encoding}, \emph{processing} and \emph{measurement} with potential post-processing. This general procedure is summarized in \cref{fig:QNN}.
 
 \begin{figure}[htp]
 \[ \begin{array}{c}
@@ -29,7 +29,7 @@ often called a \emph{quantum feature map}. Next, a circuit parameterized by $\bo
 \end{equation} In this context, the circuit $U_{\boldsymbol{\theta}}$ is often called an \emph{ansatz} and serves as a general method to transform the state $\ket{\psi_{\boldsymbol{x}}}$ encoding the data in Hilbert space. Lastly, the expectation value of some appropriate observable $\hat{O}$ is estimated for this state, resulting in a model output 
 \begin{equation}\label{eq:QNN}
     \hat{y} = f_{QNN}(\boldsymbol{x};\boldsymbol{\theta}) = \bra{\psi_{\boldsymbol{x}, \boldsymbol{\theta}}} \hat{O} \ket{\psi_{\boldsymbol{x}, \boldsymbol{\theta}}}.
-\end{equation} In the standard approach of supervised learning, the parameters $\boldsymbol{\theta}$ must be adjusted in order to minimize some loss function $L(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^N L(\hat{y_i},y_i)$, as explained in \autoref{sec:ParametricModels}. 
+\end{equation} In the standard approach of supervised learning, the parameters $\boldsymbol{\theta}$ must be adjusted in order to minimize some loss function $L(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^N L(\hat{y_i},y_i)$, as explained in \cref{sec:ParametricModels}. 
 
 In the sections to come, we will discuss specific choices of feature encoding, ansätze, and expectation values.
 
@@ -41,7 +41,7 @@ In this section, we will introduce three ways of doing feature encoding, namely 
 %================================================================
 \subsection{Qubit Encoding}\label{sec:QubitEncoding}
 %================================================================
-One popular approach for encoding a feature vector to a quantum state is the method often-called \emph{qubit encoding}\cite{Benedetti_2019}. This encoding requires $p$ qubits, where $p$ is the number of features, and it can be applied at a constant circuit depth. Before the encoding, the data is optionally pre-processed by some function $\phi(x_i)$, for example scaling of the data. Then, the encoding works by performing a Pauli-rotation on each qubit with a rotational angle equal to the corresponding (pre-processed) feature. \autoref{fig:qubitencoding} shows how qubit encoding is implemented using $R_x$, $R_y$ and $R_z$ rotation.
+One popular approach for encoding a feature vector to a quantum state is the method often-called \emph{qubit encoding}\cite{Benedetti_2019}. This encoding requires $p$ qubits, where $p$ is the number of features, and it can be applied at a constant circuit depth. Before the encoding, the data is optionally pre-processed by some function $\phi(x_i)$, for example scaling of the data. Then, the encoding works by performing a Pauli-rotation on each qubit with a rotational angle equal to the corresponding (pre-processed) feature. \cref{fig:qubitencoding} shows how qubit encoding is implemented using $R_x$, $R_y$ and $R_z$ rotation.
 
 \begin{figure}[H]
      \begin{subfigure}[b]{0.3\textwidth}
@@ -105,7 +105,7 @@ As the circuit depth is quite low, qubit encoding is an effective method for emb
 %\subsection{Tensorial Feature Mapping}\label{sec:Tensorial Feature Mapping}
 %================================================================
 
-%From \autoref{eq:qubit rotation interaction}, we see that qubit encoding computes interactions between the features. This observation can be used to create interesting representations for data of few features by repeating them multiple times, at the expense of including more qubits. By imposing $x_1 = x_2 = x$ in the example in \autoref{sec:QubitEncoding}
+%From \cref{eq:qubit rotation interaction}, we see that qubit encoding computes interactions between the features. This observation can be used to create interesting representations for data of few features by repeating them multiple times, at the expense of including more qubits. By imposing $x_1 = x_2 = x$ in the example in \cref{sec:QubitEncoding}
 
 %\begin{equation}\label{eq:tensorial feature mapping}
 %\begin{bmatrix}
@@ -116,13 +116,13 @@ As the circuit depth is quite low, qubit encoding is an effective method for emb
 %    \end{bmatrix}.
 %\end{equation}
 
-%This technique is sometimes called  \emph{tensorial feature mapping}(kilde), and results in a state that encodes polynomials of $\sin$ and $\cos$ transformations of data, as seen in \autoref{eq:tensorial feature mapping}. In (kilde), tensorial feature mapping was shown to produce superior QNN models over normal qubit encoding. 
+%This technique is sometimes called  \emph{tensorial feature mapping}(kilde), and results in a state that encodes polynomials of $\sin$ and $\cos$ transformations of data, as seen in \cref{eq:tensorial feature mapping}. In (kilde), tensorial feature mapping was shown to produce superior QNN models over normal qubit encoding. 
 
 
 %================================================================
 \subsection{RZZ Encoding}\label{sec:RZZencoding}
 %================================================================
-\citet{abbas2020power} implemented a quantum feature map for encoding quantum features up to second order, meaning the embedding is dependent on terms such as $x_i x_j$, for $i\neq j$. The method can be seen as an extension of qubit encoding using $R_z$ gates, with additional extra RZZ gates that act on qubit $i$ and $j$ with rotational angle $\phi(x_i, x_j) = (\pi - x_i)(\pi - x_j)$. This is done for $i\in [1, \cdots, p-1]$ and $j\in [i+1, \cdots, p]$. As this way of encoding was never given a name, we will call it \emph{RZZ encoding} in this thesis. The circuit implementing RZZ encoding can be seen in \autoref{fig:Rzzencoding}
+\citet{abbas2020power} implemented a quantum feature map for encoding quantum features up to second order, meaning the embedding is dependent on terms such as $x_i x_j$, for $i\neq j$. The method can be seen as an extension of qubit encoding using $R_z$ gates, with additional extra RZZ gates that act on qubit $i$ and $j$ with rotational angle $\phi(x_i, x_j) = (\pi - x_i)(\pi - x_j)$. This is done for $i\in [1, \cdots, p-1]$ and $j\in [i+1, \cdots, p]$. As this way of encoding was never given a name, we will call it \emph{RZZ encoding} in this thesis. The circuit implementing RZZ encoding can be seen in \cref{fig:Rzzencoding}
 
 \begin{figure}[H]
     \centering
@@ -136,7 +136,7 @@ This procedure produces a much more complex feature map, and can be made more co
 %================================================================
 \subsection{Latent Qubits}\label{sec:Latent Qubits}
 %================================================================
-For both qubit encoding and RZZ encoding, the number of qubits in the circuit is restricted to be equal the number of features $p$ that is being encoded. This constrained can be relaxed by introducing \emph{latent qubits}, which are additional qubits added to the circuit that no features are encoded onto. This technique was originally proposed by \citet{lloyd2020quantum}, and was implemented to increase the size of Hilbert space for a constant number of features. It is typical to apply a Hadamard gate to each latent qubit so that they don't start out in the $\ket{0}$ state. Subsequent ansatzes used for processing the data are then applied to all qubits, including the latent qubits. \autoref{fig:latent qubits} illustrate how latent qubits are added to a circuit. Here, $U_{\phi(\boldsymbol{x})}$ is any encoder, e.g. qubit encoding or RZZ encoding, that maps features on some number of qubits denoted $\ket{\boldsymbol{0}}$. Then, an arbitrary amount of qubits may be added to the circuit to increase the Hilbert space.
+For both qubit encoding and RZZ encoding, the number of qubits in the circuit is restricted to be equal the number of features $p$ that is being encoded. This constrained can be relaxed by introducing \emph{latent qubits}, which are additional qubits added to the circuit that no features are encoded onto. This technique was originally proposed by \citet{lloyd2020quantum}, and was implemented to increase the size of Hilbert space for a constant number of features. It is typical to apply a Hadamard gate to each latent qubit so that they don't start out in the $\ket{0}$ state. Subsequent ansatzes used for processing the data are then applied to all qubits, including the latent qubits. \cref{fig:latent qubits} illustrate how latent qubits are added to a circuit. Here, $U_{\phi(\boldsymbol{x})}$ is any encoder, e.g. qubit encoding or RZZ encoding, that maps features on some number of qubits denoted $\ket{\boldsymbol{0}}$. Then, an arbitrary amount of qubits may be added to the circuit to increase the Hilbert space.
 
 \begin{figure}[H]
          \centering
@@ -231,7 +231,7 @@ U_{SA}(\boldsymbol{\theta}) =
          }
 \end{array}.
 \end{equation}
-The simple ansatz applies CNOT gates on neighboring qubits in sequence until the final qubit is reached. This creates entanglement between the qubits and enables access to a larger space of transformations, as explained in \autoref{sec:ControlledOperations}. Then, an $R_y$ rotation is applied to each qubit, each parameterized with its own parameter. Both the number of parameters and the circuit depth of the simple ansatz scales linearly with the number of qubits, making it hardware-efficient and hopefully suitable for near-term applications. 
+The simple ansatz applies CNOT gates on neighboring qubits in sequence until the final qubit is reached. This creates entanglement between the qubits and enables access to a larger space of transformations, as explained in \cref{sec:ControlledOperations}. Then, an $R_y$ rotation is applied to each qubit, each parameterized with its own parameter. Both the number of parameters and the circuit depth of the simple ansatz scales linearly with the number of qubits, making it hardware-efficient and hopefully suitable for near-term applications. 
 
 In order to produce a more expressive ansatz, we may repeat the simple ansatz $d$ number of times with independent parameter as such:
 
@@ -261,7 +261,7 @@ Applying this operator on a computational basis state $\ket{v_1  \cdots v_n}$ co
 where $\bigoplus_{i=1}^n v_i$ is the mod 2 sum of the terms $v_i$, also known as the parity of the bitstring $v_1\cdots v_n$. In short, the parity of the state is $0$ if the number of qubits in state $\ket{1}$ is even, and is otherwise 1. This is called even and odd parity, respectively. 
 
 To estimate the expected parity $\bra{\psi_{\boldsymbol{x},\boldsymbol{\theta}}}P 
-\ket{\psi_{\boldsymbol{x},\boldsymbol{\theta}}}$, we use the technique described in \autoref{sec:EstimatingExpectationValues} by preparing the state repeatedly and measure it in the computational basis. The expected parity can then be estimated as 
+\ket{\psi_{\boldsymbol{x},\boldsymbol{\theta}}}$, we use the technique described in \cref{sec:EstimatingExpectationValues} by preparing the state repeatedly and measure it in the computational basis. The expected parity can then be estimated as 
 
 \begin{equation}
     \bra{\psi_{\boldsymbol{x},\boldsymbol{\theta}}}P 
@@ -275,7 +275,7 @@ where $S$ is the number of shots used, and $p_j$ is the parity resulting from me
 %================================================================
 \section{Optimization of PQC}\label{sec:OptPQC}
 %================================================================
-A key component of hybrid methods such as PQC is the optimization of the parameters $\boldsymbol{\theta}$ entering the ansatz. These parameters are usually optimized with respect to some objective function in order to solve a given problem \cite{Benedetti_2019}. In the context of machine learning, one seeks to minimize the loss function \autoref{eq:LossFunction} to fit labeled data. There are multiple popular methods for optimization in the context of PQC. One such method is numerical differentiation of the loss function:
+A key component of hybrid methods such as PQC is the optimization of the parameters $\boldsymbol{\theta}$ entering the ansatz. These parameters are usually optimized with respect to some objective function in order to solve a given problem \cite{Benedetti_2019}. In the context of machine learning, one seeks to minimize the loss function \cref{eq:LossFunction} to fit labeled data. There are multiple popular methods for optimization in the context of PQC. One such method is numerical differentiation of the loss function:
 
 \begin{equation}
     \frac{\partial}{\partial \theta_i} L(\boldsymbol{\theta}) 
@@ -320,7 +320,7 @@ Are $[G(\theta_i)+2\partial_{\theta_i}G(\theta_i)]$ and $[G(\theta_i)-2\partial_
     \underset{\sqrt{2}G(\pm \frac{\pi}{2})}{\underbrace{(I \mp i\sigma_j)}}G(\theta_i) = 
     \sqrt{2}G(\theta_i \pm \frac{\pi}{2}),
 \end{equation}
-where the relation $R_j(a)R_j(b) = R_j(a+b)$ was used in the last step. Inserting this result back into \autoref{eq:generalDeriv}, we get the final expression 
+where the relation $R_j(a)R_j(b) = R_j(a+b)$ was used in the last step. Inserting this result back into \cref{eq:generalDeriv}, we get the final expression 
 
 
 \begin{equation}\label{eq:parameterShiftRule}
@@ -334,7 +334,7 @@ where the relation $R_j(a)R_j(b) = R_j(a+b)$ was used in the last step. Insertin
 
 The form of the expression above reveals the origin of the name "parameter shift rule". To calculate the derivative of the expectation value of a circuit, one simply has to estimate this expectation value twice: Once with the corresponding parameter shifted by $\frac{\pi}{2}$, and once shifted by $-\frac{\pi}{2}$. The derivative is finally found by combining the two results in a linear combination. This is a efficient approach for computing the gradient, since the number of expectation values that needs to be estimated is proportional to the number of parameters.
 
-For QNNs, the features $\boldsymbol{x}$ enter the state $\ket{\psi_{\boldsymbol{x},\boldsymbol{\theta}}}$ in the same way as the parameters $\boldsymbol{\theta}$ if qubit encoding is used(see \autoref{sec:QubitEncoding}), i.e. with Pauli rotations. In this case, the parameter shift rule can also be applied to calculate the derivative of the output with respect to the features, i.e. $\partial_{x_i}a$. This will be relevant later when we introduce models consisting of multiple circuits. 
+For QNNs, the features $\boldsymbol{x}$ enter the state $\ket{\psi_{\boldsymbol{x},\boldsymbol{\theta}}}$ in the same way as the parameters $\boldsymbol{\theta}$ if qubit encoding is used(see \cref{sec:QubitEncoding}), i.e. with Pauli rotations. In this case, the parameter shift rule can also be applied to calculate the derivative of the output with respect to the features, i.e. $\partial_{x_i}a$. This will be relevant later when we introduce models consisting of multiple circuits. 
 
 %================================================================
 \subsection{Barren Plateus in QNN Loss Landscape}\label{sec:BarrenPlateus}
@@ -344,7 +344,7 @@ While recent studies have shown several promising characteristics of QNNs, such 
 \begin{equation}
     \lim_{n\to\infty} V(\bra{\psi_n}\hat{O}\ket{\psi_n}) = 0,
 \end{equation}
-where $V()$ indicates the variance, and $\hat{O}$ is some observable. Also, this concentration occurs exponentially fast in n. From \autoref{sec:Ansätze}, we know that a PQC $U_{\boldsymbol{\theta}}$  in general can prepare any state $\ket{\psi_\boldsymbol{\theta}}$ only if it is exponentially deep. However, \citet{McClean_2018} showed that shallow PQC with polynomial depth was also susceptible for the same exponential concentration of observable. This effect is also worsening the deeper the circuit is. Further, they showed that the gradient of PQC has a mean around zero, i.e.
+where $V()$ indicates the variance, and $\hat{O}$ is some observable. Also, this concentration occurs exponentially fast in n. From \cref{sec:Ansätze}, we know that a PQC $U_{\boldsymbol{\theta}}$  in general can prepare any state $\ket{\psi_\boldsymbol{\theta}}$ only if it is exponentially deep. However, \citet{McClean_2018} showed that shallow PQC with polynomial depth was also susceptible for the same exponential concentration of observable. This effect is also worsening the deeper the circuit is. Further, they showed that the gradient of PQC has a mean around zero, i.e.
 
 \begin{equation}
      E(\partial \theta_i \bra{\psi_{\boldsymbol{\theta}}}\hat{O}\ket{\psi_{\boldsymbol{\theta}}}) = 0.
@@ -352,7 +352,7 @@ where $V()$ indicates the variance, and $\hat{O}$ is some observable. Also, this
 
 These two results show that the gradients of PQCs are concentrating around zero. In other words, as the depth and width of PQCs grow, they essentially approach a random circuit, leading to a concentration of outputs around the average output over all possible initialization. In addition, their gradients vanish exponentially fast.
 
-The vanishing of PQCs gradient manifests itself as loss landscapes that are extremely flat in most of parameter space, reminiscent of the vanishing gradient phenomenon of classical neural networks as the depth increases\cite{shalevshwartz2017failures}. The exponential vanishing of the gradient means that exponentially many shots are required in order to obtain a sufficient signal-to-noise ratio, as explained in \autoref{sec:EstimatingExpectationValues}. This may render the training of larger QNN models intractable as the number of qubits is increased in order to handle harder learning problems.
+The vanishing of PQCs gradient manifests itself as loss landscapes that are extremely flat in most of parameter space, reminiscent of the vanishing gradient phenomenon of classical neural networks as the depth increases\cite{shalevshwartz2017failures}. The exponential vanishing of the gradient means that exponentially many shots are required in order to obtain a sufficient signal-to-noise ratio, as explained in \cref{sec:EstimatingExpectationValues}. This may render the training of larger QNN models intractable as the number of qubits is increased in order to handle harder learning problems.
 
 
 %================================================================
@@ -364,7 +364,7 @@ In order to extend the QNN framework discussed so far, we will implement multi-c
 %================================================================
 \subsection{Feed-Forward}\label{sec:FeedForward}
 %================================================================
-\autoref{fig:QCN} illustrates the general structure of a quantum circuit network, which exhibits neural network-like architecture. Here, each node in the network is a QNN model $f^{(l)}_{QNN}$(see \autoref{eq:QNN}), with some layer specific choice of encoder, ansatz and observable. Each QNN is parameterized by $\boldsymbol{\theta}^{[l,j]}$, where $l$ is the layer and $j$ is the node in the current layer. The feed-forward procedure is described as follows: 
+\cref{fig:QCN} illustrates the general structure of a quantum circuit network, which exhibits neural network-like architecture. Here, each node in the network is a QNN model $f^{(l)}_{QNN}$(see \cref{eq:QNN}), with some layer specific choice of encoder, ansatz and observable. Each QNN is parameterized by $\boldsymbol{\theta}^{[l,j]}$, where $l$ is the layer and $j$ is the node in the current layer. The feed-forward procedure is described as follows: 
 For layer $l$, each node receives the feature vector $\boldsymbol{a}^{(l-1)}$ resulting from the previous layer(with the special case that $\boldsymbol{a}^{(0)} = \boldsymbol{x}$). For each node $j$, an output $a^{(l)}_k$ is produced, i.e.
 \begin{equation}
     a^{(l)}_j = f^{(l)}_{QNN}(\boldsymbol{a}^{(l-1)}; \boldsymbol{\theta}^{[l,j]})
@@ -385,14 +385,14 @@ where $\boldsymbol{\theta}$ is the collection of all $\boldsymbol{\theta}^{[l,j]
 
 The sequential transformation resulting from the multi-circuit architecture of QCNs offer several interesting properties compared to single circuit QNN models. The circuits can be evaluated one at a time and the output stored classically. This makes it possible to compute very large models of many parameters without the need for doing a long coherent computation on a quantum computer. While QNNs of many parameters must have either high circuits depths and or consist of many qubits (or both), QCN can on the other hand consist of many more shallow circuits of few qubits, much more suitable for near-term quantum computers. 
 
-Further, the repeated encoding and estimation of outputs of intermediate layers introduce nonlinearities to the transformation of the data multiple times may alter the space of functions possible to compute in an interesting way. This is because each of these steps introduce a nonlinear transformation of the data. For classical neural networks, we know from \autoref{sec:DenseNeuralNetwork} that repeated nonlinear transformation is key for their great expressive power. Switching over to the single-circuit QNN model, nonlinearity is introduced only twice: First when the features are encoded as a quantum state using rotations such as $R_j(x_i)\ket{0} = \cos(\frac{x_i}{2})\ket{0} - i\sin(\frac{x_i}{2})\sigma_j\ket{0}$. The second time is when an output is derived by estimating an expectation value, which relates to the modulo square of the amplitudes of the state, i.e. $|\alpha_k|^2$. All other processing of the data is performed by the ansatz, which by definition is unitary and therefore linear in nature. In this sense, it could be that the formulation of QNNs as shown in \autoref{fig:QNN} could be a bit constrained with respect to what functions it can compute. By combining several circuits, nonlinearity is introduced with each layer, possibly creating a more powerful model able to fit more complicated functions.  
+Further, the repeated encoding and estimation of outputs of intermediate layers introduce nonlinearities to the transformation of the data multiple times may alter the space of functions possible to compute in an interesting way. This is because each of these steps introduce a nonlinear transformation of the data. For classical neural networks, we know from \cref{sec:DenseNeuralNetwork} that repeated nonlinear transformation is key for their great expressive power. Switching over to the single-circuit QNN model, nonlinearity is introduced only twice: First when the features are encoded as a quantum state using rotations such as $R_j(x_i)\ket{0} = \cos(\frac{x_i}{2})\ket{0} - i\sin(\frac{x_i}{2})\sigma_j\ket{0}$. The second time is when an output is derived by estimating an expectation value, which relates to the modulo square of the amplitudes of the state, i.e. $|\alpha_k|^2$. All other processing of the data is performed by the ansatz, which by definition is unitary and therefore linear in nature. In this sense, it could be that the formulation of QNNs as shown in \cref{fig:QNN} could be a bit constrained with respect to what functions it can compute. By combining several circuits, nonlinearity is introduced with each layer, possibly creating a more powerful model able to fit more complicated functions.  
 
 
 
 %================================================================
 \subsection{Backward Propagation}\label{sec:BackwardPropagationQCN}
 %================================================================
-When comparing the formulation of QCN \autoref{eq:QCN} and classical neural network \autoref{eq:DNN}, it becomes apparent that they are structurally identical, excluding the mathematical operations happening inside each node. For the QCN, each node implements a QNN model, while the classical neural network implements an affine transformation, followed by a nonlinear activation. Using this observation, it is possible to implement a slightly modified backpropagation algorithm, earlier described in \autoref{sec:BackpropogationDNN}, for QCN. This assumes that we are able to calculate the derivative of the outputs of each QNN model. As described in \autoref{sec:ParametricModels}, this is indeed possible using the parameter shift rule. 
+When comparing the formulation of QCN \cref{eq:QCN} and classical neural network \cref{eq:DNN}, it becomes apparent that they are structurally identical, excluding the mathematical operations happening inside each node. For the QCN, each node implements a QNN model, while the classical neural network implements an affine transformation, followed by a nonlinear activation. Using this observation, it is possible to implement a slightly modified backpropagation algorithm, earlier described in \cref{sec:BackpropogationDNN}, for QCN. This assumes that we are able to calculate the derivative of the outputs of each QNN model. As described in \cref{sec:ParametricModels}, this is indeed possible using the parameter shift rule. 
 
 For $\hat{y} = f_{QCN}(\boldsymbol{x}; \boldsymbol{\theta})$ and a loss function $L(\hat{y}, y)$, the error of the last layer can be computed as 
 \begin{equation}\label{eq:lastLayerErrorQCN}
@@ -422,9 +422,9 @@ The terms
 \begin{aligned}
      \frac{\partial \boldsymbol{a}^{l+1}_k}{\partial \boldsymbol{a}^{l}_j}
 \end{aligned}
-\end{equation} are the derivatives of the node outputs with respect to the parameters and inputs, respectively. Since they are calculated locally for each node, we call them the \emph{local gradients} of the QCN model. As explained in \autoref{sec:AnalyticalGrad}, the local gradients can be calculated analytically using the parameter shift rule with respect to the parameters $\theta^{[l,j]}_n$ and the inputs $\boldsymbol{a}^{l}_j$. By first performing a forward pass to calculate $\boldsymbol{a}^{l}$ for all the layers $l$, the local gradients can then be estimated and stored one at a time. Finally, \autoref{eq:derivweightsQCN} can be used to classically compute the \emph{total gradient} $\nabla_{\boldsymbol{\theta}} L(\hat{y},y)$ based on the stored values for the single sample $\boldsymbol{x}$. By repeating this for all samples $\boldsymbol{x}^{(i)}$, we can calculate the average total gradient \begin{equation}\label{eq:averageGradientQCN}
+\end{equation} are the derivatives of the node outputs with respect to the parameters and inputs, respectively. Since they are calculated locally for each node, we call them the \emph{local gradients} of the QCN model. As explained in \cref{sec:AnalyticalGrad}, the local gradients can be calculated analytically using the parameter shift rule with respect to the parameters $\theta^{[l,j]}_n$ and the inputs $\boldsymbol{a}^{l}_j$. By first performing a forward pass to calculate $\boldsymbol{a}^{l}$ for all the layers $l$, the local gradients can then be estimated and stored one at a time. Finally, \cref{eq:derivweightsQCN} can be used to classically compute the \emph{total gradient} $\nabla_{\boldsymbol{\theta}} L(\hat{y},y)$ based on the stored values for the single sample $\boldsymbol{x}$. By repeating this for all samples $\boldsymbol{x}^{(i)}$, we can calculate the average total gradient \begin{equation}\label{eq:averageGradientQCN}
     \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^N \nabla_{\boldsymbol{\theta}} L(\hat{y}^{(i)}, y^{(i)}).
-\end{equation}  The calculation of the gradient allows us to leverage more information of the loss function and enables for gradient-based optimization. Potentially, this could mean faster optimization relative to derivative-free optimization, such as scikit-learn's numerical optimizer algorithm \cite{scikit-learn} which was originally used to train QCNs \cite{stian}. However, as explained in \autoref{sec:GradientDescent}, gradient-based methods such as gradient descent are prone to getting stuck in local minima, potentially causing slow optimization.    
+\end{equation}  The calculation of the gradient allows us to leverage more information of the loss function and enables for gradient-based optimization. Potentially, this could mean faster optimization relative to derivative-free optimization, such as scikit-learn's numerical optimizer algorithm \cite{scikit-learn} which was originally used to train QCNs \cite{stian}. However, as explained in \cref{sec:GradientDescent}, gradient-based methods such as gradient descent are prone to getting stuck in local minima, potentially causing slow optimization.    
 
 %================================================================
 %\subsection{Regularized Feature Map}\label{sec:Regularized Feature map}
@@ -450,5 +450,5 @@ The terms
 %\section{Recursive Circuit Optimization}\label{sec:RCO}
 %================================================================
 
-%Assume we have a unitary operator $U$ that prepares a state$\ket{\psi} = U\ket{0}$. In the case that $U$ has a high circuit depth, preparation of the state may fail on noisy hardware due to decoherence, as explained in \autoref{sec:Nisq}. 
+%Assume we have a unitary operator $U$ that prepares a state$\ket{\psi} = U\ket{0}$. In the case that $U$ has a high circuit depth, preparation of the state may fail on noisy hardware due to decoherence, as explained in \cref{sec:Nisq}. 
 
