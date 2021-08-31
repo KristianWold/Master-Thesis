@@ -36,12 +36,12 @@ In the sections to come, we will discuss specific choices of feature encoding, a
 %================================================================
 \section{Feature Encoding}\label{sec:FeatureEncoding}
 %================================================================
-In this section, we will introduce three ways of doing feature encoding, namely \emph{qubit encoding}, and \emph{RZZ encoding}. We will also introduce \emph{latent qubits}, used for increasing the circuit size and the size of the resulting Hilbert space. 
+In this section, we will introduce two ways of doing feature encoding, namely \emph{qubit encoding}, and \emph{RZZ encoding}. We will also introduce \emph{latent qubits}, used for increasing the circuit size and the size of the resulting Hilbert space. 
 
 %================================================================
 \subsection{Qubit Encoding}\label{sec:QubitEncoding}
 %================================================================
-One popular approach for encoding a feature vector to a quantum state is the method often-called \emph{qubit encoding}\cite{Benedetti_2019}. This encoding requires $p$ qubits, where $p$ is the number of features, and it can be applied at a constant circuit depth. Before the encoding, the data is optionally pre-processed by some function $\phi(x_i)$, for example scaling of the data. Then, the encoding works by performing a Pauli-rotation on each qubit with a rotational angle equal to the corresponding (pre-processed) feature. \cref{fig:qubitencoding} shows how qubit encoding is implemented using $R_x$, $R_y$ and $R_z$ rotation.
+One popular approach for encoding a feature vector to a quantum state is the method often-called \emph{qubit encoding} \cite{Benedetti_2019}. This encoding requires $p$ qubits, where $p$ is the number of features, and it can be applied at a constant circuit depth. Before the encoding, the data is optionally pre-processed by some function $\phi(x_i)$, for example scaling of the data. Then, the encoding works by performing a Pauli-rotation on each qubit with a rotational angle equal to the corresponding (pre-processed) feature. \cref{fig:qubitencoding} shows how qubit encoding is implemented using $R_x$, $R_y$ and $R_z$ rotation.
 
 \begin{figure}[H]
      \begin{subfigure}[b]{0.3\textwidth}
@@ -127,7 +127,7 @@ As the circuit depth is quite low, qubit encoding is an effective method for emb
 \begin{figure}[H]
     \centering
     \includegraphics[width=14cm]{latex/figures/Rzz_encoding.png}
-    \caption{Circuit visualizing implementation of RZZ encoding of $p$ features. The figure is retrieved from \cite{abbas2020power} and adapted to fit our notation.}
+    \caption{Circuit visualizing implementation of RZZ encoding of $p$ features. The functions $\phi(\dot,\dot)$ in the $R_z$ gates are suppressed for clarity. The figure is retrieved from \cite{abbas2020power} and adapted to fit our notation.}
     \label{fig:Rzzencoding}
 \end{figure}
 
@@ -136,7 +136,7 @@ This procedure produces a much more complex feature map, and can be made more co
 %================================================================
 \subsection{Latent Qubits}\label{sec:Latent Qubits}
 %================================================================
-For both qubit encoding and RZZ encoding, the number of qubits in the circuit is restricted to be equal the number of features $p$ that is being encoded. This constrained can be relaxed by introducing \emph{latent qubits}, which are additional qubits added to the circuit that no features are encoded onto. This technique was originally proposed by \citet{lloyd2020quantum}, and was implemented to increase the size of Hilbert space for a constant number of features. It is typical to apply a Hadamard gate to each latent qubit so that they don't start out in the $\ket{0}$ state. Subsequent ansatzes used for processing the data are then applied to all qubits, including the latent qubits. \cref{fig:latent qubits} illustrate how latent qubits are added to a circuit. Here, $U_{\phi(\boldsymbol{x})}$ is any encoder, e.g. qubit encoding or RZZ encoding, that maps features on some number of qubits denoted $\ket{\boldsymbol{0}}$. Then, an arbitrary amount of qubits may be added to the circuit to increase the Hilbert space.
+For both qubit encoding and RZZ encoding, the number of qubits in the circuit is restricted to be equal the number of features $p$ that is being encoded. This constrained can be relaxed by introducing \emph{latent qubits}, which are additional qubits added to the circuit that no features are encoded onto. This technique was originally proposed by \citet{lloyd2020quantum}, and was implemented to increase the size of Hilbert space for a constant number of features. It is typical to apply a Hadamard gate to each latent qubit so that they don't start out in the $\ket{0}$ state. Subsequent ansatzes used for processing the data are then applied to all qubits, including the latent qubits. \cref{fig:latent qubits} illustrate how latent qubits are added to a circuit. Here, $U_{\phi(\boldsymbol{x})}$ is any encoder, e.g. qubit encoding or RZZ encoding, that maps features to some number of qubits denoted $\ket{\boldsymbol{0}}$. Then, an arbitrary amount of qubits may be added to the circuit to increase the Hilbert space.
 
 \begin{figure}[H]
          \centering
@@ -146,7 +146,7 @@ For both qubit encoding and RZZ encoding, the number of qubits in the circuit is
          \vdots&  &   \\
          \lstick{\ket{0}}& \gate{H} &  \qw
          }\]
-         \caption{Circuit encoding features expanded by adding an arbitrary number of latent qubits. Here, $U_{\phi(\boldsymbol{x})}$ is any encoder, e.g. qubit encoding or RZZ encoding, that maps features on some number of qubits denoted $\ket{\boldsymbol{0}}$. Then, an arbitrary amount of qubits may be added to the circuit to increase the Hilbert space.}
+         \caption{Circuit encoding features expanded by adding an arbitrary number of latent qubits. Here, $U_{\phi(\boldsymbol{x})}$ is any encoder, e.g. qubit encoding or RZZ encoding, that maps features to some number of qubits denoted $\ket{\boldsymbol{0}}$. Then, an arbitrary amount of qubits may be added to the circuit to increase the Hilbert space.}
          \label{fig:latent qubits}
 \end{figure}
 

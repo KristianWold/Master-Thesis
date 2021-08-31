@@ -86,5 +86,12 @@ trajectory (projected down to two dimensions) after being transformed by the fir
 \label{fig:trajectoryLengthExample}
 \end{figure}
 
-\cref{fig:trajectoryLengthExample} shows that the inputs gets transformed in a highly non-linear way as it is being transformed by each layer. Especially, neighboring points in the input trajectory gets mapped further and further apart for each transformation, indicating that small perturbations in the input grows for each layer. \citet{raghu2017expressive} showed that the trajectory length of trained neural networks increase exponentially with depth, suggesting a capacity to compute exponentially complex functions as the number of layers increase.
+\cref{fig:trajectoryLengthExample} shows that the inputs gets transformed in a highly non-linear way as it is being transformed by each layer. Especially, neighboring points in the input trajectory gets mapped further and further apart for each transformation, indicating that small perturbations in the input grows for each layer. \citet{raghu2017expressive} showed that the trajectory length of neural networks increase exponentially with depth. The authors also showed that untrained neural networks that initially lacked this feature could be brought into the exponential regime by training them on data. This is exemplified in \cref{fig:trajectory_trained}, showing that neural networks can be trained to compute exponentially complex functions.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm]{latex/figures/trajectory_train.PNG}
+    \caption{Figure showing the trajectory length of a neural network as it is trained on data. The legend shows the number of epochs. After about $7\times 10^4$ epochs, the neural network enter the exponential regime, where each additional layer (more or less) increases the trajectory length exponentially. The figure is retrieved from \citet{raghu2017expressive}.}
+\label{fig:trajectory_trained}
+\end{figure}
 

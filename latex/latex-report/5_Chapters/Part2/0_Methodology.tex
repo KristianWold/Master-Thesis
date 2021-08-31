@@ -477,7 +477,7 @@ def backward(self, x, y):
 
     self.weight_gradient_list.reverse()
 \end{lstlisting}
-\textbf{network.backward(x,y)} starts by performing feed forward and inference. In line 4, the error of the last layer \cref{eq:lastLayerErrorQCN} is initiated as \textbf{delta}. For each layer, starting with the last first, the gradient is calculated and the error \textbf{delta} is updated. This is done using \cref{eq:derivweightsQCN} and \cref{eq:errorQCN}, respectively, which is implemented in the layer method \textbf{layer.grad(self.a[i], delta)}.
+\textbf{network.backward(x,y)} starts by performing feed forward and predictions. In line 4, the error of the last layer \cref{eq:lastLayerErrorQCN} is initiated as \textbf{delta} based on the specific loss function \textbf{self.cost}. For each layer, starting with the last, the gradient is calculated and the error \textbf{delta} is updated. This is done using \cref{eq:derivweightsQCN} and \cref{eq:errorQCN}, respectively, which is implemented in the layer method \textbf{layer.grad(self.a[i], delta)}.
 
 %================================================================
 \subsection{Training}\label{sec:QCNTraining}
