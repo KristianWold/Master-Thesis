@@ -119,6 +119,7 @@
     
 \usepackage[nameinlink,capitalize]{cleveref} % must be loaded after hyperref  
 
+
 \crefname{equation}{Equation}{}
 \crefname{figure}{Figure}{}
 \crefname{algocf}{Algorithm}{}
@@ -175,11 +176,13 @@
 \usepackage{csquotes}
 \usepackage[
     backend=biber,
+    maxnames=2,
     style=numeric,
     sorting=none,
     backref,
     natbib,
     hyperref
 ]{biblatex}
+
 
 %-------------------- end style ---------------------------
