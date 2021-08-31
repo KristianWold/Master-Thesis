@@ -467,14 +467,14 @@ The QCNs models are chosen to have four qubits in each circuit, and only one hid
 
 \begin{table}[H]
 \centering
-\caption{Hyperparameters of the various models fitted to the feature reduced Boston Housing data (BHD) and Breast Cancer data (BC). \emph{Reps} is the number of ansatz repetitions, and $n_{\theta}$ is the number of model parameters.} 
+\caption{Hyperparameters of the various models fitted to the feature reduced Boston Housing data (BHD) and Breast Cancer data (BCD). \emph{Reps} is the number of ansatz repetitions, and $n_{\theta}$ is the number of model parameters.} 
 \begin{tabular}{|l|l|l|l|l|l|l|l|}
 \hline
 Model& Type& Data& Qubits& Reps& Hidden Layers & Nodes &$n_{\theta}$ \\ \hline
 A    & QCN & BHD  & 4     & 2  &1     & 4& 40   \\ \hline
 B    & DNN & BHD  & NA    & NA &1     & 6& 37 \\ \Xhline{2\arrayrulewidth}
-C    & QCN & BC        & 4     & 2  &1     & 4& 40  \\ \hline
-D    & DNN & BC        & NA    & NA &1     & 6& 37  \\ \hline
+C    & QCN & BCD        & 4     & 2  &1     & 4& 40  \\ \hline
+D    & DNN & BCD        & NA    & NA &1     & 6& 37  \\ \hline
 \end{tabular}
 
 \label{tab:training models PCA}

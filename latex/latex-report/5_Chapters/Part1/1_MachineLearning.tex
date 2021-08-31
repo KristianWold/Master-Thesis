@@ -4,33 +4,33 @@
 
 This chapter introduces the fundamentals of supervised learning, optimization and neural networks. The content of this chapter is mainly based on the material in \citet{SupervisedwquantumComputers}, \citet{hastie01statisticallearning} and \citet{nielsenneural}.
 
-The goal of \emph{supervised learning}, one of the big branches of machine learning, is to obtain a function for predicting an output $y$ from an input $\boldsymbol{x}$. This is done by learning from input-output pairs $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, known as the training set. The domain of the input and output depends on the specific learning problem. The output $y$, also called the target or the response, is often either of a quantitative or qualitative character. These two cases constitute two big paradigms in supervised learning: \emph{regression} and \emph{classification}, respectively. For regression, the goal of the learning task is to predict a real-valued target y from the input $\boldsymbol{x}$. Typical examples of targets to regress on are \emph{temperature}, \emph{weight} and \emph{number of people}, which have in common a natural notion of distance measure in the sense that instances close in numerical value are also similar in nature. E.g., two fish weighing $12.1$ kg and $12.2$ kg are similar, while a third fish weighing $24.0$kg is notably different.
+The goal of \emph{supervised learning}, one of the big branches of machine learning, is to obtain a model for predicting an output $y$ from an input $\boldsymbol{x}$. This is done by learning from input-output pairs $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, known as the training set. Here, we assume that $\boldsymbol{x}^{(i)}$ is a vector and $y$ is a scalar. The domain of the input and output depends on the specific learning problem. The output $y$, also called the target or the response, is often either of a quantitative or qualitative character. These two cases constitute two big paradigms in supervised learning: \emph{regression} and \emph{classification}, respectively. For regression, the goal of the learning task is to predict a real-valued target y from the input $\boldsymbol{x}$. Typical examples of targets to regress on are \emph{temperature}, \emph{weight} and \emph{length}, which have in common a natural notion of distance measure in the sense that instances close in numerical value are also similar in nature. E.g., two fish weighing $12.1$ kg and $12.2$ kg are similar, while a third fish weighing $24.0$kg is notably different.
 
 For classification, the goal is to predict one or more \emph{classes} from an input $\boldsymbol{x}$. In this setting, the target $y$ is discrete and categorical, such as \emph{color}, \emph{dead/alive} and \emph{animal species}. In contrast to quantitative targets, qualitative targets lack a natural distance measure, in the sense that it is not meaningful to compare the distance between \emph{dog} and \emph{cat}, and \emph{dog} and \emph{seagull}. They are simply mutually exclusive classes.
 
-The input $\boldsymbol{x}$ is a vector consisting of elements $(x_1, \cdots, x_p)$ often called features and predictors. Each feature $x_i$ can either be quantitative or qualitative in the same manner as with the target previously discussed. In this thesis, we will investigate quantitative features $\boldsymbol{x} \in \mathbb{R}^{p}$.
+The input $\boldsymbol{x}$ is a vector consisting of elements $(x_1, \cdots, x_p)$ often called features or predictors. Each feature $x_i$ can either be quantitative or qualitative in the same manner as with the target previously discussed. In this thesis, we will investigate quantitative features $\boldsymbol{x} \in \mathbb{R}^{p}$.
 
 
 %================================================================
 \section{Parametric Models}\label{sec:ParametricModels}
 %================================================================
-The approach of supervised learning often starts by acquiring a training set $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, where $N$ is the number of samples in the training set. This is called labeled data, since the samples of features $\boldsymbol{x}^{(i)}$ are accompanied by the ground truth target $y^{(i)}$ (the labels of the samples, assumed to be a scalar) that we want to predict. One often hypothesizes that the acquired training data was produced by some mechanism or process that we can mathematically express as
+The approach of supervised learning often starts by acquiring a training set $\mathcal{T} = \{(\boldsymbol{x}^{(1)}, y^{(1)}), \cdots, (\boldsymbol{x}^{(N)}, y^{(N)})\}$, where $N$ is the number of samples in the training set. This is called labeled data, since the samples of features $\boldsymbol{x}^{(i)}$ are accompanied by the ground truth target $y^{(i)}$  that we want to predict. One often hypothesizes that the acquired training data was produced by some mechanism or process that we can mathematically express as
 
 \begin{equation}\label{eq:data}
-    y = f(\boldsymbol{x}) + \epsilon,
+    y = \hatf(\boldsymbol{x}) + \epsilon,
 \end{equation}
 where $\epsilon$ is often included to account for randomness, noise or errors in the data, in contrast to the deterministic part $f(\boldsymbol{x})$. Depending on the context, the $\epsilon$ may be neglected or assumed to be normally distributed such as $\epsilon \sim \mathcal{N}(0, \sigma^2)$, where $\sigma^2$ is the variance.
 
 The goal is to approximate the underlying mechanism $f(\boldsymbol{x})$. To do this, one often proposes a parametric model
 
 \begin{equation*}
-    \hat{y} = f(\boldsymbol{x}; \boldsymbol{\theta}),
+    \hat{y} = \hat{f}(\boldsymbol{x}; \boldsymbol{\theta}),
 \end{equation*}
 
-where $\hat{y}$ is the predicted value, $f(\cdot; \cdot)$ defines a \emph{family} of models, and $\boldsymbol{\theta}$ is a specific vector of parameters that defines a specific model from the family. Training (or fitting) the model involves finding the parameters $\boldsymbol{\theta}$ such that the model best reproduces the target from the features found in the training data set. To quantify what is meant by "best" in this context, it is common to introduce a \emph{loss function} that measures the quality of the model with respect to the training data set:
+where $\hat{y}$ is the predicted value, $\hat{f}(\cdot; \cdot)$ defines a family of models, and $\boldsymbol{\theta}$ is a vector of parameters that defines a specific model from that family. Training (or fitting) the model involves finding the parameters $\boldsymbol{\theta}$ such that the model best reproduces the targets from the features found in the training data set. To quantify what is meant by "best" in this context, it is common to introduce a \emph{loss function} that measures the quality of the model with respect to the training data set:
 
 \begin{equation}\label{eq:LossFunction}
-    L(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^{N} L(f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) , y^{(i)}),
+    L(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^{N} L(\hat{f}(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) , y^{(i)}),
 \end{equation}
 
 The loss function returns a scalar value that indicates how good your model fits the training data for a particular set of parameters. In general, a lower value indicates a better model. This formulates the task of training the model as an optimization problem. In the next section, we will discuss different ways of training parameterized models, in particular with the use of gradient-based methods.
@@ -42,15 +42,15 @@ The loss function returns a scalar value that indicates how good your model fits
 The choice of loss function is highly problem dependent, and there is a vast collection of different choices in the machine learning literature \cite{hastie01statisticallearning}. A common loss function used for training supervised models on regression problems is the Mean Squared Error (MSE). This loss function is suitable since it implements a natural distance measure between prediction and target. It is formulated as
 
 \begin{equation}\label{eq:MSE}
-    MSE = \frac{1}{N}\sum_{i=1}^{N} (f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) - y^{(i)})^2.
+    MSE = \frac{1}{N}\sum_{i=1}^{N} (\hat{f}(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) - y^{(i)})^2.
 \end{equation}
 
-From this formulation, we see that the closer the predicted targets $\hat{y}^{(i)} = f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$ are to the real targets $y^{(i)}$, the smaller the MSE will be. In other words, a model with lower MSE than some other model fits the data better. Fitting the model using MSE as loss function is often referred to as the \emph{least squares approach}.
+From this formulation, we see that the closer the predicted targets $\hat{y}^{(i)} = \hat{f}(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$ are to the real targets $y^{(i)}$, the smaller the MSE will be. In other words, a model with lower MSE than some other model fits the data better. Fitting the model using MSE as loss function is often referred to as the \emph{least squares approach}.
 
 %================================================================
 \subsection{Classification}\label{sec:Classifcation}
 %================================================================
-In this thesis, we will be concerned with \emph{binary classification}, where the targets of the data are one of two different classes we want to predict. Typically, the different classes are represented by discrete values, such as $y \in \{0,1\}$. Here $0$ and $1$ corresponds to the first and second class, respectively. When parametric models are trained on such discrete labels, by for example minimizing the MSE loss, they tend to produce output values in the range $f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) \in [0,1]$. The continuous value of $f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$ are often interpreted as the probability that sample $\boldsymbol{x}^{(i)}$ belongs to the second class. As an example, say $f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) = 0.8$ for a particular sample $\boldsymbol{x}^{(i)}$. This tells us that it belongs to the second class with $80\%$ probability, and to class $0$ with $20\%$ probability. A class can then be predicted from the  sample by implementing a \emph{threshold value} $c$, such as
+In this thesis, we will be concerned with \emph{binary classification}, where the targets of the data are one of two classes that we want to predict. Typically, the different classes are represented by discrete values, such as $y \in \{0,1\}$. Here $0$ and $1$ corresponds to the first and second class, respectively. When parametric models are trained on discrete targets, by for example by minimizing the MSE loss, they tend to produce output values in the range $\hat{f}(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) \in [0,1]$. The continuous value of $\hat{f}(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$ are often interpreted as the probability that sample $\boldsymbol{x}^{(i)}$ belongs to the second class. As an example, say $f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) = 0.8$ for a particular sample $\boldsymbol{x}^{(i)}$. This tells us that it belongs to the second class with $80\%$ probability, and to class $0$ with $20\%$ probability. A class can then be predicted from the sample by implementing a \emph{threshold value} $c$, such as
 \begin{equation}
     \hat{y}^{(i)} = I(f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) > c),
 \end{equation}
@@ -62,7 +62,7 @@ Whereas MSE can be used to assess how closely regression models fits the data, a
     \text{accuracy} = \frac{1}{N}\sum_{i=1}^{N} I(\hat{y}^{(i)} = y^{(i)}).
 \end{equation}
 
-From \cref{eq:accuracy}, we see that the accuracy of a model is the average numbers of targets it classifies correctly.  
+From \cref{eq:accuracy}, we see that the accuracy of a model is the average number of targets it classifies correctly.  
 
 
 %================================================================
@@ -74,7 +74,7 @@ Finding the optimal parameters $\hat{\boldsymbol{\theta}}$ with respect to a cho
     \hat{\boldsymbol{\theta}} = \underset{\boldsymbol{\theta}}{\argmin} \frac{1}{N}\sum_{i=1}^{N} L(f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta}) , y^{(i)}).
 \end{equation}
 
-This optimization problem is generally not trivial, and depends highly on the choice of loss function and parametric model. Aside from a few exceptions, like the case of linear regression, \cref{eq:Optimization} does not generally have an analytical solution. Moreover, many popular parametric models result in non-convex optimization problems, meaning the \emph{loss landscape} exhibit several local minima. In practice, such optimization problems can't be solved efficiently \cite{Vava:book}. However, it is important to realize that an exact, or close to exact, minimization of the loss function is seldom needed or even favorable. What is ultimately interesting is whether the trained model has sufficient ability to predict. Over the years, several cheap and approximate methods for optimization have been invented to train machine learning models. We will discuss two such methods that implement gradient-based optimization. 
+This optimization problem is generally not trivial, and depends highly on the choice of loss function and parametric model. Aside from a few exceptions, like the case of linear regression, \cref{eq:Optimization} does not generally have an analytical solution. Moreover, many popular parametric models result in non-convex optimization problems, meaning that the loss function has several local minima. In practice, such optimization problems can't be solved efficiently \cite{Vava:book}. However, it is important to realize that an exact, or close to exact, minimization of the loss function is seldom needed or even favorable. What is ultimately interesting is whether the trained model has sufficient ability to predict. Over the years, several cheap and approximate methods for optimization have been invented to train machine learning models. We will discuss two such methods that implement gradient-based optimization. 
 
 %================================================================
 %\subsection{Matrix Inversion}\label{sec:MatrixInvertion}
@@ -106,23 +106,30 @@ In the absence of an analytical expression that minimizes the loss function, \em
 \begin{equation}\label{eq:LossDerivateWRTparameter}
     \frac{\partial L(\boldsymbol{\theta})}{\partial \theta_k}  =
     \frac{1}{N}\sum_{i=1}^{N} \frac{\partial L( \hat{y}^{(i)}, y^{(i)})}{\partial \hat{y}^{(i)}} 
-    \frac{\partial \hat{y}^{(i)}}{\partial \theta_k}
+    \frac{\partial \hat{y}^{(i)}}{\partial \theta_k},
 \end{equation}
-where $\theta_k$ is the $k$'th model parameter, and  $\hat{y}^{(i)} = f(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$. To arrive at this expression, the chain rule was used under the assumption that the loss function $L(\hat{y}^{(i)}, y^{(i)})$ and model output $\hat{y}^{(i)}$ are differentiable with respect to $\hat{y}^{(i)}$ and $\theta_k$, respectively. Note that the derivative is calculated with respect to the entire training set, i.e. the whole \emph{batch}, hence the name. The gradient is then constructed simply as a vector quantity containing the derivatives with respect to each model parameter:
+where $\theta_k$ is the $k$'th model parameter, and  $\hat{y}^{(i)} = \hat{f}(\boldsymbol{x}^{(i)}; \boldsymbol{\theta})$. To arrive at this expression, the chain rule was used under the assumption that the loss function $L(\hat{y}^{(i)}, y^{(i)})$ and model output $\hat{y}^{(i)}$ are differentiable with respect to $\hat{y}^{(i)}$ and $\theta_k$, respectively. For MSE loss \cref{eq:MSE}, the derivative has the form 
+
+\begin{equation}\label{eq:LossDerivateWRTparameter}
+    \frac{\partial L(\boldsymbol{\theta})}{\partial \theta_k}  =
+    \frac{2}{N}\sum_{i=1}^{N} (\hat{y}^{(i)} - y^{(i)}) 
+    \frac{\partial \hat{y}^{(i)}}{\partial \theta_k}.
+\end{equation}
+
+Note that the derivative is calculated with respect to the entire training set, i.e. the whole \emph{batch}, hence the name. The gradient is then constructed simply as a vector quantity containing the derivatives with respect to each model parameter:
 
 \begin{equation}\label{eq:Gradient}
     \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta})= 
     \big{(} \frac{\partial}{\partial \theta_1} L(\boldsymbol{\theta}), 
-    \cdots, \frac{\partial}{\partial \theta_p} L(\boldsymbol{\theta}) \big{)}
+    \cdots, \frac{\partial}{\partial \theta_{n_{\theta}}} L(\boldsymbol{\theta}) \big{)},
 \end{equation}
-
-The gradient \cref{eq:Gradient} can be geometrically interpreted as the direction at point $\boldsymbol{\theta}$ in parameter space for which the value of the loss function increases most rapidly. In light of this, one can attempt to move all the parameters some small amount in the opposite direction, \emph{the direction of steepest descent}, in order to decrease the loss. This can be done iteratively, and can be formulated as 
+where $n_{\theta}$ is the number of parameters. The gradient \cref{eq:Gradient} can be geometrically interpreted as the direction at point $\boldsymbol{\theta}$ in parameter space for which the value of the loss function increases most rapidly. In light of this, one can attempt to move all the parameters some small amount in the opposite direction, \emph{the direction of steepest descent}, in order to decrease the loss. This can be done iteratively, and can be formulated as 
 
 
 \begin{equation}\label{eq:ParameterUpdate}
     \boldsymbol{\theta}_{t} = \boldsymbol{\theta}_{t-1} - \mu \nabla_{\boldsymbol{\theta}} L(\boldsymbol{\theta}_{t-1})
 \end{equation}
-for $t=1, \cdots, T$. Here, $T$ is the total number of  iterations, or \emph{epochs}, and $\mu$ is some small positive value, often called the \emph{learning rate}. Usually, some initial choice of parameters $\boldsymbol{\theta}_{0}$ is chosen at random. Analogous to walking down a mountain, the recalculation of the gradient and repeated adjustment of the parameters results in a gradual descent in the loss landscape. This is the heart of gradient descent.
+for $t=1, \cdots, T$. Here, $T$ is the total number of  iterations, or \emph{epochs}, and $\mu$ is some small positive value called the \emph{learning rate}. Usually, some initial choice of parameters $\boldsymbol{\theta}_{0}$ is chosen at random. Analogous to walking down a mountain, the recalculation of the gradient and repeated adjustment of the parameters results in a gradual descent in the loss landscape. This is the heart of gradient descent.
 
 Even though batch gradient descent is intuitively simple and sometimes sufficiently effective for training some models, it has several flaws that should be addressed when suggesting better methods of optimization. A common problem with batch gradient descent is that optimization has a tendency of getting stuck in local minima, as only local information in the loss landscape is used when updating the parameters. In addition, the presence of \emph{plateaus}, areas of particular flatness in the loss landscape, tend to induce slow convergence. The two aforementioned phenomena are illustrated in \cref{fig:localMinima}.  
 
@@ -134,7 +141,7 @@ Even though batch gradient descent is intuitively simple and sometimes sufficien
     \label{fig:localMinima}
 \end{figure}
 
-Furthermore, the presence of high degree of distortions in certain directions in parameter space, so called  \emph{thin valleys}, can lead to oscillations and inefficient optimization. This is exemplified in \cref{fig:thinValley}. We will discuss how the popular \emph{Adam optimizer}, which was used in this thesis, addresses these problems.
+Furthermore, the presence of high degree of distortion in certain directions in parameter space, so called  \emph{thin valleys}, can lead to oscillations and inefficient optimization. This is exemplified in \cref{fig:thinValley}. We will discuss how the popular \emph{Adam optimizer} \cite{kingma2017adam}, which was used in this thesis, addresses these problems.
 
 \begin{figure}[htp]
     \centering
@@ -170,13 +177,13 @@ $\hat{m}_t \gets m_t/(1 - \beta_1^{t})$
 (Compute bias-corrected first moment estimate)\\
 $\hat{v}_t \gets v_t/(1 - \beta_2^{t})$
 (Compute bias-corrected second raw moment estimate)\\
-$\theta_t \gets \theta_{t-1} - \alpha \hat{m}_t/(\sqrt{\hat{v}_t} + \epsilon)$
+$\theta_t \gets \theta_{t-1} - \mu \hat{m}_t/(\sqrt{\hat{v}_t} + \epsilon)$
 (Update parameters)
 }
 \Return{$\theta_t$}
 \end{algorithm}
 
-\cref{alg:Adam} updates moving averages of the gradient $m_t$ and its square $v_t$, picking up information about the gradient from earlier update events. In particular, if the gradient tends to flip sign in certain directions, the averaging over previous iterations tends to dampen these oscillations. Likewise, directions of persistent sign tend to accumulate magnitude, making the optimisation gain "momentum" in these directions. This property helps the model overcoming thin valleys and plateaus. Also, the effect of momentum may also avoid getting stuck in local minima by gracing over them. Further, the moving average of the gradient and its square is rendered unbiased as $\hat{m}_t = m_t/(1-\beta_1)$ and $\hat{v}_t = v_t/(1-\beta_2)$. Since the averages are initialized as zero, they are biased downward. Finally, the parameters are shifted by the quantity $\alpha \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}$. Here, the rescaling term $\sqrt{\hat{v}_t}$ serves to decrease the step size in directions where the gradient has a large magnitude and increase it where it is small. This effectively implements a variable learning rate for each direction, depending on whether big or small steps are needed. 
+\cref{alg:Adam} updates moving averages of the gradient $m_t$ and its square $v_t$, picking up information about the gradient from earlier update events. In particular, if the gradient tends to flip sign in certain directions, the averaging over previous iterations tends to dampen these oscillations. Likewise, directions of persistent sign tend to accumulate magnitude, making the optimisation gain "momentum" in these directions. This property helps the model overcoming thin valleys and plateaus. Also, the effect of momentum may also avoid getting stuck in local minima by gracing over them. Further, the moving average of the gradient and its square is rendered unbiased by calculating $\hat{m}_t = m_t/(1-\beta_1)$ and $\hat{v}_t = v_t/(1-\beta_2)$. Since the averages are initialized as zero, they are initially biased downward. Finally, the parameters are updated using $\theta_t \gets \theta_{t-1} - \mu \hat{m}_t/(\sqrt{\hat{v}_t} + \epsilon)$. Here, the rescaling term $\sqrt{\hat{v}_t}$ serves to decrease the step size in directions where the gradient has a large magnitude and increase it where it is small. This effectively implements a variable learning rate for each direction, depending on whether big or small steps are needed. 
 
 Adam is a highly successful algorithm for optimizing machine learning models. In popular machine learning frames such as scikit-learn \cite{scikit-learn} and pyTorch \cite{pytorch}, it is a default optimizer. Lately, Adam has also been used for optimizing quantum machine learning models \cite{abbas2020power, skolik2020layerwise}. As pointed out by its authors, Adam requires very little tuning of hyperparameters to be efficient, making it attractive and easy to use. Adam is also suited for noisy gradients, which will be relevant for the work in this thesis. 
 
@@ -204,7 +211,7 @@ where $\boldsymbol{a}^{l-1}$ is the activation of the previous layer with the ex
 \begin{equation}\label{eq:DNN}
     \hat{y} = f_{DNN}(x;\boldsymbol{\theta}) = \boldsymbol{a}^{L},
 \end{equation}
-where $\boldsymbol{\theta} = [W^1, \boldsymbol{b}^1, \cdots, W^L,  \boldsymbol{b}^L]$. Using the recursive relation \cref{eq:FeedforwardDNN}, one is free to choose an arbitrary number of layers, and nodes for each layer, so long that the dimension of the input of one layer matches the shape of the output of the preceding layer. Typically, the initial input $\boldsymbol{a}^0 = \bold{x}$ is called the input layer, while the last layer $\boldsymbol{a}^L$ is called the output layer. All intermediate layers are called \emph{hidden layers}, since we usually don't observe the internal transformations a neural network does.
+where $\boldsymbol{\theta} = [W^1, \boldsymbol{b}^1, \cdots, W^L,  \boldsymbol{b}^L]$. Using the recursive relation \cref{eq:FeedforwardDNN}, one is free to choose an arbitrary number of layers, and nodes for each layer, so long that the dimension of the input of one layer matches the shape of the output of the preceding layer. Typically, the initial input $\boldsymbol{a}^0 = \bold{x}$ is called the input layer, while the last layer $\boldsymbol{a}^L$ is called the output layer. All intermediate layers are called \emph{hidden layers}, since we usually don't observe the internal transformations a neural network does. 
 
 \cref{eq:FeedforwardDNN} and \cref{eq:DNN} define the whole forward procedure of a neural network, and also highlight the role of the functions $f^l(\cdot)$, often called the \emph{nonlinearities}. If set to identity, $f^l(x) = x$, the recursive application of \cref{eq:FeedforwardDNN} would simply apply repeated linear operations. In other words, increasing the number of layers would not increase the expressiveness of the network, as all the layers would collapse into a single layer. Therefore, introducing nonlinear transformations is necessary to increase the flexibility of the neural network. 
 

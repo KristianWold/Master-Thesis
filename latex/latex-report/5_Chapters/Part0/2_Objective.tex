@@ -1,12 +1,12 @@
 %================================================================
 \section{Objectives}
 %================================================================
-The overall objective of this study is to implement and investigate quantum circuit networks (QCN), and characterize their behavior as a function of their architecture. This will be done by using various numerical methods. This investigation is then repeated on traditional methods, such as dense neural networks and quantum neural networks. Finally, the former models are benchmarked and compared against each other on artificial and real-world data, using both ideal and noisy simulation of quantum hardware. The main goals can be divided into the following seven points:
+The overall objective of this study is to implement and investigate quantum circuit networks (QCNs), and characterize their behavior as a function of their architecture. This will be done by using various numerical methods. This investigation is then repeated on traditional methods, such as dense neural networks (DNNs) and quantum neural networks (QNNs). Finally, the mentioned models are benchmarked and compared against each other on artificial and real-world data, using both ideal and noisy simulation of quantum hardware. The main goals can be divided into the following seven points:
 
 \begin{itemize}
-    \item Implement a framework for creating quantum neural networks (QNNs), dense neural networks (DNNs) and QCNs.
+    \item Implement a Python framework for constructing quantum neural networks (QNNs), dense neural networks (DNNs) and QCNs.
     
-    \item Develop a backpropagation algorithm based on the parameter shift rule for calculating the gradient of QCNs, allowing for gradient-based optimization. 
+    \item Develop a backpropagation algorithm based on the parameter shift rule for calculating the gradient of QCNs, allowing for gradient-based optimization with respect to a loss function. 
     
     \item Investigate the vanishing gradient phenomenon for QCNs by calculating the magnitude of their gradients for different numbers of qubits and layers. Repeat this investigation for QNNs and DNNs and compare.
     
@@ -14,7 +14,7 @@ The overall objective of this study is to implement and investigate quantum circ
     
     \item Assess the expressivity of QCNs and DNNs using the trajectory length metric, for both untrained and trained models, and compare. 
     
-    \item Fit QNNs, DNNs and QCNs to mixed Gaussian data and assess whether the EFIM spectrum and trajectory length are good predictors for rate of optimization and expressivity of the models, respectively. Also train QCNs and QNNs using simulation of noisy hardware to study how they train on real hardware.
+    \item Train QNNs, DNNs and QCNs on mixed Gaussian data and assess whether the EFIM spectrum and trajectory length are good predictors for rate of optimization and expressivity of the models, respectively. Also train QCNs and QNNs using simulation of noisy hardware to study how they perform on real hardware.
     
-    \item Fit QCNs to real-world data and compare their performance to DNNs to see if they have any merit for practical problems. 
+    \item Train QCNs to real-world data and compare their performance to DNNs to see if they have any merit for practical problems, both on ideal and noisy quantum hardware. 
 \end{itemize}
