@@ -17,20 +17,16 @@ Let $f(\boldsymbol{x}^{(k)}; \boldsymbol{\theta})$ be a parameterized and differ
 
 \begin{equation}
 \label{eq:Hessian}
-    H_{ij} = \frac{\partial^2 L(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}_i\partial \boldsymbol{\theta}_j}.
+    H_{ij} = \frac{\partial^2 L(\boldsymbol{\theta})}{\partial \theta_i\partial \theta_j}.
 \end{equation}
 
-The Hessian matrix is an $n_\theta \times n_\theta$ matrix that quantifies the curvature of the loss function locally in the parameter space at the point of $\boldsymbol{\theta}$. This is an extensively studied quantity in the machine learning community, and it has been used to study the loss landscape both for classical and quantum mechanical machine learning models \cite{LeCun2012, Huembeli_2021}. In particular, its eigenvalue spectrum quantifies the amount of curvature in various directions. Typically for classical neural networks, the spectrum is characterized by the presence of many eigenvalues near zero, with the exception of a few large ones(so-called "big killers") \cite{LeCun2012}. This indicate the that loss landscape is mostly flat, with large distortions in a few directions, which in turn causes slow optimization as discussed earlier. 
+The Hessian matrix is an $n_\theta \times n_\theta$ matrix that quantifies the curvature of the loss function locally in the parameter space at the point of $\boldsymbol{\theta}$. This is an extensively studied quantity in the machine learning community, and it has been used to study the loss landscape both for classical and quantum mechanical machine learning models \cite{LeCun2012, Huembeli_2021}. In particular, its eigenvalue spectrum quantifies the amount of curvature in various directions. Typically for classical neural networks, the spectrum is characterized by the presence of many eigenvalues near zero, with the exception of a few large ones(so-called "big killers") \cite{LeCun2012}. This indicate the that loss landscape is mostly flat, with large distortions in a few directions, which in turn causes slow optimization as discussed earlier. \cref{fig:spectrumExample} shows an example of this.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=10cm]{latex/figures/spec}
-    \caption{Figure showing a trajectory increasing with the depth
-of a network. Starting with a circular trajectory (left most
-pane), it is fed through a fully connected tanh network with
-width 100. Pane second from left shows the image of the circular
-trajectory (projected down to two dimensions) after being transformed by the first hidden layer. Subsequent panes show the trajectory after being transformed by multiple layers. This figure is retrieved from \citet{raghu2017expressive}.}
-\label{fig:trajectoryLengthExample}
+    \includegraphics[width=10cm]{latex/figures/spectrum.png}
+    \caption{Figure showing an example of a strongly skewed spectrum of the Hessian for a classical neural network. Most eigenvalues are close to zero, with the presence a few large ones. This figure is retrieved from \citet{LeCun2012}.}
+\label{fig:spectrumExample}
 \end{figure}
 
 %================================================================
@@ -42,14 +38,14 @@ Assume a square loss $\frac{1}{2N}\sum_{k=1}^{N} (f(\boldsymbol{x}^{(k)}; \bolds
     
 \begin{equation}\label{eq:HessianSquareLoss}
     H_{ij} = F_{ij} -
-    \frac{1}{N}\sum_{k=1}^{N} (y^{(k)} - f(\boldsymbol{x}^{(k)};\boldsymbol{\theta}))\frac{\partial^2 f(\boldsymbol{x}^{(k)};\boldsymbol{\theta})}{\partial \boldsymbol{\theta}_i\partial \boldsymbol{\theta}_j}, 
+    \frac{1}{N}\sum_{k=1}^{N} (y^{(k)} - f(\boldsymbol{x}^{(k)};\boldsymbol{\theta}))\frac{\partial^2 f(\boldsymbol{x}^{(k)};\boldsymbol{\theta})}{\partial \theta_i\partial \theta_j}, 
 \end{equation}
 where F is identified as the EFIM, given by
 \begin{equation}
 \label{eq:EmpiricalFisher}
     F_{ij} =  \frac{1}{N}\sum_{k=1}^{N}
-    \frac{\partial f(\boldsymbol{x}_k;\boldsymbol{\theta})}{\partial \boldsymbol{\theta}_i}
-    \frac{\partial f(\boldsymbol{x}_k;\boldsymbol{\theta})}{\partial \boldsymbol{\theta}_j}.
+    \frac{\partial f(\boldsymbol{x}_k;\boldsymbol{\theta})}{\partial \theta_i}
+    \frac{\partial f(\boldsymbol{x}_k;\boldsymbol{\theta})}{\partial \theta_j}.
 \end{equation}
 
 From \cref{eq:HessianSquareLoss}, the EFIM can been seen to coincide with the Hessian matrix if $f(\boldsymbol{x}^{(k)};\boldsymbol{\theta}) = y^{(k)}$, since the terms in the last sum vanishes. This is the case if the model manages to perfectly replicate the targets from the inputs, which is approximately true for well-trained models that fit the data sufficiently. However, even for untrained models, the EFIM is sometimes used as a cheaper alternative to the Hessian matrix, particularly for investigating the geometry of the loss landscape via its eigenvalue spectrum. This has been done both for classical and quantum mechanical machine learning models \cite{karakida2019universal} \cite{abbas2020power}. It is worth pointing out that these investigations, as well as this thesis, are mainly concerned with untrained models. Consequently, the EFIM does not coincide with the Hessian matrix and does not give a mathematically accurate description of the curvature of the loss landscape. However, the EFIM still serves as a heuristic for addressing the flatness and distortions of the loss landscape. 
