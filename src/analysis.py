@@ -82,10 +82,26 @@ class FIM():
 
 
 class TrajectoryLength:
+    """Trajectory Length
+
+    Parameters
+    ----------
+    model :
+        Parameterized model
+    """
+
     def __init__(self, model):
         self.model = model
 
     def fit(self, x):
+        """Calculate the Trajectory Length for the given model
+        for a trajectory x
+
+        Parameters
+        ----------
+        x : ndarray
+            trajectory
+        """
         pca = PCA(n_components=2)
 
         self.model(x)

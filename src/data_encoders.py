@@ -52,24 +52,9 @@ class Encoder():
 
 
 class RZZEncoder():
-    """Quantum circuit for encoding data by Pauli rotations.
-
-    Parameters
-    ----------
-    mode : str
-        Specify what Pauli rotations to use. "x", "y" and "z" corresponds
-        to Rx, Ry and Rz rotation, respectivly.
-    """
+    """Quantum circuit for encoding data by RZZ encoding."""
 
     def __call__(self, circuit, data_register, weight, data):
-        """Apply gates to circuit for encoding data.
-
-        Parameters
-        ----------
-        mode : str
-            Specify what Pauli rotations to use. "x", "y" and "z" corresponds
-            to Rx, Ry and Rz rotation, respectivly.
-        """
 
         n_qubits = data_register.size
         n_features = data.shape[0]
