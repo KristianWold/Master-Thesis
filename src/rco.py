@@ -83,6 +83,7 @@ class RCO:
 
     def fit(self, circuit):
         circuit_list = self.divide_circuit(circuit, self.divisor)
+        print(len(circuit_list))
         params_prev = None
         print(f"{0}/{self.divisor} iterations")
         for i in range(self.divisor):
@@ -97,17 +98,25 @@ class RCO:
 
     def divide_circuit(self, circuit, divisor):
         circuit_size = len(circuit)
-        gates_per_sub_circuit = circuit_size // divisor
-        k = 0
+        rest_gates = circuit_size % divisor
+        gates_per_chunck = divisor*[circuit_size // divisor]
+
+        for i in range(rest_gates):
+            gates_per_chunck[i] += 1
+
+
         circuit_list = []
-        while k < circuit_size:
+        for i in range(divisor):
             _circuit = deepcopy(circuit)
-            for i in range(k):
-                _circuit.data.pop(0)
-            for i in range(circuit_size - gates_per_sub_circuit - k):
-                _circuit.data.pop(-1)
-            circuit_list.append(deepcopy(_circuit))
-            k += gates_per_sub_circuit
+            for j in range(i):
+                for k in range(gates_per_chunck[j]):
+                    _circuit.data.pop(0)
+
+            for j in reversed(range(i+1, divisor)):
+                for k in range(gates_per_chunck[j]):
+                    _circuit.data.pop(-1)
+
+            circuit_list.append(_circuit)
 
         return circuit_list
 
