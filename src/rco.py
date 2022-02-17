@@ -45,6 +45,10 @@ class Ansatz():
                     for j in range(self.n_qubits - 1):
                         _circuit.cx(data_register[j], data_register[j + 1])
 
+                if block == "entangle_inv":
+                    for j in reversed(range(1, self.n_qubits)):
+                        _circuit.cx(data_register[j], data_register[j-1])
+
         if inverse:
             _circuit = _circuit.inverse()
 
