@@ -64,7 +64,7 @@ class Ansatz():
 
 class RCO:
 
-    def __init__(self, ansatz, n_qubits, sampler, optimizer, divisor, shots, tol=1e-3, warm_start=False):
+    def __init__(self, ansatz, n_qubits, sampler, optimizer, divisor, shots, tol=1e-3, warm_start=False, backend = None):
         self.ansatz = ansatz
         self.sampler = sampler
         self.optimizer = optimizer
@@ -78,6 +78,7 @@ class RCO:
         self.n_params = self.ansatz.n_weights_per_target
         self.params = np.random.uniform(-np.pi, np.pi,
                                         (self.divisor, self.n_params))
+        self.backend = backend
 
         self.error_sampler = ZeroBit()
 
@@ -129,14 +130,15 @@ class RCO:
         if params_prev is not None:
             circuit = self.ansatz(circuit, qreg, params_prev, inverse=True)
 
-        #creg = qk.ClassicalRegister(qreg.size)
-        # circuit.add_register(creg)
-        #circuit.measure(qreg, creg)
+        if self.shots != 0:
+            creg = qk.ClassicalRegister(qreg.size)
+            circuit.add_register(creg)
+            circuit.measure(qreg, creg)
+            
         if return_circuit:
             return circuit
         else:
-            job = qk.execute(circuit, backend=qk.Aer.get_backend(
-                'statevector_simulator'), shots=self.shots)
+            job = qk.execute(circuit, backend=self.backend, shots=self.shots)
             counts = job.result().get_counts(circuit)
 
             if use_error_measure == True:
@@ -147,8 +149,6 @@ class RCO:
             return output
 
     def gradient(self, target_circuit, params, params_prev=None):
-        backend = qk.Aer.get_backend('statevector_simulator')
-
         grads = np.zeros(params.shape)
         circuit_plus_list = []
         circuit_minus_list = []
@@ -164,14 +164,14 @@ class RCO:
             params[i] += np.pi / 2
 
         circuit_list = circuit_plus_list + circuit_minus_list
-        transpiled_list = qk.transpile(circuit_list, backend=backend)
+        transpiled_list = qk.transpile(circuit_list, backend=self.backend)
         qobject_list = qk.assemble(transpiled_list,
-                                   backend=backend,
+                                   backend=self.backend,
                                    shots=self.shots,
                                    max_parallel_shots=0,
                                    max_parallel_experiments=0)
 
-        job = backend.run(qobject_list)
+        job = self.backend.run(qobject_list)
 
         outputs = []
         for circuit in circuit_list:
